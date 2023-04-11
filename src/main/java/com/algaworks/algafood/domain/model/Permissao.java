@@ -12,21 +12,18 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Cozinha {
-
+public class Permissao {
+	
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	//@JsonProperty("titulo")
-	//@JsonIgnore
-	@Column(nullable =false)
+	@Column(nullable = false)
 	private String nome;
-
-//	@Override
-//	public String toString() {
-//		return "Cozinha [id=" + id + ", nome=" + nome + "]";
-//	}
+	
+	@Column(nullable = false)
+	private String descricao;
+	
 
 }

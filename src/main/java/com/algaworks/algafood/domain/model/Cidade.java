@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,21 +13,16 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Cozinha {
-
+public class Cidade {
+	
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	//@JsonProperty("titulo")
-	//@JsonIgnore
-	@Column(nullable =false)
+	@Column(nullable = false)
 	private String nome;
-
-//	@Override
-//	public String toString() {
-//		return "Cozinha [id=" + id + ", nome=" + nome + "]";
-//	}
+	
+	@ManyToOne
+	Estado estado;
 
 }
