@@ -12,8 +12,8 @@ insert into estado(id,nome ) values(3,'Rio Grande do Sul' );
 
 insert into cidade(nome,estado_id ) values( 'Blumenau',1 );
 insert into cidade(nome,estado_id ) values( 'Florianópolis',1 );
-insert into cidade(nome,estado_id ) values( 'Porto Alegre',2 );
-insert into cidade(nome,estado_id ) values( 'Curitiba',3 );
+insert into cidade(nome,estado_id ) values( 'Porto Alegre',3 );
+insert into cidade(nome,estado_id ) values( 'Curitiba',2 );
 
 insert into forma_pagamento(id,descricao ) values(1, 'Cartão de crédito VISA' );
 insert into forma_pagamento(id,descricao ) values(2, 'Cartão de crédito MASTERCARD' );

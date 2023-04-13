@@ -5,14 +5,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algafood.domain.dto.CozinhaDto;
 import com.algaworks.algafood.domain.dto.RestauranteDto;
-import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.RequisicaoIncorretaException;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -51,7 +48,6 @@ public class CadastroRestauranteService {
 	}
 
 
-	@Transactional
 	public RestauranteDto salvar(RestauranteDto restauranteDto) {
 		Long cozinhaId = restauranteDto.getCozinha().getId();
 		
@@ -75,7 +71,6 @@ public class CadastroRestauranteService {
 		
 	}
 	
-	@Transactional
 	public RestauranteDto atualizar(RestauranteDto restauranteDto, Long restauranteId) {
 		Restaurante restaurante  = restauranteRepository.buscar(restauranteId);
 		if ( restaurante  == null) {
@@ -88,7 +83,6 @@ public class CadastroRestauranteService {
 		return restauranteDto;
 	}
 
-	@Transactional
 	public void excluir(Long id) {
 		try {
 			
@@ -97,14 +91,7 @@ public class CadastroRestauranteService {
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(
 					String.format("Restaurante de código %d não encontrado.", id));
-		}
-		
-		 catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(
-					String.format("Cozinha de código %d não pode ser removida, pois está em uso.", id));
-		}
-		
-		
+		}		
 		
 	}
 	
