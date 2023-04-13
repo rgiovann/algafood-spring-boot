@@ -25,7 +25,7 @@ public class RemoverRestauranteMain {
 				
 				Restaurante cozinha = new Restaurante();
 				cozinha.setId(1L);
-				cozinhaRepository.remover(cozinha);
+				cozinhaRepository.remover(1L);
 				
 
  

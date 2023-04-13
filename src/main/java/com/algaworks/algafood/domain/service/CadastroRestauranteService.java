@@ -1,10 +1,18 @@
 package com.algaworks.algafood.domain.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.algaworks.algafood.domain.dto.CozinhaDto;
+import com.algaworks.algafood.domain.dto.RestauranteDto;
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.RequisicaoIncorretaException;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -20,36 +28,94 @@ public class CadastroRestauranteService {
 	
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
+	
+	public RestauranteDto buscar(Long restauranteId) {
+		
+		Restaurante restaurante = restauranteRepository.buscar(restauranteId);
+		
+		if ( restaurante == null) {
+			throw new EntidadeNaoEncontradaException(
+					String.format("Restaurante de código %d não encontrado.", restauranteId));
+		}
+ 	
+		return copyEntityToDto(restaurante);
+		
+	}
+	
+	
+	public List<RestauranteDto> listar() {
+		
+		List<Restaurante> restaurante = restauranteRepository.listar();
+		return restaurante.stream().map(rest-> copyEntityToDto(rest) ).collect(Collectors.toList());
+		
+	}
+
 
 	@Transactional
-	public Restaurante salvar(Restaurante restaurante) {
-		Long cozinhaId = restaurante.getCozinha().getId();
+	public RestauranteDto salvar(RestauranteDto restauranteDto) {
+		Long cozinhaId = restauranteDto.getCozinha().getId();
+		
+		Restaurante restaurante = new Restaurante();
 
 		Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
-
+		
 		if (cozinha == null) {
 			throw new RequisicaoIncorretaException(
-					String.format("Não existe cadastro de cozinha com código %d", cozinhaId));
+					String.format("Cozinha de código %d não encontrado.", cozinhaId));
 		}
 
-		restaurante.setCozinha(cozinha);
+		
+		BeanUtils.copyProperties(restauranteDto, restaurante);
+		restaurante.setCozinha(cozinha);	
+		
+		restaurante = restauranteRepository.salvar(restaurante);
+		
+		return copyEntityToDto(restaurante);
 
-		return restauranteRepository.salvar(restaurante);
+		
 	}
 	
 	@Transactional
-	public Restaurante atualizar(Restaurante restaurante, Long restauranteId) {
-		Restaurante restauranteAtual = restauranteRepository.buscar(restauranteId);
-		if ( restauranteAtual == null) {
-			throw new EntidadeNaoEncontradaException(
-					String.format("Não existe cadastro de restaurante com código %d", restauranteId));
+	public RestauranteDto atualizar(RestauranteDto restauranteDto, Long restauranteId) {
+		Restaurante restaurante  = restauranteRepository.buscar(restauranteId);
+		if ( restaurante  == null) {
+			throw new EntidadeNaoEncontradaException(String.format("Restaurante de código %d não encontrado.", restauranteId));
 		}
 			
-		BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
+		restauranteDto.setId(restauranteId);
+		restauranteDto = this.salvar(restauranteDto);
 		
-		restaurante = this.salvar(restauranteAtual);
+		return restauranteDto;
+	}
+
+	@Transactional
+	public void excluir(Long id) {
+		try {
+			
+			restauranteRepository.remover(id);
 		
-		return restaurante;
+		} catch (EmptyResultDataAccessException e) {
+			throw new EntidadeNaoEncontradaException(
+					String.format("Restaurante de código %d não encontrado.", id));
+		}
+		
+		 catch (DataIntegrityViolationException e) {
+			throw new EntidadeEmUsoException(
+					String.format("Cozinha de código %d não pode ser removida, pois está em uso.", id));
+		}
+		
+		
+		
+	}
+	
+	private RestauranteDto copyEntityToDto(Restaurante restaurante) 
+	{
+		RestauranteDto restauranteDto= new RestauranteDto();
+		CozinhaDto cozinhaDto= new CozinhaDto();
+		BeanUtils.copyProperties(restaurante, restauranteDto);
+		BeanUtils.copyProperties(restaurante.getCozinha(), cozinhaDto);
+		restauranteDto.setCozinha(cozinhaDto);	
+		return restauranteDto;
 	}
 
 }
