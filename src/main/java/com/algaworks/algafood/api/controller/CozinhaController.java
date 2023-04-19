@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.dto.CozinhaDto;
@@ -31,6 +32,14 @@ public class CozinhaController {
 	public List<CozinhaDto> listar() {
 
 		return cozinhaService.listar();
+
+	}
+	
+	
+	@GetMapping("/por-nome")
+	public List<CozinhaDto> listarporNome(@RequestParam("nomeCozinha") String nome) {
+
+		return cozinhaService.buscarPorNome(nome);
 
 	}
 

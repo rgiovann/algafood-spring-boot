@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,23 +24,36 @@ public class CadastroCozinhaService {
 
 	public CozinhaDto buscar(Long cozinhaId) {
 
-		Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
+ 		Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Cozinha de código %d não encontrada.", cozinhaId)));
+		
 		CozinhaDto cozinhaDto = new CozinhaDto();
 
-		if (cozinha == null) {
-			throw new EntidadeNaoEncontradaException(String.format("Cozinha de código %d não encontrado.", cozinhaId));
-		}
-
-		BeanUtils.copyProperties(cozinha, cozinhaDto);
+ 		BeanUtils.copyProperties(cozinha, cozinhaDto);
 
 		return cozinhaDto;
 
 	}
+	
+	
+	public List<CozinhaDto> buscarPorNome(String nomeCozinha) {
+ 
+		List<Cozinha> cozinha = Collections.<Cozinha>emptyList();
+
+		return cozinha.stream().map(coz -> {
+			CozinhaDto cozinhaDto = new CozinhaDto();
+			BeanUtils.copyProperties(coz, cozinhaDto);
+			return cozinhaDto;
+		}).collect(Collectors.toList());
+
+	}
+	
+	
 
 	public List<CozinhaDto> listar() {
 
-		List<Cozinha> estado = cozinhaRepository.listar();
-		return estado.stream().map(coz -> {
+		List<Cozinha> cozinha = cozinhaRepository.findAll();
+		return cozinha.stream().map(coz -> {
 			CozinhaDto cozinhaDto = new CozinhaDto();
 			BeanUtils.copyProperties(coz, cozinhaDto);
 			return cozinhaDto;
@@ -53,7 +67,7 @@ public class CadastroCozinhaService {
 
 		BeanUtils.copyProperties(cozinhaDto, cozinha);
 
-		cozinha = cozinhaRepository.salvar(cozinha);
+		cozinha = cozinhaRepository.save(cozinha);
 
 		BeanUtils.copyProperties(cozinha, cozinhaDto);
 
@@ -62,10 +76,10 @@ public class CadastroCozinhaService {
 	}
 
 	public CozinhaDto atualizar(CozinhaDto cozinhaDto, Long cozinhaId) {
-		Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
-		if (cozinha == null) {
-			throw new EntidadeNaoEncontradaException(String.format("Cozinha de código %d não encontrado.", cozinhaId));
-		}
+		
+ 		cozinhaRepository.findById(cozinhaId)
+ 		.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Cozinha de código %d não encontrada.", cozinhaId))); 
+ 
 
 		cozinhaDto.setId(cozinhaId);
 		cozinhaDto = this.salvar(cozinhaDto);
@@ -76,14 +90,14 @@ public class CadastroCozinhaService {
 	public void excluir(Long cozinhaId) {
 		try {
 
-			cozinhaRepository.remover(cozinhaId);
+			cozinhaRepository.deleteById(cozinhaId);
 
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(String.format("Cozinha de código %d não encontrada.", cozinhaId));
 		}
 		catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-					String.format("Cozinha de código %d não pode ser removido, pois está em uso.", cozinhaId));
+					String.format("Cozinha de código %d não pode ser removida, pois está em uso.", cozinhaId));
 		}
 
 	}

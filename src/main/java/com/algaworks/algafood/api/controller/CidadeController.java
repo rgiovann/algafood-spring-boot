@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.dto.CidadeDto;
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.RequisicaoIncorretaException;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
@@ -58,6 +59,10 @@ public class CidadeController {
 		} catch (RequisicaoIncorretaException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
+		catch (EntidadeNaoEncontradaException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+		}
 	}
 
 	@PutMapping("/{cidadeId}")
@@ -85,7 +90,10 @@ public class CidadeController {
 			return ResponseEntity.noContent().build();
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		} 
+		} catch (EntidadeEmUsoException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		}
+
 	}
 
 }

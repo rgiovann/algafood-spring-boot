@@ -22,13 +22,11 @@ public class CadastroEstadoService {
 	private EstadoRepository estadoRepository;
 
 	public EstadoDto buscar(Long estadoId) {
+		
+ 		Estado estado = estadoRepository.findById(estadoId)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Estado de código %d não encontrado.", estadoId)));
 
-		Estado estado = estadoRepository.buscar(estadoId);
 		EstadoDto estadoDto = new EstadoDto();
-
-		if (estado == null) {
-			throw new EntidadeNaoEncontradaException(String.format("Estado de código %d não encontrado.", estadoId));
-		}
 
 		BeanUtils.copyProperties(estado, estadoDto);
 
@@ -38,7 +36,7 @@ public class CadastroEstadoService {
 
 	public List<EstadoDto> listar() {
 
-		List<Estado> estado = estadoRepository.listar();
+		List<Estado> estado = estadoRepository.findAll();
 		return estado.stream().map(est -> {
 			EstadoDto estadoDto = new EstadoDto();
 			BeanUtils.copyProperties(est, estadoDto);
@@ -53,7 +51,7 @@ public class CadastroEstadoService {
 
 		BeanUtils.copyProperties(estadoDto, estado);
 
-		estado = estadoRepository.salvar(estado);
+		estado = estadoRepository.save(estado);
 
 		BeanUtils.copyProperties(estado, estadoDto);
 
@@ -62,10 +60,9 @@ public class CadastroEstadoService {
 	}
 
 	public EstadoDto atualizar(EstadoDto estadoDto, Long estadoId) {
-		Estado estado = estadoRepository.buscar(estadoId);
-		if (estado == null) {
-			throw new EntidadeNaoEncontradaException(String.format("Estado de código %d não encontrado.", estadoId));
-		}
+ 		estadoRepository.findById(estadoId)
+ 		.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Estado de código %d não encontrado.", estadoId))); 
+
 
 		estadoDto.setId(estadoId);
 		estadoDto = this.salvar(estadoDto);
@@ -76,7 +73,7 @@ public class CadastroEstadoService {
 	public void excluir(Long estadoId) {
 		try {
 
-			estadoRepository.remover(estadoId);
+			estadoRepository.deleteById(estadoId);
 
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(String.format("Estado de código %d não encontrado.", estadoId));

@@ -3,15 +3,16 @@ package com.algaworks.algafood.domain.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.BeanUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.algaworks.algafood.domain.dto.CidadeDto;
 import com.algaworks.algafood.domain.dto.EstadoDto;
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
-import com.algaworks.algafood.domain.exception.RequisicaoIncorretaException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
@@ -26,24 +27,23 @@ public class CadastroCidadeService {
 	@Autowired
 	private EstadoRepository estadoRepository;
 	
+	@Autowired
+	ModelMapper modelMapper;
+	
 	public CidadeDto buscar(Long cidadeId) {
 		
-		Cidade cidade = cidadeRepository.buscar(cidadeId);
+ 		Cidade cidade = cidadeRepository.findById(cidadeId)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Cidade de código %d não encontrada.", cidadeId)));
 		
-		if ( cidade == null) {
-			throw new EntidadeNaoEncontradaException(
-					String.format("Restaurante de código %d não encontrado.", cidadeId));
-		}
- 	
-		return copyEntityToDto(cidade);
+ 		return modelMapper.map(cidade,  CidadeDto.class);
 		
 	}
 	
 	
 	public List<CidadeDto> listar() {
 		
-		List<Cidade> cidade = cidadeRepository.listar();
-		return cidade.stream().map(cid-> copyEntityToDto(cid) ).collect(Collectors.toList());
+		List<Cidade> cidade = cidadeRepository.findAll();
+		return cidade.stream().map(cid-> modelMapper.map(cid,  CidadeDto.class) ).collect(Collectors.toList());
 		
 	}
 
@@ -52,30 +52,24 @@ public class CadastroCidadeService {
 		
 		Long estadoId = cidadeDto.getEstado().getId();
 		
-		Cidade cidade = new Cidade();
+		Estado estado = estadoRepository.findById(estadoId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Estado de código %d não encontrado.", estadoId)));;
 
-		Estado estado = estadoRepository.buscar(estadoId);
+		// modelMapper não tem como saber atributos do Estado, uma vez que JSON só passa o id
+		cidadeDto.setEstado(modelMapper.map(estado,  EstadoDto.class));
 		
-		if (estado == null) {
-			throw new RequisicaoIncorretaException(
-					String.format("Estado de código %d não encontrado.", estadoId));
-		}
-
-		BeanUtils.copyProperties(cidadeDto, cidade);
-		cidade.setEstado(estado);	
+		Cidade cidade = modelMapper.map(cidadeDto,  Cidade.class);
 		
-		cidade = cidadeRepository.salvar(cidade);
+		cidade = cidadeRepository.save(cidade);
 		
-		return copyEntityToDto(cidade);
+		return modelMapper.map(cidade,  CidadeDto.class);
 
 		
 	}
 	
 	public CidadeDto atualizar(CidadeDto cidadeDto, Long cidadeId) {
-		Cidade cidade  = cidadeRepository.buscar(cidadeId);
-		if ( cidade  == null) {
-			throw new EntidadeNaoEncontradaException(String.format("Cidade de código %d não encontrado.", cidadeId));
-		}
+		cidadeRepository.findById(cidadeId)
+ 		.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Cidade de código %d não encontrada.", cidadeId))); 
+ 
 			
 		cidadeDto.setId(cidadeId);
 		cidadeDto = this.salvar(cidadeDto);
@@ -86,23 +80,17 @@ public class CadastroCidadeService {
 	public void excluir(Long cidadeId) {
 		try {
 			
-			cidadeRepository.remover(cidadeId);
+			cidadeRepository.deleteById(cidadeId);
 		
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(
-					String.format("Cidade de código %d não encontrado.", cidadeId));
+					String.format("Cidade de código %d não encontrada.", cidadeId));
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new EntidadeEmUsoException(
+					String.format("Cidade de código %d não pode ser removida, pois está em uso.", cidadeId));
 		}		
 		
 	}
 	
-	private CidadeDto copyEntityToDto(Cidade cidade) 
-	{
-		CidadeDto cidadeDto= new CidadeDto();
-		EstadoDto estadoDto= new EstadoDto();
-		BeanUtils.copyProperties(cidade, cidadeDto);
-		BeanUtils.copyProperties(cidade.getEstado(), estadoDto);
-		cidadeDto.setEstado(estadoDto);	
-		return cidadeDto;
-	}
-
 }
