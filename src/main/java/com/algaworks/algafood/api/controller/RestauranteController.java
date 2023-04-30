@@ -1,9 +1,10 @@
 package com.algaworks.algafood.api.controller;
 
+import java.math.BigDecimal;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.dto.RestauranteDto;
@@ -26,8 +28,15 @@ import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {
 
-	@Autowired
-	private CadastroRestauranteService restauranteService;
+//	@Autowired
+//	private CadastroRestauranteService restauranteService;
+	
+	private final CadastroRestauranteService restauranteService;
+	
+	public RestauranteController( CadastroRestauranteService restauranteService)
+	{
+		this.restauranteService = restauranteService;
+	}
 
 	@GetMapping
 	public List<RestauranteDto> listar() {
@@ -35,6 +44,37 @@ public class RestauranteController {
 		return restauranteService.listar();
 
 	}
+	
+	
+	// TESTE
+	@GetMapping("/por-taxa-frete")
+	public List<RestauranteDto> restaurantePorTaxaFrete(@RequestParam("taxaInicial") BigDecimal taxaInicial,@RequestParam("taxaFinal") BigDecimal taxaFinal) {
+
+		return restauranteService.buscarTaxaFrete(taxaInicial,taxaFinal);
+
+	}
+	
+	
+	// TESTE
+	@GetMapping("/por-nome")
+	public List<RestauranteDto> restaurantePorNome(@RequestParam("nome") String nome,@RequestParam("id") Long cozinhaId) {
+
+		return restauranteService.restauranteporNome(nome,cozinhaId);
+
+	}
+	
+	
+	// TESTE
+	@GetMapping("/por-nome-taxa-frete")
+	public List<RestauranteDto> restaurantePorNomeCustomizado(@RequestParam("nome") String nome,
+													         @RequestParam("taxaInicial") BigDecimal taxaFreteInicial,
+													         @RequestParam("taxaFinal") BigDecimal taxaFreteFinal) {
+
+		return restauranteService.restauranteporNomeCustomizado(nome,taxaFreteInicial,taxaFreteFinal);
+
+	}
+
+
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> buscar(@PathVariable Long id) {

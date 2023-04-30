@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -25,15 +26,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class CadastroRestauranteService {
 
-	@Autowired
-	private RestauranteRepository restauranteRepository;
-
-	@Autowired
-	private CozinhaRepository cozinhaRepository;
+//	@Autowired
+//	private RestauranteRepository restauranteRepository;
+//
+//	@Autowired
+//	private CozinhaRepository cozinhaRepository;
+//	
+//	private ModelMapper modelMapper;
 
 	// modelmapper pode mapear classes dentro do Dto...
-	@Autowired
-	ModelMapper modelMapper; 
+//	@Autowired
+//	ModelMapper modelMapper;
+	
+    private final RestauranteRepository restauranteRepository;
+    private final CozinhaRepository cozinhaRepository;
+    private final ModelMapper modelMapper;
+
+    public CadastroRestauranteService(RestauranteRepository restauranteRepository, CozinhaRepository cozinhaRepository, ModelMapper modelMapper) {
+        this.restauranteRepository = restauranteRepository;
+        this.cozinhaRepository = cozinhaRepository;
+        this.modelMapper = modelMapper;
+    }
 
 	public RestauranteDto buscar(Long restauranteId) {
 
@@ -53,6 +66,27 @@ public class CadastroRestauranteService {
 
 
 	}
+	
+	//TESTE
+	public List<RestauranteDto> buscarTaxaFrete(BigDecimal taxaInicial, BigDecimal taxaFinal) {
+		List<Restaurante> restaurante = restauranteRepository.findByTaxaFreteBetween(taxaInicial, taxaFinal);
+		return restaurante.stream().map(rest -> modelMapper.map(rest, RestauranteDto.class)).collect(Collectors.toList());
+	}
+	
+	// TESTE
+	public List<RestauranteDto> restauranteporNome(String nome, Long cozinhaId) {
+		List<Restaurante> restaurante = restauranteRepository.consultarPorNome(nome, cozinhaId);
+		return restaurante.stream().map(rest -> modelMapper.map(rest, RestauranteDto.class)).collect(Collectors.toList());
+
+	}
+	
+	// TESTE
+	public List<RestauranteDto> restauranteporNomeCustomizado(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
+		List<Restaurante> restaurante = restauranteRepository.findCustomizado( nome,  taxaFreteInicial,  taxaFreteFinal);
+		return restaurante.stream().map(rest -> modelMapper.map(rest, RestauranteDto.class)).collect(Collectors.toList());
+
+	}
+
 
 	public RestauranteDto salvar(RestauranteDto restauranteDto) {
 
@@ -147,5 +181,6 @@ public class CadastroRestauranteService {
 			ReflectionUtils.setField(field, restauranteDestino, novoValor);
 		});
 	}
+
 
 }

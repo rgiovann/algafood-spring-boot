@@ -25,8 +25,15 @@ import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 @RequestMapping(value = "/cozinhas")
 public class CozinhaController {
 
-	@Autowired
-	private CadastroCozinhaService cozinhaService;
+//	@Autowired
+//	private CadastroCozinhaService cozinhaService;
+	
+	private final CadastroCozinhaService cozinhaService;
+
+	  public CozinhaController(CadastroCozinhaService cozinhaService) {
+	    this.cozinhaService = cozinhaService;
+	  }
+	
 
 	@GetMapping
 	public List<CozinhaDto> listar() {
@@ -35,7 +42,7 @@ public class CozinhaController {
 
 	}
 	
-	
+	// TESTE
 	@GetMapping("/por-nome")
 	public List<CozinhaDto> listarporNome(@RequestParam("nomeCozinha") String nome) {
 

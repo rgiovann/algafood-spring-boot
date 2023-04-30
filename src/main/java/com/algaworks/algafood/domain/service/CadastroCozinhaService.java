@@ -1,6 +1,5 @@
 package com.algaworks.algafood.domain.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,8 +18,16 @@ import com.algaworks.algafood.domain.repository.CozinhaRepository;
 @Service
 public class CadastroCozinhaService {
 
-	@Autowired
-	private CozinhaRepository cozinhaRepository;
+//	@Autowired
+//	private CozinhaRepository cozinhaRepository;
+	
+	
+	private final CozinhaRepository cozinhaRepository;
+
+	  public CadastroCozinhaService(CozinhaRepository cozinhaRepository) {
+	    this.cozinhaRepository = cozinhaRepository;
+	  }
+	
 
 	public CozinhaDto buscar(Long cozinhaId) {
 
@@ -38,7 +45,7 @@ public class CadastroCozinhaService {
 	
 	public List<CozinhaDto> buscarPorNome(String nomeCozinha) {
  
-		List<Cozinha> cozinha = Collections.<Cozinha>emptyList();
+		List<Cozinha> cozinha = cozinhaRepository.findTodasByNomeContaining(nomeCozinha);
 
 		return cozinha.stream().map(coz -> {
 			CozinhaDto cozinhaDto = new CozinhaDto();
