@@ -1,9 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
 import java.math.BigDecimal;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +27,53 @@ import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {
 
-
 	private final CadastroRestauranteService restauranteService;
-	
-	public RestauranteController( CadastroRestauranteService restauranteService)
-	{
+
+	public RestauranteController(CadastroRestauranteService restauranteService) {
 		this.restauranteService = restauranteService;
 	}
+
+	// TESTE
+	@GetMapping("/por-taxa-frete")
+	public List<RestauranteDto> restaurantePorTaxaFrete(@RequestParam("taxaInicial") BigDecimal taxaInicial,
+			@RequestParam("taxaFinal") BigDecimal taxaFinal) {
+
+		return restauranteService.buscarTaxaFrete(taxaInicial, taxaFinal);
+
+	}
+
+	// TESTE
+	@GetMapping("/por-nome")
+	public List<RestauranteDto> restaurantePorNome(String nome, @RequestParam(value = "id") Long cozinhaId) {
+
+		return restauranteService.restauranteporNome(nome, cozinhaId);
+
+	}
+
+	// TESTE
+	@GetMapping("/por-nome-taxa-frete")
+	public List<RestauranteDto> restaurantesPorNomeFrete(String nome, BigDecimal taxaFreteInicial,
+			BigDecimal taxaFreteFinal) {
+		return restauranteService.restauranteporNomeCustomizado(nome, taxaFreteInicial, taxaFreteFinal);
+	}
+
+	// TESTE
+	@GetMapping("/com-frete-gratis")
+	public List<RestauranteDto> restaurantesPorNomeComFreteGratis(String nome) {
+		return restauranteService.restaurantesPorNomeComFreteGratis(nome);
+	}
+
+	// TESTE
+	@GetMapping("/buscar-primeiro")
+	public ResponseEntity<?>  restaurantesBuscarPrimeiro() {
+		try {
+			return ResponseEntity.ok(restauranteService.restaurantesBuscarPrimeiro().get());
+		} catch (EntidadeNaoEncontradaException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+	}
+
+//------------------------------------------------------------------------------------------------------
 
 	@GetMapping
 	public List<RestauranteDto> listar() {
@@ -41,45 +81,10 @@ public class RestauranteController {
 		return restauranteService.listar();
 
 	}
-	
-	
-	// TESTE
-	@GetMapping("/por-taxa-frete")
-	public List<RestauranteDto> restaurantePorTaxaFrete(@RequestParam("taxaInicial") BigDecimal taxaInicial,@RequestParam("taxaFinal") BigDecimal taxaFinal) {
-
-		return restauranteService.buscarTaxaFrete(taxaInicial,taxaFinal);
-
-	}
-	
-	
-	// TESTE
-	@GetMapping("/por-nome")
-	public List<RestauranteDto> restaurantePorNome(String nome,@RequestParam(value="id") Long cozinhaId) {
-
-		return restauranteService.restauranteporNome(nome,cozinhaId);
-
-	}
-	
-	
-	// TESTE
-	@GetMapping("/por-nome-taxa-frete")
-	public List<RestauranteDto> restaurantesPorNomeFrete(String nome, 
-			BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
-		return restauranteService.restauranteporNomeCustomizado(nome, taxaFreteInicial, taxaFreteFinal);
-	}
-	
-	// TESTE
-	@GetMapping("/com-frete-gratis")
-	public List<RestauranteDto> restaurantesPorNomeComFreteGratis(String nome) {
-		return restauranteService.restaurantesPorNomeComFreteGratis(nome);
-	}
-
-
-	
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> buscar(@PathVariable Long id) {
-		
+
 		RestauranteDto restauranteDto;
 		try {
 			restauranteDto = restauranteService.buscar(id);
@@ -100,8 +105,7 @@ public class RestauranteController {
 			return ResponseEntity.status(HttpStatus.CREATED).body(restauranteDto);
 		} catch (RequisicaoIncorretaException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
-		}
-		catch (EntidadeNaoEncontradaException e) {
+		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 
 		}
@@ -134,10 +138,11 @@ public class RestauranteController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 	}
-	
+
 	@PatchMapping("/{restauranteId}")
-	public ResponseEntity<?> atualizarParcial(@PathVariable Long restauranteId, @RequestBody Map<String, Object> campos){
-		
+	public ResponseEntity<?> atualizarParcial(@PathVariable Long restauranteId,
+			@RequestBody Map<String, Object> campos) {
+
 		try {
 			RestauranteDto restauranteDto = restauranteService.atualizarParcial(campos, restauranteId);
 			return ResponseEntity.ok(restauranteDto);
@@ -149,7 +154,7 @@ public class RestauranteController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 
 		}
-		
+
 	}
 
 }
