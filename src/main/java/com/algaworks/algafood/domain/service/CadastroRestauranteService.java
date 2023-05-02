@@ -1,5 +1,8 @@
 package com.algaworks.algafood.domain.service;
 
+import static com.algaworks.algafood.infraestructure.repository.spec.RestauranteSpecs.comFreteGratis;
+import static com.algaworks.algafood.infraestructure.repository.spec.RestauranteSpecs.comNomeSemelhante;
+
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -8,7 +11,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -85,6 +87,17 @@ public class CadastroRestauranteService {
 		List<Restaurante> restaurante = restauranteRepository.findCustomizado( nome,  taxaFreteInicial,  taxaFreteFinal);
 		return restaurante.stream().map(rest -> modelMapper.map(rest, RestauranteDto.class)).collect(Collectors.toList());
 
+	}
+	
+	
+	//TESTE
+	public List<RestauranteDto> restaurantesPorNomeComFreteGratis(String nome) {
+		//RestauranteComFreteGratisSpec comFreteGratis = new RestauranteComFreteGratisSpec();
+		//RestauranteComNomeSemelhanteSpec comNomeSemelhante= new RestauranteComNomeSemelhanteSpec(nome);
+		List<Restaurante> restaurante = restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
+		
+		return restaurante.stream().map(rest -> modelMapper.map(rest, RestauranteDto.class)).collect(Collectors.toList());
+ 
 	}
 
 
@@ -181,6 +194,5 @@ public class CadastroRestauranteService {
 			ReflectionUtils.setField(field, restauranteDestino, novoValor);
 		});
 	}
-
 
 }

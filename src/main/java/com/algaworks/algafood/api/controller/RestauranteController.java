@@ -24,13 +24,10 @@ import com.algaworks.algafood.domain.exception.RequisicaoIncorretaException;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 
 @RestController
-//@RequestMapping(value = "/cozinhas",produces = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {
 
-//	@Autowired
-//	private CadastroRestauranteService restauranteService;
-	
+
 	private final CadastroRestauranteService restauranteService;
 	
 	public RestauranteController( CadastroRestauranteService restauranteService)
@@ -57,7 +54,7 @@ public class RestauranteController {
 	
 	// TESTE
 	@GetMapping("/por-nome")
-	public List<RestauranteDto> restaurantePorNome(@RequestParam("nome") String nome,@RequestParam("id") Long cozinhaId) {
+	public List<RestauranteDto> restaurantePorNome(String nome,@RequestParam(value="id") Long cozinhaId) {
 
 		return restauranteService.restauranteporNome(nome,cozinhaId);
 
@@ -66,15 +63,19 @@ public class RestauranteController {
 	
 	// TESTE
 	@GetMapping("/por-nome-taxa-frete")
-	public List<RestauranteDto> restaurantePorNomeCustomizado(@RequestParam("nome") String nome,
-													         @RequestParam("taxaInicial") BigDecimal taxaFreteInicial,
-													         @RequestParam("taxaFinal") BigDecimal taxaFreteFinal) {
-
-		return restauranteService.restauranteporNomeCustomizado(nome,taxaFreteInicial,taxaFreteFinal);
-
+	public List<RestauranteDto> restaurantesPorNomeFrete(String nome, 
+			BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
+		return restauranteService.restauranteporNomeCustomizado(nome, taxaFreteInicial, taxaFreteFinal);
+	}
+	
+	// TESTE
+	@GetMapping("/com-frete-gratis")
+	public List<RestauranteDto> restaurantesPorNomeComFreteGratis(String nome) {
+		return restauranteService.restaurantesPorNomeComFreteGratis(nome);
 	}
 
 
+	
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> buscar(@PathVariable Long id) {
