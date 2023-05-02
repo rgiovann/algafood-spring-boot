@@ -94,7 +94,7 @@ public class CadastroRestauranteService {
 	public List<RestauranteDto> restaurantesPorNomeComFreteGratis(String nome) {
 		//RestauranteComFreteGratisSpec comFreteGratis = new RestauranteComFreteGratisSpec();
 		//RestauranteComNomeSemelhanteSpec comNomeSemelhante= new RestauranteComNomeSemelhanteSpec(nome);
-		List<Restaurante> restaurante = restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
+		List<Restaurante> restaurante = restauranteRepository.findComFreteGratis(nome);
 		
 		return restaurante.stream().map(rest -> modelMapper.map(rest, RestauranteDto.class)).collect(Collectors.toList());
  
