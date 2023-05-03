@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.algaworks.algafood.domain.model.Restaurante;
 
+// AGORA RESTAURANTE TEM UM REPOSITORIO CUSTOMIZADO
 public interface RestauranteRepository extends CustomJpaRepository<Restaurante, Long>,
                                        RestauranteRepositoryQueries,
                                        JpaSpecificationExecutor<Restaurante>{

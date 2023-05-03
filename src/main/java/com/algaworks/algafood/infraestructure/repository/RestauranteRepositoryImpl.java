@@ -96,7 +96,26 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 
 	@Override
 	public List<Restaurante> findComFreteGratis(String nome) {
- 		return restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
+		
+		List<Predicate> predicates = new ArrayList<Predicate>();
+		
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		
+		CriteriaQuery<Restaurante> criteria = builder.createQuery(Restaurante.class);
+
+		Root<Restaurante> root = criteria.from(Restaurante.class);
+
+		predicates.add(comFreteGratis().toPredicate(root, criteria, builder));
+
+		if (StringUtils.hasLength(nome)) {
+			predicates.add(comNomeSemelhante(nome).toPredicate(root, criteria, builder));
+		}
+		
+		criteria.where(predicates.toArray(new Predicate[0]));
+
+		TypedQuery<Restaurante> query = manager.createQuery(criteria);
+
+		return query.getResultList();
 	}
 
 }
