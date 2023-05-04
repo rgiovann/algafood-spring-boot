@@ -16,7 +16,7 @@ public class RestauranteDto {
 	
 	private BigDecimal taxaFrete;
 
-	private CozinhaDto cozinha;
+	private Long cozinhaId;
 
 	
 }

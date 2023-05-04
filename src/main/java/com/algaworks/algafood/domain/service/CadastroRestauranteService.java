@@ -9,16 +9,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
-import com.algaworks.algafood.domain.dto.CozinhaDto;
 import com.algaworks.algafood.domain.dto.RestauranteDto;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.RequisicaoIncorretaException;
 import com.algaworks.algafood.domain.model.Cozinha;
-import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
@@ -42,12 +42,22 @@ public class CadastroRestauranteService {
 	private final RestauranteRepository restauranteRepository;
 	private final CozinhaRepository cozinhaRepository;
 	private final ModelMapper modelMapper;
+	
+	
 
 	public CadastroRestauranteService(RestauranteRepository restauranteRepository, CozinhaRepository cozinhaRepository,
 			ModelMapper modelMapper) {
 		this.restauranteRepository = restauranteRepository;
 		this.cozinhaRepository = cozinhaRepository;
-		this.modelMapper = modelMapper;
+		this.modelMapper = modelMapper;	
+		
+	    TypeMap<Restaurante, RestauranteDto> propertyMapper = modelMapper.createTypeMap(Restaurante.class, RestauranteDto.class);
+	    // add deep mapping to flatten source's Player object into a single field in destination
+	    propertyMapper.addMappings(
+	      mapper -> mapper.map(src -> src.getCozinha().getId(), RestauranteDto::setCozinhaId)
+	    );
+ 		
+
 	}
 
 	// TESTE
@@ -117,9 +127,10 @@ public class CadastroRestauranteService {
 
 		// modelMapper não tem como saber atributos da Cozinha, uma vez que JSON só
 		// passa o id
-		restauranteDto.setCozinha(modelMapper.map(cozinha, CozinhaDto.class));
-
+         
 		Restaurante restaurante = modelMapper.map(restauranteDto, Restaurante.class);
+		
+		restaurante.setCozinha(cozinha);
 
 		restaurante = restauranteRepository.save(restaurante);
 
@@ -127,27 +138,22 @@ public class CadastroRestauranteService {
 
 	}
 
-	public RestauranteDto atualizar(RestauranteDto restauranteDto, Long restauranteId) {
+	public RestauranteDto atualizar(RestauranteDto restauranteDto) {
 
-
-		Restaurante restaurante = restauranteRepository.findById(restauranteId).orElseThrow(() -> new EntidadeNaoEncontradaException(
-				String.format("Restaurante de código %d não encontrado.", restauranteId)));
+		Restaurante restaurante = restauranteRepository.findById(restauranteDto.getId()).orElseThrow(() -> new EntidadeNaoEncontradaException(
+				String.format("Restaurante de código %d não encontrado.", restauranteDto.getId())));
 
  		Cozinha cozinha = getCozinhaEntity(restauranteDto);
  		
-		List<FormaPagamento> formasPagamento = restaurante.getFormasPagamento();
-		
-		// modelMapper não tem como saber atributos da Cozinha, uma vez que JSON só
-		// passa o id
- 		restauranteDto.setCozinha(modelMapper.map(cozinha, CozinhaDto.class));
-		
-		restauranteDto.setId(restauranteId);
+ 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+		modelMapper.typeMap(RestauranteDto.class, Restaurante.class)
+	    .addMappings(mapper -> mapper.skip(Restaurante::setFormasPagamento))  
+	    .addMappings(mapper -> mapper.skip(Restaurante::setCozinha)); 
 			
-		restaurante = modelMapper.map(restauranteDto, Restaurante.class);
-		
-		restaurante.setFormasPagamento(formasPagamento);
-		
-		restaurante = restauranteRepository.save(restaurante);
+		modelMapper.map(restauranteDto, restaurante);						
+		restaurante.setCozinha(cozinha);
+				
+		restaurante = restauranteRepository.save(restaurante);	
 		
 		return modelMapper.map(restaurante, RestauranteDto.class);
 	}
@@ -172,7 +178,7 @@ public class CadastroRestauranteService {
 
 		merge(campos, restaurante);
 
-		return atualizar(modelMapper.map(restaurante, RestauranteDto.class), restauranteId);
+		return atualizar(modelMapper.map(restaurante, RestauranteDto.class));
 	}
 
 	// **** SOLUCAO GENÉRICA ****
@@ -217,8 +223,8 @@ public class CadastroRestauranteService {
 	}
 
 	private Cozinha getCozinhaEntity(RestauranteDto restauranteDto) {
-		if( restauranteDto.getCozinha() == null) {return null;}
-		Long cozinhaId = restauranteDto.getCozinha().getId();
+		if( restauranteDto.getCozinhaId() == null) {return null;}
+		Long cozinhaId = restauranteDto.getCozinhaId();
 
 		Cozinha cozinha = cozinhaRepository.findById(cozinhaId).orElseThrow(() -> new EntidadeNaoEncontradaException(
 				String.format("Cozinha de código %d não encontrada.", cozinhaId)));

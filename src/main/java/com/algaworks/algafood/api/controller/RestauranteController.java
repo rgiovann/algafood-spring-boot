@@ -115,7 +115,8 @@ public class RestauranteController {
 	public ResponseEntity<?> atualizar(@PathVariable Long restauranteId, @RequestBody RestauranteDto restauranteDto) {
 
 		try {
-			restauranteDto = restauranteService.atualizar(restauranteDto, restauranteId);
+			restauranteDto.setId(restauranteId);
+			restauranteDto = restauranteService.atualizar(restauranteDto);
 			return ResponseEntity.ok(restauranteDto);
 
 		} catch (EntidadeNaoEncontradaException e) {
