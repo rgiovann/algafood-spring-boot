@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.persistence.NoResultException;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -20,6 +18,7 @@ import com.algaworks.algafood.domain.dto.RestauranteDto;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.RequisicaoIncorretaException;
 import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
@@ -77,10 +76,7 @@ public class CadastroRestauranteService {
 
 	// TESTE
 	public List<RestauranteDto> restaurantesPorNomeComFreteGratis(String nome) {
-		// RestauranteComFreteGratisSpec comFreteGratis = new
-		// RestauranteComFreteGratisSpec();
-		// RestauranteComNomeSemelhanteSpec comNomeSemelhante= new
-		// RestauranteComNomeSemelhanteSpec(nome);
+ 
 		List<Restaurante> restaurante = restauranteRepository.findComFreteGratis(nome);
 
 		return restaurante.stream().map(rest -> modelMapper.map(rest, RestauranteDto.class))
@@ -117,10 +113,7 @@ public class CadastroRestauranteService {
 
 	public RestauranteDto salvar(RestauranteDto restauranteDto) {
 
-		Long cozinhaId = restauranteDto.getCozinha().getId();
-
-		Cozinha cozinha = cozinhaRepository.findById(cozinhaId).orElseThrow(() -> new EntidadeNaoEncontradaException(
-				String.format("Cozinha de código %d não encontrada.", cozinhaId)));
+ 		Cozinha cozinha = getCozinhaEntity(restauranteDto);
 
 		// modelMapper não tem como saber atributos da Cozinha, uma vez que JSON só
 		// passa o id
@@ -136,13 +129,27 @@ public class CadastroRestauranteService {
 
 	public RestauranteDto atualizar(RestauranteDto restauranteDto, Long restauranteId) {
 
-		restauranteRepository.findById(restauranteId).orElseThrow(() -> new EntidadeNaoEncontradaException(
+
+		Restaurante restaurante = restauranteRepository.findById(restauranteId).orElseThrow(() -> new EntidadeNaoEncontradaException(
 				String.format("Restaurante de código %d não encontrado.", restauranteId)));
 
+ 		Cozinha cozinha = getCozinhaEntity(restauranteDto);
+ 		
+		List<FormaPagamento> formasPagamento = restaurante.getFormasPagamento();
+		
+		// modelMapper não tem como saber atributos da Cozinha, uma vez que JSON só
+		// passa o id
+ 		restauranteDto.setCozinha(modelMapper.map(cozinha, CozinhaDto.class));
+		
 		restauranteDto.setId(restauranteId);
-		restauranteDto = this.salvar(restauranteDto);
-
-		return restauranteDto;
+			
+		restaurante = modelMapper.map(restauranteDto, Restaurante.class);
+		
+		restaurante.setFormasPagamento(formasPagamento);
+		
+		restaurante = restauranteRepository.save(restaurante);
+		
+		return modelMapper.map(restaurante, RestauranteDto.class);
 	}
 
 	public void excluir(Long restauranteId) {
@@ -207,6 +214,17 @@ public class CadastroRestauranteService {
 			Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
 			ReflectionUtils.setField(field, restauranteDestino, novoValor);
 		});
+	}
+
+	private Cozinha getCozinhaEntity(RestauranteDto restauranteDto) {
+		if( restauranteDto.getCozinha() == null) {return null;}
+		Long cozinhaId = restauranteDto.getCozinha().getId();
+
+		Cozinha cozinha = cozinhaRepository.findById(cozinhaId).orElseThrow(() -> new EntidadeNaoEncontradaException(
+				String.format("Cozinha de código %d não encontrada.", cozinhaId)));
+
+		return cozinha;
+
 	}
 
 }

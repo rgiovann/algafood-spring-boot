@@ -23,6 +23,11 @@ public class Cozinha {
 	//@JsonIgnore
 	@Column(nullable =false)
 	private String nome;
+	
+	// qual o nome da propriedade que a gente usou pra fazer o mapeamento de cozinha?
+//	@OneToMany(mappedBy = "cozinha")
+//	@JsonIgnore       // para evidar associacao circular
+//	private List<Restaurante> restaurantes = new ArrayList<Restaurante>();
 
 //	@Override
 //	public String toString() {
