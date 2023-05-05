@@ -52,7 +52,7 @@ public class CadastroRestauranteService {
 		this.modelMapper = modelMapper;	
 		
 	    TypeMap<Restaurante, RestauranteDto> propertyMapper = modelMapper.createTypeMap(Restaurante.class, RestauranteDto.class);
-	    // add deep mapping to flatten source's Player object into a single field in destination
+	    // add deep mapping
 	    propertyMapper.addMappings(
 	      mapper -> mapper.map(src -> src.getCozinha().getId(), RestauranteDto::setCozinhaId)
 	    );
@@ -148,7 +148,8 @@ public class CadastroRestauranteService {
  		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		modelMapper.typeMap(RestauranteDto.class, Restaurante.class)
 	    .addMappings(mapper -> mapper.skip(Restaurante::setFormasPagamento))  
-	    .addMappings(mapper -> mapper.skip(Restaurante::setCozinha)); 
+	    .addMappings(mapper -> mapper.skip(Restaurante::setCozinha)) 
+		.addMappings(mapper -> mapper.skip(Restaurante::setProdutos)); 
 			
 		modelMapper.map(restauranteDto, restaurante);						
 		restaurante.setCozinha(cozinha);
