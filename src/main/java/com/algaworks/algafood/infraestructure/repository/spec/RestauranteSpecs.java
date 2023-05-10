@@ -3,7 +3,6 @@ package com.algaworks.algafood.infraestructure.repository.spec;
 import java.math.BigDecimal;
 
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.util.StringUtils;
 
 import com.algaworks.algafood.domain.model.Restaurante;
 
