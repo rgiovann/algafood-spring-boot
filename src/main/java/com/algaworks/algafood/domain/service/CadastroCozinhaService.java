@@ -21,6 +21,9 @@ public class CadastroCozinhaService {
 //	private CozinhaRepository cozinhaRepository;
 	
 	
+	private static final String COZINHA_EM_USO = "Cozinha de código %d não pode ser removida, pois está em uso.";
+	private static final String COZINHA_NAO_ENCONTRADA = "Cozinha de código %d não encontrada.";
+	
 	private final CozinhaRepository cozinhaRepository;
 
 	  public CadastroCozinhaService(CozinhaRepository cozinhaRepository) {
@@ -30,8 +33,7 @@ public class CadastroCozinhaService {
 
 	public CozinhaDto buscar(Long cozinhaId) {
 
- 		Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Cozinha de código %d não encontrada.", cozinhaId)));
+		Cozinha cozinha = buscarOuFalhar(cozinhaId);
 		
 		CozinhaDto cozinhaDto = new CozinhaDto();
 
@@ -81,13 +83,10 @@ public class CadastroCozinhaService {
 
 	}
 
-	public CozinhaDto atualizar(CozinhaDto cozinhaDto, Long cozinhaId) {
+	public CozinhaDto atualizar(CozinhaDto cozinhaDto) {
 		
- 		cozinhaRepository.findById(cozinhaId)
- 		.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Cozinha de código %d não encontrada.", cozinhaId))); 
+		buscarOuFalhar(cozinhaDto.getId());
  
-
-		cozinhaDto.setId(cozinhaId);
 		cozinhaDto = this.salvar(cozinhaDto);
 
 		return cozinhaDto;
@@ -99,13 +98,18 @@ public class CadastroCozinhaService {
 			cozinhaRepository.deleteById(cozinhaId);
 
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(String.format("Cozinha de código %d não encontrada.", cozinhaId));
+			throw new EntidadeNaoEncontradaException(String.format(COZINHA_NAO_ENCONTRADA, cozinhaId));
 		}
 		catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-					String.format("Cozinha de código %d não pode ser removida, pois está em uso.", cozinhaId));
+					String.format(COZINHA_EM_USO, cozinhaId));
 		}
 
+	}
+	
+	public Cozinha buscarOuFalhar(Long cozinhaId) {
+ 		return cozinhaRepository.findById(cozinhaId)
+ 		.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(COZINHA_NAO_ENCONTRADA, cozinhaId))); 
 	}
 
 }

@@ -21,7 +21,7 @@ public class Cozinha {
 	
 	//@JsonProperty("titulo")
 	//@JsonIgnore
-	@Column(nullable =false)
+	@Column(nullable = false)
 	private String nome;
 	
 	// qual o nome da propriedade que a gente usou pra fazer o mapeamento de cozinha?

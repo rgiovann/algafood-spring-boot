@@ -17,15 +17,17 @@ import org.springframework.util.ReflectionUtils;
 
 import com.algaworks.algafood.domain.dto.RestauranteDto;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
-import com.algaworks.algafood.domain.exception.RequisicaoIncorretaException;
+import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
-import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class CadastroRestauranteService {
+
+private static final String RESTAURANTE_NAO_ENCONTRADO = "Restaurante de código %d não encontrado.";
+
 
 //	@Autowired
 //	private RestauranteRepository restauranteRepository;
@@ -40,15 +42,16 @@ public class CadastroRestauranteService {
 //	ModelMapper modelMapper;
 
 	private final RestauranteRepository restauranteRepository;
-	private final CozinhaRepository cozinhaRepository;
+	private final CadastroCozinhaService cozinhaService;
+	//private final CozinhaRepository cozinhaRepository;
 	private final ModelMapper modelMapper;
 	
 	
 
-	public CadastroRestauranteService(RestauranteRepository restauranteRepository, CozinhaRepository cozinhaRepository,
+	public CadastroRestauranteService(RestauranteRepository restauranteRepository, CadastroCozinhaService cozinhaService,
 			ModelMapper modelMapper) {
 		this.restauranteRepository = restauranteRepository;
-		this.cozinhaRepository = cozinhaRepository;
+		this.cozinhaService = cozinhaService;
 		this.modelMapper = modelMapper;	
 		
 	    TypeMap<Restaurante, RestauranteDto> propertyMapper = modelMapper.createTypeMap(Restaurante.class, RestauranteDto.class);
@@ -105,9 +108,7 @@ public class CadastroRestauranteService {
 
 	public RestauranteDto buscar(Long restauranteId) {
 
-		Restaurante restaurante = restauranteRepository.findById(restauranteId)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(
-						String.format("Restaurante de código %d não encontrado.", restauranteId)));
+		Restaurante restaurante = BuscarOuFalhar(restauranteId);
 
 		return modelMapper.map(restaurante, RestauranteDto.class);
 
@@ -121,27 +122,26 @@ public class CadastroRestauranteService {
 
 	}
 
+//	public RestauranteDto salvar(RestauranteDto restauranteDto) {
+//
+// 		Cozinha cozinha = getCozinhaEntity(restauranteDto);
+//
+//		// modelMapper não tem como saber atributos da Cozinha, uma vez que JSON só
+//		// passa o id
+//         
+//		Restaurante restaurante = modelMapper.map(restauranteDto, Restaurante.class);
+//		
+//		restaurante.setCozinha(cozinha);
+//
+//		restaurante = restauranteRepository.save(restaurante);
+//
+//		return modelMapper.map(restaurante, RestauranteDto.class);
+//
+//	}
+
 	public RestauranteDto salvar(RestauranteDto restauranteDto) {
 
- 		Cozinha cozinha = getCozinhaEntity(restauranteDto);
-
-		// modelMapper não tem como saber atributos da Cozinha, uma vez que JSON só
-		// passa o id
-         
-		Restaurante restaurante = modelMapper.map(restauranteDto, Restaurante.class);
-		
-		restaurante.setCozinha(cozinha);
-
-		restaurante = restauranteRepository.save(restaurante);
-
-		return modelMapper.map(restaurante, RestauranteDto.class);
-
-	}
-
-	public RestauranteDto atualizar(RestauranteDto restauranteDto) {
-
-		Restaurante restaurante = restauranteRepository.findById(restauranteDto.getId()).orElseThrow(() -> new EntidadeNaoEncontradaException(
-				String.format("Restaurante de código %d não encontrado.", restauranteDto.getId())));
+		Restaurante restaurante = BuscarOuFalhar(restauranteDto.getId());
 
  		Cozinha cozinha = getCozinhaEntity(restauranteDto);
  		
@@ -149,8 +149,9 @@ public class CadastroRestauranteService {
 		modelMapper.typeMap(RestauranteDto.class, Restaurante.class)
 	    .addMappings(mapper -> mapper.skip(Restaurante::setFormasPagamento))  
 	    .addMappings(mapper -> mapper.skip(Restaurante::setCozinha)) 
-		.addMappings(mapper -> mapper.skip(Restaurante::setProdutos)); 
-			
+		.addMappings(mapper -> mapper.skip(Restaurante::setProdutos))
+		.addMappings(mapper -> mapper.skip(Restaurante::setEndereco)); 
+
 		modelMapper.map(restauranteDto, restaurante);						
 		restaurante.setCozinha(cozinha);
 				
@@ -159,27 +160,23 @@ public class CadastroRestauranteService {
 		return modelMapper.map(restaurante, RestauranteDto.class);
 	}
 
-	public void excluir(Long restauranteId) {
-		try {
+//	public void excluir(Long restauranteId) {
+//		try {
+//
+//			restauranteRepository.deleteById(restauranteId);
+//
+//		} catch (EmptyResultDataAccessException e) {
+//			throw new EntidadeNaoEncontradaException(
+//					String.format(RESTAURANTE_NAO_ENCONTRADO, restauranteId));
+//		}
+//
+//	}
 
-			restauranteRepository.deleteById(restauranteId);
-
-		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(
-					String.format("Restaurante de código %d não encontrado.", restauranteId));
-		}
-
-	}
-
-	public RestauranteDto atualizarParcial(Map<String, Object> campos, Long restauranteId) {
-
-		Restaurante restaurante = restauranteRepository.findById(restauranteId)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(
-						String.format("Restaurante de código %d não encontrado.", restauranteId)));
+	public RestauranteDto atualizarParcial(Map<String, Object> campos, Restaurante restaurante) {
 
 		merge(campos, restaurante);
 
-		return atualizar(modelMapper.map(restaurante, RestauranteDto.class));
+		return salvar(modelMapper.map(restaurante, RestauranteDto.class));
 	}
 
 	// **** SOLUCAO GENÉRICA ****
@@ -207,7 +204,7 @@ public class CadastroRestauranteService {
 			Map.Entry<String, Object> entry = itr.next();
 			Field field = ReflectionUtils.findField(Restaurante.class, entry.getKey());
 			if (field == null) {
-				throw new RequisicaoIncorretaException(
+				throw new NegocioException(
 						String.format("Atributo " + entry.getKey() + " não existe para entidade Restaurante"));
 			}
 		}
@@ -227,11 +224,17 @@ public class CadastroRestauranteService {
 		if( restauranteDto.getCozinhaId() == null) {return null;}
 		Long cozinhaId = restauranteDto.getCozinhaId();
 
-		Cozinha cozinha = cozinhaRepository.findById(cozinhaId).orElseThrow(() -> new EntidadeNaoEncontradaException(
-				String.format("Cozinha de código %d não encontrada.", cozinhaId)));
+		Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
 
 		return cozinha;
 
+	}
+	
+	
+	public Restaurante BuscarOuFalhar(Long restauranteId) {
+		return  restauranteRepository.findById(restauranteId)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(
+						String.format(RESTAURANTE_NAO_ENCONTRADO, restauranteId)));
 	}
 
 }

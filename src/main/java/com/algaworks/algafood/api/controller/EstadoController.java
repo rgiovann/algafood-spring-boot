@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.dto.EstadoDto;
@@ -35,52 +36,35 @@ public class EstadoController {
 	}
 
 	@GetMapping("/{estadoId}")
-	public ResponseEntity<?> buscar(@PathVariable Long estadoId) {
-
-		EstadoDto estadoDto;
-		try {
-			estadoDto = estadoService.buscar(estadoId);
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
-
-		return ResponseEntity.ok(estadoDto);
+	public  EstadoDto  buscar(@PathVariable Long estadoId) {
+	
+		return estadoService.buscar(estadoId);
 
 	}
 
 	@PostMapping
-	public ResponseEntity<?> adicionar(@RequestBody EstadoDto estadoDto) {
-
-		estadoDto = estadoService.salvar(estadoDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(estadoDto);
+	@ResponseStatus(HttpStatus.CREATED)
+	public EstadoDto adicionar(@RequestBody EstadoDto estadoDto) {
+ 		return estadoService.salvar(estadoDto);
 
 	}
 
 	@PutMapping("/{estadoId}")
-	public ResponseEntity<?> atualizar(@PathVariable Long estadoId, @RequestBody EstadoDto estadoDto) {
+	public EstadoDto atualizar(@PathVariable Long estadoId, @RequestBody EstadoDto estadoDto) {
 
-		try {
-			estadoDto = estadoService.atualizar(estadoDto, estadoId);
-			return ResponseEntity.ok(estadoDto);
-
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-
-		}
+ 
+		estadoDto.setId(estadoId);
+		return estadoService.atualizar(estadoDto);
 
 	}
 
 	@DeleteMapping("/{estadoId}")
-	public ResponseEntity<?> remover(@PathVariable Long estadoId) {
-		try {
-			estadoService.excluir(estadoId);
-
-			return ResponseEntity.noContent().build();
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}catch (EntidadeEmUsoException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-		}
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public  void remover(@PathVariable Long estadoId) {
+ 
+		estadoService.excluir(estadoId);
+		
+		return;
 	}
 
 }

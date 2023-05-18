@@ -21,19 +21,22 @@ import com.algaworks.algafood.domain.repository.EstadoRepository;
 @Service
 public class CadastroCidadeService {
 
+	private static final String MSG_CIDADE_NAO_ENCONTRADA = "Cidade de código %d não encontrada.";
+
+	private static final String MSG_CIDADE_EM_USO = "Cidade de código %d não pode ser removida, pois está em uso.";
+
 	@Autowired
 	private CidadeRepository cidadeRepository;
 	
 	@Autowired
-	private EstadoRepository estadoRepository;
+	private CadastroEstadoService estadoService;
 	
 	@Autowired
 	ModelMapper modelMapper;
 	
 	public CidadeDto buscar(Long cidadeId) {
 		
- 		Cidade cidade = cidadeRepository.findById(cidadeId)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Cidade de código %d não encontrada.", cidadeId)));
+ 		Cidade cidade = buscarOuFalhar(cidadeId);  
 		
  		return modelMapper.map(cidade,  CidadeDto.class);
 		
@@ -49,11 +52,9 @@ public class CadastroCidadeService {
 
 
 	public CidadeDto salvar(CidadeDto cidadeDto) {
+		 		
+		Estado estado = estadoService.BuscarOuFalhar(cidadeDto.getEstado().getId());
 		
-		Long estadoId = cidadeDto.getEstado().getId();
-		
-		Estado estado = estadoRepository.findById(estadoId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Estado de código %d não encontrado.", estadoId)));;
-
 		// modelMapper não tem como saber atributos do Estado, uma vez que JSON só passa o id
 		cidadeDto.setEstado(modelMapper.map(estado,  EstadoDto.class));
 		
@@ -66,16 +67,12 @@ public class CadastroCidadeService {
 		
 	}
 	
-	public CidadeDto atualizar(CidadeDto cidadeDto, Long cidadeId) {
-		cidadeRepository.findById(cidadeId)
- 		.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Cidade de código %d não encontrada.", cidadeId))); 
- 
-			
-		cidadeDto.setId(cidadeId);
-		cidadeDto = this.salvar(cidadeDto);
-		
-		return cidadeDto;
-	}
+//	public CidadeDto atualizar(CidadeDto cidadeDto) {
+//		
+//		cidadeDto = this.salvar(cidadeDto);
+//		
+//		return cidadeDto;
+//	}
 
 	public void excluir(Long cidadeId) {
 		try {
@@ -84,13 +81,19 @@ public class CadastroCidadeService {
 		
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(
-					String.format("Cidade de código %d não encontrada.", cidadeId));
+					String.format(MSG_CIDADE_NAO_ENCONTRADA, cidadeId));
 		}
 		catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-					String.format("Cidade de código %d não pode ser removida, pois está em uso.", cidadeId));
+					String.format(MSG_CIDADE_EM_USO, cidadeId));
 		}		
 		
+	}
+	
+	public Cidade buscarOuFalhar(Long cidadeId)
+	{
+		return cidadeRepository.findById(cidadeId)
+		 		.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(MSG_CIDADE_NAO_ENCONTRADA, cidadeId))); 
 	}
 	
 }

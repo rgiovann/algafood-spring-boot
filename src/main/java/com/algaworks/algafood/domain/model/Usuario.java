@@ -12,9 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.algaworks.algafood.domain.enumeration.StatusPedido;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
@@ -49,5 +51,6 @@ public class Usuario {
 	           joinColumns = @JoinColumn(name ="usuario_id"),
 	           inverseJoinColumns = @JoinColumn(name ="grupo_id"))
 	private List<Grupo> grupos = new ArrayList<Grupo>();
+	
 
 }

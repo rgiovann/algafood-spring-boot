@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.dto.RestauranteDto;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
-import com.algaworks.algafood.domain.exception.RequisicaoIncorretaException;
+import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 
 @RestController
@@ -64,7 +66,7 @@ public class RestauranteController {
 
 	// TESTE
 	@GetMapping("/buscar-primeiro")
-	public ResponseEntity<?>  restaurantesBuscarPrimeiro() {
+	public ResponseEntity<?> restaurantesBuscarPrimeiro() {
 		try {
 			return ResponseEntity.ok(restauranteService.restaurantesBuscarPrimeiro().get());
 		} catch (EntidadeNaoEncontradaException e) {
@@ -82,79 +84,53 @@ public class RestauranteController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> buscar(@PathVariable Long id) {
+	public RestauranteDto buscar(@PathVariable Long id) {
 
-		RestauranteDto restauranteDto;
-		try {
-			restauranteDto = restauranteService.buscar(id);
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
-
-		return ResponseEntity.ok(restauranteDto);
+		return restauranteService.buscar(id);
 
 	}
 
+	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	// wild card, aceita String e Restaurante entity
-	public ResponseEntity<?> adicionar(@RequestBody RestauranteDto restauranteDto) {
-
+	public RestauranteDto adicionar(@RequestBody RestauranteDto restauranteDto) {
 		try {
-			restauranteDto = restauranteService.salvar(restauranteDto);
-			return ResponseEntity.status(HttpStatus.CREATED).body(restauranteDto);
-		} catch (RequisicaoIncorretaException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
+			return restauranteService.salvar(restauranteDto);
 		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-
+			throw new NegocioException(e.getMessage());
 		}
 	}
 
 	@PutMapping("/{restauranteId}")
-	public ResponseEntity<?> atualizar(@PathVariable Long restauranteId, @RequestBody RestauranteDto restauranteDto) {
+	public RestauranteDto atualizar(@PathVariable Long restauranteId, @RequestBody RestauranteDto restauranteDto) {
 
+		restauranteService.BuscarOuFalhar(restauranteId);
+		restauranteDto.setId(restauranteId);
 		try {
-			restauranteDto.setId(restauranteId);
-			restauranteDto = restauranteService.atualizar(restauranteDto);
-			return ResponseEntity.ok(restauranteDto);
-
+			return restauranteService.salvar(restauranteDto);
 		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-
-		} catch (RequisicaoIncorretaException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-
+			throw new NegocioException(e.getMessage());
 		}
 
 	}
 
-	@DeleteMapping("/{restauranteId}")
-	public ResponseEntity<?> remover(@PathVariable Long restauranteId) {
-		try {
-			restauranteService.excluir(restauranteId);
-
-			return ResponseEntity.noContent().build();
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
-	}
+//  MODELO NAO IRÁ DELETAR O O RESTAURANTE APENAS ATIVAR/DESATIVAR
+//	@DeleteMapping("/{restauranteId}")
+//	@ResponseStatus(HttpStatus.NO_CONTENT)
+//	public void remover(@PathVariable Long restauranteId) {
+//
+//		restauranteService.excluir(restauranteId);
+//
+//	}
 
 	@PatchMapping("/{restauranteId}")
-	public ResponseEntity<?> atualizarParcial(@PathVariable Long restauranteId,
-			@RequestBody Map<String, Object> campos) {
+	public RestauranteDto atualizarParcial(@PathVariable Long restauranteId, @RequestBody Map<String, Object> campos) {
 
+		Restaurante restaurante = restauranteService.BuscarOuFalhar(restauranteId);
 		try {
-			RestauranteDto restauranteDto = restauranteService.atualizarParcial(campos, restauranteId);
-			return ResponseEntity.ok(restauranteDto);
-
+			return restauranteService.atualizarParcial(campos, restaurante);
 		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-
-		} catch (RequisicaoIncorretaException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-
+			throw new NegocioException(e.getMessage());
 		}
-
 	}
 
 }
