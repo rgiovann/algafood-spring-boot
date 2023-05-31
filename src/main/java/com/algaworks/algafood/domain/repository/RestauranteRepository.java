@@ -16,6 +16,8 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 	
 	// 
 	@Query("from Restaurante r join fetch r.cozinha")
+//	@Query("from Restaurante r join fetch r.cozinha order by r.id")
+
 	List<Restaurante> findAll();
 	
 	

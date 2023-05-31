@@ -11,13 +11,12 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import com.algaworks.algafood.domain.dto.RestauranteDto;
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
@@ -26,9 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class CadastroRestauranteService {
 
-private static final String RESTAURANTE_NAO_ENCONTRADO = "Restaurante de código %d não encontrado.";
-
-
+ 
 //	@Autowired
 //	private RestauranteRepository restauranteRepository;
 //
@@ -139,18 +136,19 @@ private static final String RESTAURANTE_NAO_ENCONTRADO = "Restaurante de código
 //
 //	}
 
-	public RestauranteDto salvar(RestauranteDto restauranteDto) {
+	public RestauranteDto salvar(RestauranteDto restauranteDto,Restaurante restaurante) {
 
-		Restaurante restaurante = BuscarOuFalhar(restauranteDto.getId());
-
- 		Cozinha cozinha = getCozinhaEntity(restauranteDto);
- 		
+ 		Cozinha cozinha = cozinhaService.buscarOuFalhar(restauranteDto.getCozinhaId());
+ 				
  		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		modelMapper.typeMap(RestauranteDto.class, Restaurante.class)
 	    .addMappings(mapper -> mapper.skip(Restaurante::setFormasPagamento))  
 	    .addMappings(mapper -> mapper.skip(Restaurante::setCozinha)) 
 		.addMappings(mapper -> mapper.skip(Restaurante::setProdutos))
 		.addMappings(mapper -> mapper.skip(Restaurante::setEndereco)); 
+//		.addMappings(mapper -> mapper.skip(Restaurante::setDataCadastro)) 
+//		.addMappings(mapper -> mapper.skip(Restaurante::setDataAtualizacao)); 
+
 
 		modelMapper.map(restauranteDto, restaurante);						
 		restaurante.setCozinha(cozinha);
@@ -176,7 +174,7 @@ private static final String RESTAURANTE_NAO_ENCONTRADO = "Restaurante de código
 
 		merge(campos, restaurante);
 
-		return salvar(modelMapper.map(restaurante, RestauranteDto.class));
+		return salvar(modelMapper.map(restaurante, RestauranteDto.class),restaurante);
 	}
 
 	// **** SOLUCAO GENÉRICA ****
@@ -220,21 +218,20 @@ private static final String RESTAURANTE_NAO_ENCONTRADO = "Restaurante de código
 		});
 	}
 
-	private Cozinha getCozinhaEntity(RestauranteDto restauranteDto) {
-		if( restauranteDto.getCozinhaId() == null) {return null;}
-		Long cozinhaId = restauranteDto.getCozinhaId();
-
-		Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
-
-		return cozinha;
-
-	}
+//	private Cozinha getCozinhaEntity(RestauranteDto restauranteDto) {
+//		if( restauranteDto.getCozinhaId() == null) {return null;}
+//		Long cozinhaId = restauranteDto.getCozinhaId();
+//
+//		Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
+//
+//		return cozinha;
+//
+//	}
 	
 	
 	public Restaurante BuscarOuFalhar(Long restauranteId) {
 		return  restauranteRepository.findById(restauranteId)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(
-						String.format(RESTAURANTE_NAO_ENCONTRADO, restauranteId)));
+				.orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId) );
 	}
 
 }

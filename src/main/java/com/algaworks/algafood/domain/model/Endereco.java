@@ -12,23 +12,23 @@ import lombok.Data;
 @Embeddable    // parte de uma outra entidade, não é uma entidade em si
 public class Endereco {
 
-	@Column(name = "endereco_cep",nullable =false)
+	@Column(name = "endereco_cep")
 	private String cep;
 	
-	@Column(name = "endereco_logradouro",nullable =false)
+	@Column(name = "endereco_logradouro")
 	private String logradouro;
 	
-	@Column(name = "endereco_numero",nullable =false)
+	@Column(name = "endereco_numero")
 	private String numero;
 	
 	@Column(name = "endereco_complemento")	
 	private String complemento;
 	
-	@Column(name = "endereco_bairro",nullable =false)		
+	@Column(name = "endereco_bairro")		
 	private String bairro;
 	
 	
-	@JoinColumn(name = "endereco_cidade_id",nullable =false)	// quando há associacao é @joinColumn
+	@JoinColumn(name = "endereco_cidade_id")	// quando há associacao é @joinColumn
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Cidade cidade;
 	

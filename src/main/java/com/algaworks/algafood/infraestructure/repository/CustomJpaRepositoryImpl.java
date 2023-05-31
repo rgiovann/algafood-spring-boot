@@ -8,7 +8,7 @@ import javax.persistence.NoResultException;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.repository.CustomJpaRepository;
 
 public class CustomJpaRepositoryImpl<T,ID> extends SimpleJpaRepository<T, ID> implements CustomJpaRepository<T, ID>{
@@ -33,7 +33,7 @@ public class CustomJpaRepositoryImpl<T,ID> extends SimpleJpaRepository<T, ID> im
 
 		}
 		catch (NoResultException e ) {
-			throw new EntidadeNaoEncontradaException("Não encontrado o 1o restaurante, banco de dados está vazio.");
+			throw new RestauranteNaoEncontradoException("Não encontrado o 1o restaurante, banco de dados está vazio.");
 		}
 
 	}
