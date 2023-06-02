@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -123,11 +125,13 @@ public class RestauranteController {
 //	}
 
 	@PatchMapping("/{restauranteId}")
-	public RestauranteDto atualizarParcial(@PathVariable Long restauranteId, @RequestBody Map<String, Object> campos) {
+	public RestauranteDto atualizarParcial(@PathVariable Long restauranteId, 
+			                               @RequestBody Map<String, Object> campos, 
+			                               HttpServletRequest request) {
 
 		Restaurante restaurante = restauranteService.BuscarOuFalhar(restauranteId);
 		try {
-			return restauranteService.atualizarParcial(campos, restaurante);
+			return restauranteService.atualizarParcial(campos, restaurante, request);
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}

@@ -1,8 +1,5 @@
 package com.algaworks.algafood.domain.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 //@ResponseStatus(value = HttpStatus.NOT_FOUND)
 //tratado pela classe ApiExceptionHandler
 public abstract class EntidadeNaoEncontradaException extends NegocioException {

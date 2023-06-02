@@ -2,24 +2,28 @@ package com.algaworks.algafood.domain.service;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import com.algaworks.algafood.domain.dto.RestauranteDto;
-import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -119,22 +123,6 @@ public class CadastroRestauranteService {
 
 	}
 
-//	public RestauranteDto salvar(RestauranteDto restauranteDto) {
-//
-// 		Cozinha cozinha = getCozinhaEntity(restauranteDto);
-//
-//		// modelMapper não tem como saber atributos da Cozinha, uma vez que JSON só
-//		// passa o id
-//         
-//		Restaurante restaurante = modelMapper.map(restauranteDto, Restaurante.class);
-//		
-//		restaurante.setCozinha(cozinha);
-//
-//		restaurante = restauranteRepository.save(restaurante);
-//
-//		return modelMapper.map(restaurante, RestauranteDto.class);
-//
-//	}
 
 	public RestauranteDto salvar(RestauranteDto restauranteDto,Restaurante restaurante) {
 
@@ -158,23 +146,12 @@ public class CadastroRestauranteService {
 		return modelMapper.map(restaurante, RestauranteDto.class);
 	}
 
-//	public void excluir(Long restauranteId) {
-//		try {
-//
-//			restauranteRepository.deleteById(restauranteId);
-//
-//		} catch (EmptyResultDataAccessException e) {
-//			throw new EntidadeNaoEncontradaException(
-//					String.format(RESTAURANTE_NAO_ENCONTRADO, restauranteId));
-//		}
-//
-//	}
 
-	public RestauranteDto atualizarParcial(Map<String, Object> campos, Restaurante restaurante) {
+	public RestauranteDto atualizarParcial(Map<String, Object> campos, Restaurante restaurante,HttpServletRequest request) {
 
-		merge(campos, restaurante);
+		RestauranteDto restauranteDto = merge(campos, restaurante, request);
 
-		return salvar(modelMapper.map(restaurante, RestauranteDto.class),restaurante);
+		return salvar(restauranteDto,restaurante);
 	}
 
 	// **** SOLUCAO GENÉRICA ****
@@ -196,38 +173,32 @@ public class CadastroRestauranteService {
 //	}
 
 	// **** SOLUCAO DETALHADA ****
-	private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino) {
-		Iterator<Map.Entry<String, Object>> itr = dadosOrigem.entrySet().iterator();
-		while (itr.hasNext()) {
-			Map.Entry<String, Object> entry = itr.next();
-			Field field = ReflectionUtils.findField(Restaurante.class, entry.getKey());
-			if (field == null) {
-				throw new NegocioException(
-						String.format("Atributo " + entry.getKey() + " não existe para entidade Restaurante"));
-			}
-		}
+	private RestauranteDto merge(Map<String, Object> dadosOrigem, Restaurante restaurante, HttpServletRequest request) {
+		
+		ServletServerHttpRequest serverHttpRequest = new ServletServerHttpRequest(request);
+		
+		RestauranteDto restauranteDtoDestino = modelMapper.map(restaurante, RestauranteDto.class);
 
+		try {
 		ObjectMapper objectMapper = new ObjectMapper();
-		Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
+		objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+
+		RestauranteDto restauranteOrigem = objectMapper.convertValue(dadosOrigem, RestauranteDto.class);
 
 		dadosOrigem.forEach((nomePropriedade, valorPropriedade) -> {
-			Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
+			Field field = ReflectionUtils.findField(RestauranteDto.class, nomePropriedade);
 			field.setAccessible(true);
 			Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
-			ReflectionUtils.setField(field, restauranteDestino, novoValor);
+			ReflectionUtils.setField(field, restauranteDtoDestino, novoValor);
 		});
+		return restauranteDtoDestino;
+		} catch (IllegalArgumentException e) {
+			Throwable rootCause = ExceptionUtils.getRootCause(e);
+			throw new HttpMessageNotReadableException(e.getMessage(),rootCause,serverHttpRequest);
+		}
 	}
 
-//	private Cozinha getCozinhaEntity(RestauranteDto restauranteDto) {
-//		if( restauranteDto.getCozinhaId() == null) {return null;}
-//		Long cozinhaId = restauranteDto.getCozinhaId();
-//
-//		Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
-//
-//		return cozinha;
-//
-//	}
-	
 	
 	public Restaurante BuscarOuFalhar(Long restauranteId) {
 		return  restauranteRepository.findById(restauranteId)

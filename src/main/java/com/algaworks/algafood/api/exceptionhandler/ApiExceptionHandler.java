@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.flywaydb.core.internal.util.ExceptionUtils;
@@ -16,9 +17,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.IgnoredPropertyException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -81,8 +84,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		} 
 		else if (rootCause instanceof UnrecognizedPropertyException) {
 			
-			System.out.println("Passei AQUI");
-
 			return handleUnrecognizedPropertyException((UnrecognizedPropertyException) rootCause, headers, status,
 					request);
 
@@ -100,11 +101,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private ResponseEntity<Object> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		String path = ex.getPath().stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
-
+		
+		String path = joinPath(ex.getPath());
+		
 		String detail = String.format(
 				"A propriedade '%s' não é reconhecida para a entidade '%s'.", 
 				path, ex.getReferringClass().getSimpleName() );
+		
 		Problem problem = createProblemBuilder(status, ProblemType.MENSAGEM_CORROMPIDA, detail).build();
 		
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
@@ -112,8 +115,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private ResponseEntity<Object> handleIgnoredPropertyException(IgnoredPropertyException ex, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
-		String path = ex.getPath().stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
 
+		String path = joinPath(ex.getPath());
+		
 		String detail = String.format(
 				"A propriedade '%s' da entidade '%s' deve ser ignorada no corpo da requisição.", 
 				path,ex.getReferringClass().getSimpleName()  );
@@ -126,8 +130,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
 
-		String path = ex.getPath().stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
-
+		String path = joinPath(ex.getPath());
+		
 		String detail = String.format(
 				"A propriedade '%s' recebeu o valor '%s' "
 						+ "que é do tipo inválido. Corrija e informe o valor compatível com o tipo %s",
@@ -153,5 +157,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				.detail(detail);
 
 	}
+	
+	private String joinPath(List<Reference> references) {
+
+	    return references.stream()
+	        .map(ref -> ref.getFieldName())
+	        .collect(Collectors.joining("."));
+	} 
 
 }
