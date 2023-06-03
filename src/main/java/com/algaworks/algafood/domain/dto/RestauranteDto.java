@@ -2,6 +2,8 @@ package com.algaworks.algafood.domain.dto;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,6 +19,9 @@ public class RestauranteDto {
 	private BigDecimal taxaFrete;
 
 	private Long cozinhaId;
+	
+	 @JsonIgnore
+	  private EnderecoDto endereco;
 
 	
 }
