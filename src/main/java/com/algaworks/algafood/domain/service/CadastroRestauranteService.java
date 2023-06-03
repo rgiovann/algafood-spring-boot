@@ -132,8 +132,8 @@ public class CadastroRestauranteService {
 		modelMapper.typeMap(RestauranteDto.class, Restaurante.class)
 	    .addMappings(mapper -> mapper.skip(Restaurante::setFormasPagamento))  
 	    .addMappings(mapper -> mapper.skip(Restaurante::setCozinha)) 
-		.addMappings(mapper -> mapper.skip(Restaurante::setProdutos))
-		.addMappings(mapper -> mapper.skip(Restaurante::setEndereco)); 
+		.addMappings(mapper -> mapper.skip(Restaurante::setProdutos));
+//		.addMappings(mapper -> mapper.skip(Restaurante::setEndereco)); 
 //		.addMappings(mapper -> mapper.skip(Restaurante::setDataCadastro)) 
 //		.addMappings(mapper -> mapper.skip(Restaurante::setDataAtualizacao)); 
 

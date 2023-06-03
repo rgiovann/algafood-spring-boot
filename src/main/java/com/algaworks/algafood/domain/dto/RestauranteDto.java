@@ -20,8 +20,8 @@ public class RestauranteDto {
 
 	private Long cozinhaId;
 	
-	 @JsonIgnore
-	  private EnderecoDto endereco;
+	@JsonIgnore
+	private EnderecoDto endereco;
 
 	
 }
