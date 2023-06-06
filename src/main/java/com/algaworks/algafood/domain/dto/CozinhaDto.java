@@ -1,5 +1,7 @@
 package com.algaworks.algafood.domain.dto;
 
+import javax.validation.constraints.NotBlank;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,6 +13,7 @@ public class CozinhaDto {
 	@EqualsAndHashCode.Include
 	private Long id;
 	
+	@NotBlank
 	private String nome;
 
 }

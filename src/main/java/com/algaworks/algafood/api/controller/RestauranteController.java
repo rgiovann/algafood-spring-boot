@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.Groups;
 import com.algaworks.algafood.domain.dto.RestauranteDto;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
@@ -85,16 +88,16 @@ public class RestauranteController {
 
 	}
 
-	@GetMapping("/{id}")
-	public RestauranteDto buscar(@PathVariable Long id) {
+	@GetMapping("/{restauranteId}")
+	public RestauranteDto buscar(@PathVariable Long restauranteId) {
 
-		return restauranteService.buscar(id);
+		return restauranteService.buscar(restauranteId);
 
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public RestauranteDto adicionar(@RequestBody RestauranteDto restauranteDto) {
+	public RestauranteDto adicionar(@RequestBody @Valid RestauranteDto restauranteDto) {
 		try {
 			return restauranteService.salvar(restauranteDto,new Restaurante());
 		} catch (CozinhaNaoEncontradaException e) {
@@ -103,7 +106,7 @@ public class RestauranteController {
 	}
 
 	@PutMapping("/{restauranteId}")
-	public RestauranteDto atualizar(@PathVariable Long restauranteId, @RequestBody RestauranteDto restauranteDto) {
+	public RestauranteDto atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteDto restauranteDto) {
 
 		Restaurante restaurante = restauranteService.BuscarOuFalhar(restauranteId);
 		restauranteDto.setId(restauranteId);
