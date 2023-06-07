@@ -9,7 +9,8 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.Groups;
+import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.dto.RestauranteDto;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
@@ -35,7 +36,9 @@ public class RestauranteController {
 
 	private final CadastroRestauranteService restauranteService;
 
-	public RestauranteController(CadastroRestauranteService restauranteService) {
+
+
+	public RestauranteController(CadastroRestauranteService restauranteService, SmartValidator validator) {
 		this.restauranteService = restauranteService;
 	}
 
@@ -133,11 +136,13 @@ public class RestauranteController {
 			                               HttpServletRequest request) {
 
 		Restaurante restaurante = restauranteService.BuscarOuFalhar(restauranteId);
+				
 		try {
 			return restauranteService.atualizarParcial(campos, restaurante, request);
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
 	}
+
 
 }

@@ -17,7 +17,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 
+import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.dto.RestauranteDto;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -46,14 +49,16 @@ public class CadastroRestauranteService {
 	private final CadastroCozinhaService cozinhaService;
 	//private final CozinhaRepository cozinhaRepository;
 	private final ModelMapper modelMapper;
-	
+	private final SmartValidator validator;
 	
 
 	public CadastroRestauranteService(RestauranteRepository restauranteRepository, CadastroCozinhaService cozinhaService,
-			ModelMapper modelMapper) {
+			ModelMapper modelMapper,SmartValidator validator) {
 		this.restauranteRepository = restauranteRepository;
 		this.cozinhaService = cozinhaService;
 		this.modelMapper = modelMapper;	
+		this.validator = validator;
+
 		
 	    TypeMap<Restaurante, RestauranteDto> propertyMapper = modelMapper.createTypeMap(Restaurante.class, RestauranteDto.class);
 	    // add deep mapping
@@ -150,8 +155,20 @@ public class CadastroRestauranteService {
 	public RestauranteDto atualizarParcial(Map<String, Object> campos, Restaurante restaurante,HttpServletRequest request) {
 
 		RestauranteDto restauranteDto = merge(campos, restaurante, request);
+		
+		validate(restauranteDto,"restauranteDto");
 
+		
 		return salvar(restauranteDto,restaurante);
+	}
+	
+	private void validate(RestauranteDto restaurante, String objectName) {
+		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante,objectName);
+		validator.validate(restaurante, bindingResult);
+		if(bindingResult.hasErrors()) {
+			throw new ValidacaoException(bindingResult);
+		}
+		
 	}
 
 	// **** SOLUCAO GENÉRICA ****

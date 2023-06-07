@@ -7,12 +7,16 @@ import java.util.stream.Collectors;
 //import org.flywaydb.core.internal.util.ExceptionUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +25,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -34,6 +39,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema. Tente novamente e se o problema "
 			+"persistir, entre em contato com o administrador do sistema.";
+	
+	@Autowired
+	private MessageSource messageSource;
 
 	@ExceptionHandler(EntidadeNaoEncontradaException.class)
 	public ResponseEntity<Object> handleEntidadeNaoEncontradoException(EntidadeNaoEncontradaException ex,
@@ -76,6 +84,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
+	
+	
+	@ExceptionHandler(ValidacaoException.class)
+	public ResponseEntity<Object> handleValidacaoException(ValidacaoException ex, WebRequest request) {
+	 
+		return handleValidationInternal( ex,ex.getBindingResult(),new HttpHeaders(), HttpStatus.BAD_REQUEST,request);
+	}
+	
+	
 	
 	@Override
 	protected ResponseEntity<Object> handleNoHandlerFoundException(
@@ -167,20 +184,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(
 			MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-		BindingResult bindingResult = ex.getBindingResult();
-		List<Problem.Field> problemFields = bindingResult.getFieldErrors().stream()
-				.map(fieldError -> Problem.Field.builder()
-						.name(fieldError.getField())
-						.userMessage(fieldError.getDefaultMessage()).build())
-				.collect(Collectors.toList());
-				
-		String detail = "Um ou mais dados estão inválidos. Faça o preenchimento correto e tente novamente.";
-		Problem problem = createProblemBuilder(status, ProblemType.DADOS_INVALIDO, detail)
-				.userMessage(detail)
-				.fields(problemFields)
-				.build();		
+		return handleValidationInternal( ex,ex.getBindingResult(),headers, status,request);
 
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
 
 	
@@ -197,7 +202,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		Problem problem = createProblemBuilder(status, ProblemType.PARAMETRO_INVALIDO, detail)
 				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
 				.build();						
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
 	private ResponseEntity<Object> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex,
@@ -212,7 +217,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
 				.build();				
 
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
 	private ResponseEntity<Object> handleIgnoredPropertyException(IgnoredPropertyException ex, HttpHeaders headers,
@@ -228,7 +233,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				.build();
 
 
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
 	private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers,
@@ -243,7 +248,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		Problem problem = createProblemBuilder(status, ProblemType.MENSAGEM_CORROMPIDA, detail)
 				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
 				.build();
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
 	private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
@@ -255,6 +260,35 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	private String joinPath(List<Reference> references) {
 
 		return references.stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
+	}
+	
+	
+	private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult, HttpHeaders headers,
+			HttpStatus status, WebRequest request)
+	{
+ 		List<Problem.Field> problemObjects = bindingResult.getAllErrors().stream()
+				.map(objectError -> {
+						String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
+						
+						String name = objectError.getObjectName();
+						
+						if(objectError instanceof FieldError) {
+							name = ((FieldError) objectError).getField();
+						}
+						
+						return Problem.Field.builder()
+						.name(name)
+						.userMessage(message).build();
+				})
+				.collect(Collectors.toList());
+				
+		String detail = "Um ou mais dados estão inválidos. Faça o preenchimento correto e tente novamente.";
+		Problem problem = createProblemBuilder(status, ProblemType.DADOS_INVALIDO, detail)
+				.userMessage(detail)
+				.objects(problemObjects)
+				.build();	
+		
+		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
 }

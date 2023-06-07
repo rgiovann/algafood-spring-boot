@@ -2,6 +2,8 @@ package com.algaworks.algafood.api.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,7 +46,7 @@ public class CidadeController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CidadeDto adicionar(@RequestBody CidadeDto cidadeDto) {
+	public CidadeDto adicionar(@RequestBody @Valid CidadeDto cidadeDto) {
 		
 		try {
 			return cidadeService.salvar(cidadeDto);
@@ -55,7 +57,7 @@ public class CidadeController {
 	}
 
 	@PutMapping("/{cidadeId}")
-	public CidadeDto atualizar(@PathVariable Long cidadeId, @RequestBody CidadeDto cidadeDto) {
+	public CidadeDto atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeDto cidadeDto) {
 
 		try {
 			
