@@ -162,9 +162,9 @@ public class CadastroRestauranteService {
 		return salvar(restauranteDto,restaurante);
 	}
 	
-	private void validate(RestauranteDto restaurante, String objectName) {
-		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante,objectName);
-		validator.validate(restaurante, bindingResult);
+	private void validate(RestauranteDto restauranteDto, String objectName) {
+		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restauranteDto,objectName);
+		validator.validate(restauranteDto, bindingResult);
 		if(bindingResult.hasErrors()) {
 			throw new ValidacaoException(bindingResult);
 		}
