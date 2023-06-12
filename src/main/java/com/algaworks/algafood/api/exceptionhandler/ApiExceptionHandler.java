@@ -135,11 +135,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		Throwable rootCause = ExceptionUtils.getRootCause(ex);
 
-		rootCause.printStackTrace(); //#debug
+		//rootCause.printStackTrace(); //#debug
  
 		if (rootCause instanceof InvalidFormatException) {
 
 			return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
+		
 		} else if (rootCause instanceof UnrecognizedPropertyException) {
 
 			return handleUnrecognizedPropertyException((UnrecognizedPropertyException) rootCause, headers, status,

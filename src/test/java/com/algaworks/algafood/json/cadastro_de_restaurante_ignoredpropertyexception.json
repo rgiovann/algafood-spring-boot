@@ -1,0 +1,6 @@
+{
+    "nome": "Restaurante NovoCadastro",
+    "taxaFrete": 0,
+    "cozinhaId": 1,
+    "endereco" : {"cep" :"8900-200"}
+}
