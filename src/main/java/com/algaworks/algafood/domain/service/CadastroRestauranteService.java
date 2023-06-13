@@ -16,6 +16,7 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.SmartValidator;
@@ -129,6 +130,7 @@ public class CadastroRestauranteService {
 	}
 
 
+	@Transactional
 	public RestauranteDto salvar(RestauranteDto restauranteDto,Restaurante restaurante) {
 
  		Cozinha cozinha = cozinhaService.buscarOuFalhar(restauranteDto.getCozinhaId());
@@ -152,6 +154,7 @@ public class CadastroRestauranteService {
 	}
 
 
+	@Transactional
 	public RestauranteDto atualizarParcial(Map<String, Object> campos, Restaurante restaurante,HttpServletRequest request) {
 
 		RestauranteDto restauranteDto = merge(campos, restaurante, request);

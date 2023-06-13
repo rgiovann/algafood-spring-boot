@@ -32,6 +32,7 @@ public class Cidade {
 	@ManyToOne
 	@Valid
 	@NotNull
+	// validation
 	@ConvertGroup(from = Default.class, to=EstadoId.class)
 	Estado estado;
 

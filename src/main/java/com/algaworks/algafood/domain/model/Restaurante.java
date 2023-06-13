@@ -2,6 +2,7 @@ package com.algaworks.algafood.domain.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +18,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -54,26 +51,21 @@ public class Restaurante {
 	private Cozinha cozinha;
 	
 	@OneToMany(mappedBy = "restaurante")
-	@JsonIgnore       // para evidar associacao circular
 	private List<Produto> produtos = new ArrayList<Produto>();
 	
-	@JsonIgnore
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition="datetime")
-	private LocalDateTime dataCadastro;
-	
-	@JsonIgnore
+	private OffsetTime dataCadastro;
+	//private LocalDateTime dataCadastro;
+
 	@UpdateTimestamp
 	@Column(nullable = false, columnDefinition="datetime")
-	private LocalDateTime dataAtualizacao;
+	private OffsetTime dataAtualizacao;
+	//private LocalDateTime dataAtualizacao;
 
-	
-	@JsonIgnore
 	@Embedded
 	private Endereco endereco;
 	
-	
-	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "restaurante_forma_pagamento",
 	           joinColumns = @JoinColumn(name ="restaurante_id"),
