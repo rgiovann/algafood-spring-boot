@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.domain.dto.CozinhaDto;
+import com.algaworks.algafood.api.dto.CozinhaDto;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 
 @RestController

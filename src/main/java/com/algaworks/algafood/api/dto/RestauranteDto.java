@@ -1,4 +1,4 @@
-package com.algaworks.algafood.domain.dto;
+package com.algaworks.algafood.api.dto;
 
 import java.math.BigDecimal;
 
@@ -32,7 +32,7 @@ public class RestauranteDto {
 	private BigDecimal taxaFrete;
 
 	@NotNull
-	private Long cozinhaId;
+	private CozinhaDto cozinha;
 	
 	@JsonIgnore
 	private EnderecoDto endereco;

@@ -9,7 +9,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.core.validation.ValidacaoException;
-import com.algaworks.algafood.domain.dto.RestauranteDto;
+import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
+import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
+import com.algaworks.algafood.api.dto.RestauranteDto;
+import com.algaworks.algafood.api.input.RestauranteInput;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -36,10 +37,15 @@ public class RestauranteController {
 
 	private final CadastroRestauranteService restauranteService;
 
+	 
+ 
 
-
-	public RestauranteController(CadastroRestauranteService restauranteService, SmartValidator validator) {
+	public RestauranteController(CadastroRestauranteService restauranteService,
+								 SmartValidator validator,
+								 RestauranteDtoAssembler restauranteDtoAssembler,
+								 RestauranteInputDisassembler restauranteInputDisassembler) {
 		this.restauranteService = restauranteService;
+
 	}
 
 	// TESTE
@@ -100,21 +106,21 @@ public class RestauranteController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public RestauranteDto adicionar(@RequestBody @Valid RestauranteDto restauranteDto) {
+	public RestauranteDto adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
 		try {
-			return restauranteService.salvar(restauranteDto,new Restaurante());
+			return restauranteService.salvar(restauranteInput);
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
 
 	@PutMapping("/{restauranteId}")
-	public RestauranteDto atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteDto restauranteDto) {
+	public RestauranteDto atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteInput restauranteInput) {
 
-		Restaurante restaurante = restauranteService.BuscarOuFalhar(restauranteId);
-		restauranteDto.setId(restauranteId);
+		;
+ 
 		try {
-			return restauranteService.salvar(restauranteDto, restaurante);
+			return restauranteService.atualizar(restauranteInput, restauranteService.BuscarOuFalhar(restauranteId));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -130,19 +136,19 @@ public class RestauranteController {
 //
 //	}
 
-	@PatchMapping("/{restauranteId}")
-	public RestauranteDto atualizarParcial(@PathVariable Long restauranteId, 
-			                               @RequestBody Map<String, Object> campos, 
-			                               HttpServletRequest request) {
-
-		Restaurante restaurante = restauranteService.BuscarOuFalhar(restauranteId);
-				
-		try {
-			return restauranteService.atualizarParcial(campos, restaurante, request);
-		} catch (EntidadeNaoEncontradaException e) {
-			throw new NegocioException(e.getMessage());
-		}
-	}
+//	@PatchMapping("/{restauranteId}")
+//	public RestauranteDto atualizarParcial(@PathVariable Long restauranteId, 
+//			                               @RequestBody Map<String, Object> campos, 
+//			                               HttpServletRequest request) {
+//
+//		Restaurante restaurante = restauranteService.BuscarOuFalhar(restauranteId);
+//				
+//		try {
+//			return restauranteService.atualizarParcial(campos, restaurante, request);
+//		} catch (EntidadeNaoEncontradaException e) {
+//			throw new NegocioException(e.getMessage());
+//		}
+//	}
 
 
 }

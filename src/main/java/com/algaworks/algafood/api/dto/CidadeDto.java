@@ -1,4 +1,4 @@
-package com.algaworks.algafood.domain.dto;
+package com.algaworks.algafood.api.dto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;

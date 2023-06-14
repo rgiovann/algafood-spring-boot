@@ -1,8 +1,7 @@
 package com.algaworks.algafood.domain.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,11 +35,11 @@ public class Restaurante {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank
+//	@NotBlank // removido porque validation nas clases da API
 	@Column(nullable = false)
 	private String nome;
 	
-	@PositiveOrZero
+//	@PositiveOrZero  // removido porque validation nas clases da API
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 
@@ -55,13 +54,13 @@ public class Restaurante {
 	
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition="datetime")
-	private OffsetTime dataCadastro;
-	//private LocalDateTime dataCadastro;
+	private OffsetDateTime dataCadastro;
+	//private OffsetDateTime dataCadastro;
 
 	@UpdateTimestamp
 	@Column(nullable = false, columnDefinition="datetime")
-	private OffsetTime dataAtualizacao;
-	//private LocalDateTime dataAtualizacao;
+	private OffsetDateTime dataAtualizacao;
+	//private OffsetDateTime dataAtualizacao;
 
 	@Embedded
 	private Endereco endereco;

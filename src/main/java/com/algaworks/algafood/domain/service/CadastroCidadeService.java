@@ -9,8 +9,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.algaworks.algafood.domain.dto.CidadeDto;
-import com.algaworks.algafood.domain.dto.EstadoDto;
+import com.algaworks.algafood.api.dto.CidadeDto;
+import com.algaworks.algafood.api.dto.EstadoDto;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.model.Cidade;
