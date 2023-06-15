@@ -1,15 +1,12 @@
 package com.algaworks.algafood.domain.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.algaworks.algafood.api.dto.EstadoDto;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Estado;
@@ -19,75 +16,42 @@ import com.algaworks.algafood.domain.repository.EstadoRepository;
 public class CadastroEstadoService {
 
 	private static final String MSG_ESTADO_EM_USO = "Estado de código %d não pode ser removido, pois está em uso.";
-	@Autowired
-	private EstadoRepository estadoRepository;
+	private final EstadoRepository estadoRepository;
 
-	public EstadoDto buscar(Long estadoId) {
-		
-		Estado estado = BuscarOuFalhar( estadoId);
-
-		EstadoDto estadoDto = new EstadoDto();
-
-		BeanUtils.copyProperties(estado, estadoDto);
-
-		return estadoDto;
+	public CadastroEstadoService(EstadoRepository estadoRepository) {
+		this.estadoRepository = estadoRepository;
 
 	}
 
-	public List<EstadoDto> listar() {
+ 
+	public List<Estado> listar() {
 
-		List<Estado> estado = estadoRepository.findAll();
-		return estado.stream().map(est -> {
-			EstadoDto estadoDto = new EstadoDto();
-			BeanUtils.copyProperties(est, estadoDto);
-			return estadoDto;
-		}).collect(Collectors.toList());
+		return estadoRepository.findAll();
 
 	}
 
-	public EstadoDto salvar(EstadoDto estadoDto) {
+	@Transactional
+	public Estado salvar(Estado estado) {
 
-		Estado estado = new Estado();
-
-		BeanUtils.copyProperties(estadoDto, estado);
-
-		estado = estadoRepository.save(estado);
-
-		BeanUtils.copyProperties(estado, estadoDto);
-
-		return estadoDto;
-
+		return estadoRepository.save(estado);
 	}
 
-	public EstadoDto atualizar(EstadoDto estadoDto) {
-		
-		BuscarOuFalhar(estadoDto.getId());
-
- 		estadoDto = this.salvar(estadoDto);
-
-		return estadoDto;
-	}
-
+	@Transactional
 	public void excluir(Long estadoId) {
 		try {
 
 			estadoRepository.deleteById(estadoId);
 
 		} catch (EmptyResultDataAccessException e) {
-			throw new EstadoNaoEncontradoException( estadoId);
-		}
-
-		catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(
-					String.format(MSG_ESTADO_EM_USO, estadoId));
+			throw new EstadoNaoEncontradoException(estadoId);
+		} catch (DataIntegrityViolationException e) {
+			throw new EntidadeEmUsoException(String.format(MSG_ESTADO_EM_USO, estadoId));
 		}
 
 	}
-	
-	public Estado BuscarOuFalhar(Long estadoId)
-	{
- 		return estadoRepository.findById(estadoId)
- 		.orElseThrow(() -> new EstadoNaoEncontradoException(estadoId)); 
+
+	public Estado buscarOuFalhar(Long estadoId) {
+		return estadoRepository.findById(estadoId).orElseThrow(() -> new EstadoNaoEncontradoException(estadoId));
 	}
 
 }

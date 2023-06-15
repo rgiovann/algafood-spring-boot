@@ -1,29 +1,16 @@
 package com.algaworks.algafood.api.dto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
+import lombok.Getter;
+import lombok.Setter;
 
-import com.algaworks.algafood.core.validation.Groups.EstadoId;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Setter
+@Getter
 public class CidadeDto {
 	
-	@EqualsAndHashCode.Include
 	private Long id;
 	
-	@NotBlank
 	private String nome;
-	
-	@Valid
-	@NotNull
-	@ConvertGroup(from = Default.class, to=EstadoId.class)
+ 
 	EstadoDto estado;
 
 }

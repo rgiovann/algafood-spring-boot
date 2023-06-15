@@ -1,16 +1,12 @@
 package com.algaworks.algafood.domain.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.algaworks.algafood.api.dto.CidadeDto;
-import com.algaworks.algafood.api.dto.EstadoDto;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -22,56 +18,46 @@ public class CadastroCidadeService {
 
 	private static final String MSG_CIDADE_EM_USO = "Cidade de código %d não pode ser removida, pois está em uso.";
 
-	@Autowired
+	
 	private CidadeRepository cidadeRepository;
 	
-	@Autowired
-	private CadastroEstadoService estadoService;
 	
-	@Autowired
-	ModelMapper modelMapper;
+	private final CadastroEstadoService estadoService;
 	
-	public CidadeDto buscar(Long cidadeId) {
 		
- 		Cidade cidade = buscarOuFalhar(cidadeId);  
+	CadastroCidadeService(CidadeRepository cidadeRepository, CadastroEstadoService estadoService) {
 		
- 		return modelMapper.map(cidade,  CidadeDto.class);
+		this.cidadeRepository = cidadeRepository;
 		
+		this.estadoService = estadoService;
 	}
-	
-	
-	public List<CidadeDto> listar() {
+
+
+
+	public List<Cidade> listar() {
 		
-		List<Cidade> cidade = cidadeRepository.findAll();
-		return cidade.stream().map(cid-> modelMapper.map(cid,  CidadeDto.class) ).collect(Collectors.toList());
+ 		return cidadeRepository.findAll();
 		
 	}
 
 
-	public CidadeDto salvar(CidadeDto cidadeDto) {
+	@Transactional
+	public Cidade salvar(Cidade cidade ) {
 		 		
-		Estado estado = estadoService.BuscarOuFalhar(cidadeDto.getEstado().getId());
+		Long estadoId = cidade.getEstado().getId();
 		
-		// modelMapper não tem como saber atributos do Estado, uma vez que JSON só passa o id
-		cidadeDto.setEstado(modelMapper.map(estado,  EstadoDto.class));
+		Estado estado = estadoService.buscarOuFalhar(estadoId);
+					
+		cidade.setEstado(estado);
 		
-		Cidade cidade = modelMapper.map(cidadeDto,  Cidade.class);
-		
-		cidade = cidadeRepository.save(cidade);
-		
-		return modelMapper.map(cidade,  CidadeDto.class);
+		return cidadeRepository.save(cidade);
 
 		
 	}
 	
-//	public CidadeDto atualizar(CidadeDto cidadeDto) {
-//		
-//		cidadeDto = this.salvar(cidadeDto);
-//		
-//		return cidadeDto;
-//	}
-
+	@Transactional
 	public void excluir(Long cidadeId) {
+		
 		try {
 			
 			cidadeRepository.deleteById(cidadeId);

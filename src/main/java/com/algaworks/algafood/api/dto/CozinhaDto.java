@@ -1,19 +1,15 @@
 package com.algaworks.algafood.api.dto;
 
-import javax.validation.constraints.NotBlank;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Setter
+@Getter
 public class CozinhaDto {
 
-	@EqualsAndHashCode.Include
 	private Long id;
 	
-	@NotBlank
 	private String nome;
 
 }

@@ -1,25 +1,15 @@
 package com.algaworks.algafood.api.dto;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-import com.algaworks.algafood.core.validation.Groups;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Setter
+@Getter
 public class EstadoDto {
-	
-	@EqualsAndHashCode.Include
-	@NotNull(groups = Groups.EstadoId.class)
+ 
 	private Long id;
 	
-	@NotBlank
 	private String nome;
 	
-	
-
 }

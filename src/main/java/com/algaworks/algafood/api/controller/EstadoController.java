@@ -1,10 +1,11 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.dto.EstadoDto;
+import com.algaworks.algafood.api.input.EstadoNomeInput;
+import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
 
 @RestController
@@ -24,46 +27,62 @@ import com.algaworks.algafood.domain.service.CadastroEstadoService;
 @RequestMapping(value = "/estados")
 public class EstadoController {
 
-	@Autowired
-	private CadastroEstadoService estadoService;
+	private final CadastroEstadoService estadoService;
+	private ModelMapper modelMapper;
+
+	  public EstadoController(CadastroEstadoService estadoService,ModelMapper modelMapper) {
+	    this.estadoService = estadoService;
+	    this.modelMapper 	= modelMapper;
+
+	  }
+	
+//---------------------------------------- API OFICIAL -------------------------------------------------
+//------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 	@GetMapping
 	public List<EstadoDto> listar() {
 
-		return estadoService.listar();
+		return estadoService.listar().stream()
+		.map(estado-> modelMapper.map(estado, EstadoDto.class))
+		.collect(Collectors.toList());
 
 	}
-
-	@GetMapping("/{estadoId}")
-	public  EstadoDto  buscar(@PathVariable Long estadoId) {
 	
-		return estadoService.buscar(estadoId);
+	@GetMapping("/{estadoId}")
+	public EstadoDto buscar(@PathVariable Long estadoId) {
+
+		return modelMapper.map(estadoService.buscarOuFalhar(estadoId),EstadoDto.class);
 
 	}
+
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public EstadoDto adicionar(@RequestBody @Valid EstadoDto estadoDto) {
- 		return estadoService.salvar(estadoDto);
+	public EstadoDto adicionar(@RequestBody @Valid EstadoNomeInput estadoInput) {
+		
+		Estado estado  = estadoService.salvar(modelMapper.map(estadoInput,Estado.class)); 
+ 		
+		return  modelMapper.map(estado,EstadoDto.class) ;
 
 	}
-
+	
 	@PutMapping("/{estadoId}")
-	public EstadoDto atualizar(@PathVariable Long estadoId, @RequestBody @Valid EstadoDto estadoDto) {
-
+	public EstadoDto atualizar(@PathVariable Long estadoId, @RequestBody @Valid  EstadoNomeInput estadoInput)
+	{        
+			Estado estado = estadoService.buscarOuFalhar(estadoId);
+			
+			modelMapper.map(estadoInput,estado);
+			
+			return  modelMapper.map(estadoService.salvar(estado),EstadoDto.class) ;
  
-		estadoDto.setId(estadoId);
-		return estadoService.atualizar(estadoDto);
-
 	}
 
 	@DeleteMapping("/{estadoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public  void remover(@PathVariable Long estadoId) {
- 
-		estadoService.excluir(estadoId);
-		
-		return;
+	public void remover(@PathVariable Long estadoId) {
+
+			estadoService.excluir(estadoId);
 	}
 
 }

@@ -1,26 +1,24 @@
 package com.algaworks.algafood.api.dto;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Setter
+@Getter
 public class EnderecoDto {
-	
-	@EqualsAndHashCode.Include
+
 	private Long id;
 
- 	private String cep;
-	
- 	private String logradouro;
-	
- 	private String numero;
-	
- 	private String complemento;
-	
- 	private String bairro;
- 
+	private String cep;
+
+	private String logradouro;
+
+	private String numero;
+
+	private String complemento;
+
+	private String bairro;
+
 	private Long cidadeId;
-	
 
 }

@@ -1,10 +1,11 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,54 +18,71 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.dto.CidadeDto;
+import com.algaworks.algafood.api.input.CidadeInput;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.model.Cidade;
+import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 
 @RestController
-//@RequestMapping(value = "/cozinhas",produces = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(value = "/cidades")
 public class CidadeController {
 
-	@Autowired
-	private CadastroCidadeService cidadeService;
+	private final CadastroCidadeService cidadeService;
+	private final ModelMapper modelMapper;
+
+	public CidadeController(CadastroCidadeService cidadeService, ModelMapper modelMapper) {
+		this.cidadeService = cidadeService;
+		this.modelMapper = modelMapper;
+	}
 
 	@GetMapping
 	public List<CidadeDto> listar() {
-		
-		return cidadeService.listar();
+
+		return cidadeService.listar().stream().map(cid -> modelMapper.map(cid, CidadeDto.class))
+				.collect(Collectors.toList());
 
 	}
 
 	@GetMapping("/{cidadeId}")
-	// wild card, aceita String e Restaurante entity
 	public CidadeDto buscar(@PathVariable Long cidadeId) {
 
-		return cidadeService.buscar(cidadeId);
+		return modelMapper.map(cidadeService.buscarOuFalhar(cidadeId), CidadeDto.class);
 
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CidadeDto adicionar(@RequestBody @Valid CidadeDto cidadeDto) {
-		
+	public CidadeDto adicionar(@RequestBody @Valid CidadeInput cidadeInput) {
+
 		try {
-			return cidadeService.salvar(cidadeDto);
+
+			Cidade cidade = modelMapper.map(cidadeInput, Cidade.class);
+
+			return modelMapper.map(cidadeService.salvar(cidade), CidadeDto.class);
+
 		} catch (EstadoNaoEncontradoException e) {
-			throw new NegocioException(e.getMessage(),e);
+
+			throw new NegocioException(e.getMessage(), e);
 		}
 
 	}
 
 	@PutMapping("/{cidadeId}")
-	public CidadeDto atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeDto cidadeDto) {
+	public CidadeDto atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeInput) {
 
+		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
+
+		// Para evitar org.hibernate.HibernateException: identifier of an instance of
+		// com.algaworks.algafood.domain.model.Cozinha was altered from 1 to 2
+		cidade.setEstado(new Estado());
+
+		modelMapper.map(cidadeInput, cidade);
+		
 		try {
-			
-			cidadeService.buscarOuFalhar(cidadeId);
-			cidadeDto.setId(cidadeId);			
-			return cidadeService.salvar(cidadeDto);
-			
+			return modelMapper.map(cidadeService.salvar(cidade), CidadeDto.class);
+
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -78,5 +96,5 @@ public class CidadeController {
 		cidadeService.excluir(cidadeId);
 		return;
 	}
-	
+
 }
