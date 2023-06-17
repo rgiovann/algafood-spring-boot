@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.dto.RestauranteDto;
+import com.algaworks.algafood.api.input.CozinhaIdInput;
 import com.algaworks.algafood.api.input.RestauranteInput;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -123,8 +126,21 @@ public class RestauranteController {
 		
 		// Para evitar org.hibernate.HibernateException: identifier of an instance of 
 		// com.algaworks.algafood.domain.model.Cozinha was altered from 1 to 2		
-		restaurante.setCozinha(new Cozinha());
 		
+		//restaurante.setCozinha(new Cozinha());
+		
+	    // Define o conversor
+        Converter<CozinhaIdInput, Cozinha> cozinhaConverter = new Converter<CozinhaIdInput, Cozinha>() {
+            @Override
+            public Cozinha convert(MappingContext<CozinhaIdInput, Cozinha> context) {
+            	Cozinha cozinha = new Cozinha(); 
+            	cozinha.setId(context.getSource().getId());
+                return cozinha;
+            }
+        };
+        // adicina o conversor ao bean modelMapper
+        modelMapper.addConverter(cozinhaConverter, CozinhaIdInput.class, Cozinha.class);
+        
 		modelMapper.map(restauranteInput,restaurante );
 		
 		try {
@@ -136,6 +152,5 @@ public class RestauranteController {
 		}
 
 	}
-		
-
+	
 }

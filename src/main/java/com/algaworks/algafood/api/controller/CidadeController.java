@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.dto.CidadeDto;
 import com.algaworks.algafood.api.input.CidadeInput;
+import com.algaworks.algafood.api.input.CozinhaIdInput;
+import com.algaworks.algafood.api.input.EstadoIdInput;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
+import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 
@@ -76,8 +81,21 @@ public class CidadeController {
 
 		// Para evitar org.hibernate.HibernateException: identifier of an instance of
 		// com.algaworks.algafood.domain.model.Cozinha was altered from 1 to 2
-		cidade.setEstado(new Estado());
-
+		//cidade.setEstado(new Estado());
+		
+	    // Define o conversor
+        Converter<EstadoIdInput, Estado> estadoConverter = new Converter<EstadoIdInput, Estado>() {
+            @Override
+            public Estado convert(MappingContext<EstadoIdInput, Estado> context) {
+            	Estado estado = new Estado(); 
+            	estado.setId(context.getSource().getId());
+                return estado;
+            }
+        };
+        // adicina o conversor ao bean modelMapper
+        modelMapper.addConverter(estadoConverter, EstadoIdInput.class, Estado.class);
+        
+ 
 		modelMapper.map(cidadeInput, cidade);
 		
 		try {
