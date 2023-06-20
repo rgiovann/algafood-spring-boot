@@ -37,6 +37,8 @@ public class Restaurante {
 	@Column(nullable = false)
 	private String nome;
 	
+	private Boolean ativo = Boolean.TRUE;
+	
 //	@PositiveOrZero  // removido porque validation nas clases da API
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
@@ -69,6 +71,13 @@ public class Restaurante {
 	           inverseJoinColumns = @JoinColumn(name ="forma_pagamento_id"))
 	private List<FormaPagamento> formasPagamento = new ArrayList<FormaPagamento>();
 	
-
+	public void ativar()
+	{
+		this.setAtivo(true);
+	}
 	
+	public void inativar()
+	{
+		this.setAtivo(false);
+	}
 }

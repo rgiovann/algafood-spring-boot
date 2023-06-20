@@ -17,4 +17,7 @@ public class RestauranteDto {
 
 	private CozinhaDto cozinha;
 	
+	private Boolean ativo;
+
+	
 }

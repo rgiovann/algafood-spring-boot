@@ -21,12 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.dto.CidadeDto;
 import com.algaworks.algafood.api.input.CidadeInput;
-import com.algaworks.algafood.api.input.CozinhaIdInput;
 import com.algaworks.algafood.api.input.EstadoIdInput;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
-import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 
