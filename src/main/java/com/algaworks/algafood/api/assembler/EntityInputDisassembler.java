@@ -22,7 +22,7 @@ public abstract class EntityInputDisassembler<I, D> {
 		// where I is the type of the input object and D is the type of the domain object.
 		
 		ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
-		this.mapper = new ModelMapper();
+		this.mapper = mapper;
 		
 		// The line this.domainObject = (Class<D>) type.getActualTypeArguments()[1]; assigns the type 
 		// of the domain object to the domainObject field. The getActualTypeArguments() method of the 
