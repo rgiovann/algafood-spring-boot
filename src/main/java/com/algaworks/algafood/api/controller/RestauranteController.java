@@ -1,13 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.spi.MappingContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
+import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
 import com.algaworks.algafood.api.dto.RestauranteDto;
-import com.algaworks.algafood.api.input.CozinhaIdInput;
 import com.algaworks.algafood.api.input.RestauranteInput;
+import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
-import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
-import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 
 @RestController
@@ -34,13 +30,16 @@ import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 public class RestauranteController {
 
 	private final CadastroRestauranteService restauranteService;
-	private final ModelMapper modelMapper;
+	private final RestauranteInputDisassembler restauranteInputDissasembler;
+	private final RestauranteDtoAssembler restauranteDtoAssembler;
 
-	public RestauranteController(CadastroRestauranteService restauranteService, 
-								 CadastroCozinhaService  cozinhaService,
-			                     ModelMapper modelMapper) {
+	public RestauranteController(CadastroRestauranteService restauranteService,
+			RestauranteInputDisassembler restauranteInputDissasembler,
+			RestauranteDtoAssembler restauranteDtoAssembler) {
+
 		this.restauranteService = restauranteService;
-		this.modelMapper = modelMapper;
+		this.restauranteInputDissasembler = restauranteInputDissasembler;
+		this.restauranteDtoAssembler = restauranteDtoAssembler;
 	}
 
 //	// TESTE
@@ -89,43 +88,45 @@ public class RestauranteController {
 
 	@GetMapping
 	public List<RestauranteDto> listar() {
-		
-		return restauranteService.listar()
-				.stream()
-				.map(rest -> modelMapper.map(rest, RestauranteDto.class))
-				.collect(Collectors.toList());	
-		}
-	
+
+		return restauranteDtoAssembler.toCollectionDto(restauranteService.listar());
+
+	}
 
 	@GetMapping("/{restauranteId}")
 	public RestauranteDto buscar(@PathVariable Long restauranteId) {
 
-		return  modelMapper.map(restauranteService.buscarOuFalhar(restauranteId), RestauranteDto.class);
+		return restauranteDtoAssembler.toDto(restauranteService.buscarOuFalhar(restauranteId));
+
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public RestauranteDto adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
-		
+
 		try {
-			
-			Restaurante restaurante = modelMapper.map(restauranteInput, Restaurante.class);
-			
-			return modelMapper.map(restauranteService.salvar(restaurante), RestauranteDto.class);
-			
+
+			Restaurante restaurante = restauranteInputDissasembler.toEntity(restauranteInput);
+
+			return restauranteDtoAssembler.toDto(restauranteService.salvar(restaurante));
+
 		} catch (CozinhaNaoEncontradaException e) {
-			
+
+			throw new NegocioException(e.getMessage(), e);
+		}
+		catch (CidadeNaoEncontradaException e) {
+
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
-	
+
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 
 	public void ativar(@PathVariable Long restauranteId) {
 		restauranteService.ativar(restauranteId);
 	}
-	
+
 	@DeleteMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 
@@ -136,36 +137,23 @@ public class RestauranteController {
 	@PutMapping("/{restauranteId}")
 	public RestauranteDto atualizar(@PathVariable Long restauranteId,
 			@RequestBody @Valid RestauranteInput restauranteInput) {
-	
+
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
-		
-		// Para evitar org.hibernate.HibernateException: identifier of an instance of 
-		// com.algaworks.algafood.domain.model.Cozinha was altered from 1 to 2		
-		
-		//restaurante.setCozinha(new Cozinha());
-		
-	    // Define o conversor
-        Converter<CozinhaIdInput, Cozinha> cozinhaConverter = new Converter<CozinhaIdInput, Cozinha>() {
-            @Override
-            public Cozinha convert(MappingContext<CozinhaIdInput, Cozinha> context) {
-            	Cozinha cozinha = new Cozinha(); 
-            	cozinha.setId(context.getSource().getId());
-                return cozinha;
-            }
-        };
-        // adicina o conversor ao bean modelMapper
-        modelMapper.addConverter(cozinhaConverter, CozinhaIdInput.class, Cozinha.class);
-        
-		modelMapper.map(restauranteInput,restaurante );
-		
+
+		restauranteInputDissasembler.copyToEntity(restauranteInput, restaurante);
+
 		try {
-			return modelMapper.map(restauranteService.salvar(restaurante ), RestauranteDto.class);
-		
+			return restauranteDtoAssembler.toDto(restauranteService.salvar(restaurante));
+
 		} catch (CozinhaNaoEncontradaException e) {
+
+			throw new NegocioException(e.getMessage(), e);
 			
+		} catch (CidadeNaoEncontradaException e) {
+
 			throw new NegocioException(e.getMessage(), e);
 		}
 
 	}
-	
+
 }

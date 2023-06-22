@@ -1,13 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.spi.MappingContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.assembler.CidadeDtoAssembler;
+import com.algaworks.algafood.api.assembler.CidadeInputDisassembler;
 import com.algaworks.algafood.api.dto.CidadeDto;
 import com.algaworks.algafood.api.input.CidadeInput;
-import com.algaworks.algafood.api.input.EstadoIdInput;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
-import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 
 @RestController
@@ -33,25 +29,30 @@ import com.algaworks.algafood.domain.service.CadastroCidadeService;
 public class CidadeController {
 
 	private final CadastroCidadeService cidadeService;
-	private final ModelMapper modelMapper;
+	private final CidadeInputDisassembler cidadeInputDissasembler;
+	private final CidadeDtoAssembler cidadeDtoAssembler;
+ 
+ 
 
-	public CidadeController(CadastroCidadeService cidadeService, ModelMapper modelMapper) {
+	public CidadeController(CadastroCidadeService cidadeService, 
+							CidadeInputDisassembler cidadeInputDissasembler,
+							CidadeDtoAssembler cidadeDtoAssembler) {
 		this.cidadeService = cidadeService;
-		this.modelMapper = modelMapper;
+		this.cidadeInputDissasembler = cidadeInputDissasembler;
+		this.cidadeDtoAssembler = cidadeDtoAssembler;
 	}
 
 	@GetMapping
 	public List<CidadeDto> listar() {
 
-		return cidadeService.listar().stream().map(cid -> modelMapper.map(cid, CidadeDto.class))
-				.collect(Collectors.toList());
+		return cidadeDtoAssembler.toCollectionDto(cidadeService.listar());
 
 	}
 
 	@GetMapping("/{cidadeId}")
 	public CidadeDto buscar(@PathVariable Long cidadeId) {
 
-		return modelMapper.map(cidadeService.buscarOuFalhar(cidadeId), CidadeDto.class);
+		return cidadeDtoAssembler.toDto(cidadeService.buscarOuFalhar(cidadeId));
 
 	}
 
@@ -61,9 +62,9 @@ public class CidadeController {
 
 		try {
 
-			Cidade cidade = modelMapper.map(cidadeInput, Cidade.class);
-
-			return modelMapper.map(cidadeService.salvar(cidade), CidadeDto.class);
+			Cidade cidade = cidadeInputDissasembler.toEntity(cidadeInput);
+			
+			return cidadeDtoAssembler.toDto(cidadeService.salvar(cidade));
 
 		} catch (EstadoNaoEncontradoException e) {
 
@@ -76,30 +77,15 @@ public class CidadeController {
 	public CidadeDto atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeInput) {
 
 		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
-
-		// Para evitar org.hibernate.HibernateException: identifier of an instance of
-		// com.algaworks.algafood.domain.model.Cozinha was altered from 1 to 2
-		//cidade.setEstado(new Estado());
 		
-	    // Define o conversor
-        Converter<EstadoIdInput, Estado> estadoConverter = new Converter<EstadoIdInput, Estado>() {
-            @Override
-            public Estado convert(MappingContext<EstadoIdInput, Estado> context) {
-            	Estado estado = new Estado(); 
-            	estado.setId(context.getSource().getId());
-                return estado;
-            }
-        };
-        // adicina o conversor ao bean modelMapper
-        modelMapper.addConverter(estadoConverter, EstadoIdInput.class, Estado.class);
-        
- 
-		modelMapper.map(cidadeInput, cidade);
+		cidadeInputDissasembler.copyToEntity(cidadeInput, cidade);
 		
 		try {
-			return modelMapper.map(cidadeService.salvar(cidade), CidadeDto.class);
+			
+			return cidadeDtoAssembler.toDto(cidadeService.salvar(cidade));
 
 		} catch (EstadoNaoEncontradoException e) {
+			
 			throw new NegocioException(e.getMessage(), e);
 		}
 
@@ -110,7 +96,9 @@ public class CidadeController {
 	public void remover(@PathVariable Long cidadeId) {
 
 		cidadeService.excluir(cidadeId);
+		
 		return;
 	}
 
 }
+;

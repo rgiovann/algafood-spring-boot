@@ -10,8 +10,8 @@ import lombok.Getter;
 public abstract class EntityInputDisassembler<I, D> {
  
 
-	private final ModelMapper mapper;
-	private final Class<D> domainObject;
+	protected final ModelMapper mapper;
+	private final Class<D> entityObject;
 		
 	@SuppressWarnings("unchecked")
 	public EntityInputDisassembler(ModelMapper mapper) {
@@ -28,15 +28,15 @@ public abstract class EntityInputDisassembler<I, D> {
 		// ParameterizedType class returns an array of the actual type arguments of the parameterized type.
 		// In this case, the array will have two elements, the first element being the type of the input 
 		// object and the second element being the type of the domain object.
-		this.domainObject = (Class<D>) type.getActualTypeArguments()[1];
+		this.entityObject = (Class<D>) type.getActualTypeArguments()[1];
 	}
 	
 	public D toEntity(I inputObject) {
-		return this.mapper.map(inputObject, this.domainObject);
+		return this.mapper.map(inputObject, this.entityObject);
 	}
 	
-	public void copyToEntity(I inputObject, D domainObject) {
-		mapper.map(inputObject, domainObject);
+	public void copyToEntity(I inputObject, D entityObject) {
+		mapper.map(inputObject, entityObject);
 	}
 	
 }

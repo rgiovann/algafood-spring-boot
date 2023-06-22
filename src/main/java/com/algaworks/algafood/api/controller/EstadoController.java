@@ -1,11 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,65 +15,62 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.assembler.EstadoDtoAssembler;
+import com.algaworks.algafood.api.assembler.EstadoNomeInputDisassembler;
 import com.algaworks.algafood.api.dto.EstadoDto;
 import com.algaworks.algafood.api.input.EstadoNomeInput;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
 
 @RestController
-//@RequestMapping(value = "/estados",produces = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(value = "/estados")
 public class EstadoController {
 
 	private final CadastroEstadoService estadoService;
-	private ModelMapper modelMapper;
-
-	  public EstadoController(CadastroEstadoService estadoService,ModelMapper modelMapper) {
-	    this.estadoService = estadoService;
-	    this.modelMapper 	= modelMapper;
-
-	  }
+    private final EstadoDtoAssembler estadoDtoAssembler;
+    private final EstadoNomeInputDisassembler estadoNomeInputDisassembler;
 	
-//---------------------------------------- API OFICIAL -------------------------------------------------
-//------------------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------------
+
+	public EstadoController(CadastroEstadoService estadoService, EstadoDtoAssembler estadoDtoAssembler,
+			EstadoNomeInputDisassembler estadoInputDisassembler) {
+		this.estadoService = estadoService;
+		this.estadoDtoAssembler = estadoDtoAssembler;
+		this.estadoNomeInputDisassembler = estadoInputDisassembler;
+	}
 
 	@GetMapping
 	public List<EstadoDto> listar() {
 
-		return estadoService.listar().stream()
-		.map(estado-> modelMapper.map(estado, EstadoDto.class))
-		.collect(Collectors.toList());
-
+		return estadoDtoAssembler.toCollectionDto(estadoService.listar());
+ 
 	}
 	
 	@GetMapping("/{estadoId}")
 	public EstadoDto buscar(@PathVariable Long estadoId) {
 
-		return modelMapper.map(estadoService.buscarOuFalhar(estadoId),EstadoDto.class);
+		return  estadoDtoAssembler.toDto(estadoService.buscarOuFalhar(estadoId));
 
 	}
 
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public EstadoDto adicionar(@RequestBody @Valid EstadoNomeInput estadoInput) {
+	public EstadoDto adicionar(@RequestBody @Valid EstadoNomeInput estadoNomeInput) {
 		
-		Estado estado  = estadoService.salvar(modelMapper.map(estadoInput,Estado.class)); 
- 		
-		return  modelMapper.map(estado,EstadoDto.class) ;
+		return  estadoDtoAssembler
+				.toDto( estadoService.salvar( estadoNomeInputDisassembler.toEntity(estadoNomeInput)));
 
 	}
 	
 	@PutMapping("/{estadoId}")
-	public EstadoDto atualizar(@PathVariable Long estadoId, @RequestBody @Valid  EstadoNomeInput estadoInput)
+	public EstadoDto atualizar(@PathVariable Long estadoId, @RequestBody @Valid  EstadoNomeInput estadoNomeInput)
 	{        
 			Estado estado = estadoService.buscarOuFalhar(estadoId);
 			
-			modelMapper.map(estadoInput,estado);
-			
-			return  modelMapper.map(estadoService.salvar(estado),EstadoDto.class) ;
- 
+			estadoNomeInputDisassembler.copyToEntity(estadoNomeInput,estado);
+		 
+			return  estadoDtoAssembler.toDto( estadoService.salvar(estado));
+  
 	}
 
 	@DeleteMapping("/{estadoId}")

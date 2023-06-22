@@ -28,7 +28,6 @@ public class CadastroCidadeService {
 	CadastroCidadeService(CidadeRepository cidadeRepository, CadastroEstadoService estadoService) {
 		
 		this.cidadeRepository = cidadeRepository;
-		
 		this.estadoService = estadoService;
 	}
 

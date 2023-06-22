@@ -19,28 +19,25 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.assembler.FormaPagamentoDtoAssembler;
 import com.algaworks.algafood.api.assembler.FormaPagamentoInputDisassembler;
 import com.algaworks.algafood.api.dto.FormaPagamentoDto;
-import com.algaworks.algafood.api.input.FormaPagamentoInput;
+import com.algaworks.algafood.api.input.FormaPagamentoNomeInput;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.service.FormaPagamentoService;
 
 @RestController
-//@RequestMapping(value = "/cozinhas",produces = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(value = "/formaspagamento")
 public class FormaPagamentoController {
 
 	private final FormaPagamentoService formaPagamentoService;
-	private final ModelMapper modelMapper;
 	private final FormaPagamentoDtoAssembler formaPagtoDtoAssembler;
-	private final FormaPagamentoInputDisassembler formaPagtoDtoDisassembler;
+	private final FormaPagamentoInputDisassembler formaPagtoInputDisassembler;
 
 	  public FormaPagamentoController(FormaPagamentoService formaPagamentoService,
 			  						  ModelMapper modelMapper,
 			  						  FormaPagamentoDtoAssembler formaPagamentoDtoAssembler,
 			  						  FormaPagamentoInputDisassembler formaPagtoDtoDisassembler) {
 	    this.formaPagamentoService = formaPagamentoService;
-	    this.modelMapper 	= modelMapper;
 	    this.formaPagtoDtoAssembler = formaPagamentoDtoAssembler;
-		this.formaPagtoDtoDisassembler = formaPagtoDtoDisassembler;
+		this.formaPagtoInputDisassembler = formaPagtoDtoDisassembler;
 
 	  }
 	
@@ -76,21 +73,21 @@ public class FormaPagamentoController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public FormaPagamentoDto adicionar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
+	public FormaPagamentoDto adicionar(@RequestBody @Valid FormaPagamentoNomeInput formaPagamentoInput) {
 		
 		FormaPagamento formaPagamento  = formaPagamentoService
-									     .salvar( formaPagtoDtoDisassembler.toEntity(formaPagamentoInput)); 
+									     .salvar( formaPagtoInputDisassembler.toEntity(formaPagamentoInput)); 
  		
 		return formaPagtoDtoAssembler.toDto(formaPagamento);
 
 	}
 	
 	@PutMapping("/{formaPagamentoId}")
-	public FormaPagamentoDto atualizar(@PathVariable Long formaPagamentoId, @RequestBody @Valid  FormaPagamentoInput fomaPagamentoInput)
+	public FormaPagamentoDto atualizar(@PathVariable Long formaPagamentoId, @RequestBody @Valid  FormaPagamentoNomeInput formaPagamentoInput)
 	{        
 		FormaPagamento formaPagamento  = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
 			
-		formaPagtoDtoDisassembler.copyToEntity(fomaPagamentoInput, formaPagamento);
+		formaPagtoInputDisassembler.copyToEntity(formaPagamentoInput, formaPagamento);
 			
 		return formaPagtoDtoAssembler.toDto(formaPagamentoService.salvar(formaPagamento));
  

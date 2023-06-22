@@ -13,10 +13,6 @@ public class FormaPagamentoDtoAssembler extends EntitytDtoAssembler<FormaPagamen
 
 	public FormaPagamentoDtoAssembler(ModelMapper mapper) {
 		super(mapper);
-		// TODO Auto-generated constructor stub
 	}
-
-
-
 
 }
