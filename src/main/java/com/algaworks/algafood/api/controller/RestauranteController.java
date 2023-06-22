@@ -96,7 +96,7 @@ public class RestauranteController {
 	@GetMapping("/{restauranteId}")
 	public RestauranteDto buscar(@PathVariable Long restauranteId) {
 
-		return restauranteDtoAssembler.toDto(restauranteService.buscarOuFalhar(restauranteId));
+ 		return restauranteDtoAssembler.toDto(restauranteService.buscarOuFalhar(restauranteId));
 
 	}
 
@@ -120,26 +120,13 @@ public class RestauranteController {
 		}
 	}
 
-	@PutMapping("/{restauranteId}/ativo")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-
-	public void ativar(@PathVariable Long restauranteId) {
-		restauranteService.ativar(restauranteId);
-	}
-
-	@DeleteMapping("/{restauranteId}/ativo")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-
-	public void inativar(@PathVariable Long restauranteId) {
-		restauranteService.inativar(restauranteId);
-	}
 
 	@PutMapping("/{restauranteId}")
 	public RestauranteDto atualizar(@PathVariable Long restauranteId,
 			@RequestBody @Valid RestauranteInput restauranteInput) {
 
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
-
+		
 		restauranteInputDissasembler.copyToEntity(restauranteInput, restaurante);
 
 		try {
@@ -154,6 +141,20 @@ public class RestauranteController {
 			throw new NegocioException(e.getMessage(), e);
 		}
 
+	}
+	
+	@PutMapping("/{restauranteId}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+
+	public void ativar(@PathVariable Long restauranteId) {
+		restauranteService.ativar(restauranteId);
+	}
+
+	@DeleteMapping("/{restauranteId}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+
+	public void inativar(@PathVariable Long restauranteId) {
+		restauranteService.inativar(restauranteId);
 	}
 
 }

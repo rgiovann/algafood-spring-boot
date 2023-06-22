@@ -20,6 +20,7 @@ public abstract class EntityInputDisassembler<I, D> {
 		// The generic type of a class is the type of the object that is being used to instantiate the class. 
 		// In this case, the generic type of the EntityInputDisassembler class is <I, D>, 
 		// where I is the type of the input object and D is the type of the domain object.
+		
 		ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
 		this.mapper = new ModelMapper();
 		
@@ -28,6 +29,7 @@ public abstract class EntityInputDisassembler<I, D> {
 		// ParameterizedType class returns an array of the actual type arguments of the parameterized type.
 		// In this case, the array will have two elements, the first element being the type of the input 
 		// object and the second element being the type of the domain object.
+		
 		this.entityObject = (Class<D>) type.getActualTypeArguments()[1];
 	}
 	
