@@ -61,6 +61,7 @@ public class CadastroUsuarioService {
 		return usuarioRepository.findById(usuarioId).orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
 	}
 
+	@Transactional
 	public void alterarSenha(Usuario usuario, String novaSenha, String senhaAtual) {
 
 		String senhaCadastrada = usuario.getSenha();

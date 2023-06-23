@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.UsuarioDtoAssembler;
 import com.algaworks.algafood.api.assembler.UsuarioInputDisassembler;
-import com.algaworks.algafood.api.assembler.UsuarioSemSenhaInputDisassembler;
 import com.algaworks.algafood.api.dto.UsuarioDto;
+import com.algaworks.algafood.api.input.UsuarioComSenhaInput;
 import com.algaworks.algafood.api.input.UsuarioInput;
-import com.algaworks.algafood.api.input.UsuarioSemSenhaInput;
 import com.algaworks.algafood.api.input.UsuarioSoSenhaInput;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.SenhaAlteradaIgualAnteriorException;
@@ -35,16 +34,13 @@ public class UsuarioController {
 	private final CadastroUsuarioService usuarioService;
 	private final UsuarioDtoAssembler usuarioDtoAssembler;
 	private final UsuarioInputDisassembler usuarioInputDisassembler;
-	private final UsuarioSemSenhaInputDisassembler usuarioSemSenhaInputDisassembler;
 
 	public UsuarioController(CadastroUsuarioService usuarioService, UsuarioDtoAssembler usuarioDtoAssembler,
-			UsuarioInputDisassembler usuarioInputDisassembler,
-			UsuarioSemSenhaInputDisassembler usuarioSemSenhaInputDisassembler) {
+			UsuarioInputDisassembler usuarioInputDisassembler) {
 
 		this.usuarioService = usuarioService;
 		this.usuarioDtoAssembler = usuarioDtoAssembler;
 		this.usuarioInputDisassembler = usuarioInputDisassembler;
-		this.usuarioSemSenhaInputDisassembler = usuarioSemSenhaInputDisassembler;
 	}
 
 	@GetMapping
@@ -63,7 +59,7 @@ public class UsuarioController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public UsuarioDto adicionar(@RequestBody @Valid UsuarioInput usuarioNomeInput) {
+	public UsuarioDto adicionar(@RequestBody @Valid UsuarioComSenhaInput usuarioNomeInput) {
 
 		return usuarioDtoAssembler.toDto(usuarioService.salvar(usuarioInputDisassembler.toEntity(usuarioNomeInput)));
 
@@ -71,10 +67,11 @@ public class UsuarioController {
 
 	@PutMapping("/{usuarioId}")
 	public UsuarioDto atualizar(@PathVariable Long usuarioId,
-			@RequestBody @Valid UsuarioSemSenhaInput usuarioSemSenhaInput) {
+			@RequestBody @Valid UsuarioInput usuarioSemSenhaInput) {
+		
 		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
 
-		usuarioSemSenhaInputDisassembler.copyToEntity(usuarioSemSenhaInput, usuario);
+		usuarioInputDisassembler.copyToEntity(usuarioSemSenhaInput, usuario);
 
 		return usuarioDtoAssembler.toDto(usuarioService.salvar(usuario));
 
@@ -94,9 +91,10 @@ public class UsuarioController {
 
 		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
 		
-
 		try {
+		
 			usuarioService.alterarSenha(usuario,usuarioSoSenhaInput.getNovaSenha(),usuarioSoSenhaInput.getSenhaAtual());
+		
 		} catch (SenhaAlteradaIgualAnteriorException e) {
 
 			throw new NegocioException(e.getMessage(), e);
