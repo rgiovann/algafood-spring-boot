@@ -12,11 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-
 import org.hibernate.annotations.CreationTimestamp;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -39,7 +35,6 @@ public class Usuario {
 	@Column(nullable = false)
 	private String senha;
 	
-	@JsonIgnore
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition="datetime")
 	private OffsetDateTime dataCadastro;

@@ -1,0 +1,14 @@
+package com.algaworks.algafood.domain.exception;
+
+//@ResponseStatus(value = HttpStatus.CONFLICT)
+// tratado pela classe ApiExceptionHandler
+public class SenhaAlteradaIgualAnteriorException extends NegocioException {
+
+	private static final long serialVersionUID = 1L;
+	
+	public SenhaAlteradaIgualAnteriorException(String msg) {
+		super(msg);
+	}
+
+}
+

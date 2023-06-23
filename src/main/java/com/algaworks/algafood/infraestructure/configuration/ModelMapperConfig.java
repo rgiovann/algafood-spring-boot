@@ -35,7 +35,6 @@ public class ModelMapperConfig {
     		protected Estado convert(EstadoIdInput source) {
     			Estado estado = new Estado();
     			estado.setId(source.getId());
-    			System.out.println("======================= AQUI - ESTADO ===================");
     			return estado;
     		}
     	};
@@ -45,7 +44,6 @@ public class ModelMapperConfig {
     		@Override
     		protected Cozinha convert(CozinhaIdInput source) {
     			Cozinha cozinha = new Cozinha();
-    			System.out.println("======================= HERE - COZINHA ===================");
     			cozinha.setId(source.getId());
     			return cozinha;
     		}
@@ -55,7 +53,6 @@ public class ModelMapperConfig {
     		@Override
     		protected Cidade convert(CidadeIdInput source) {
     			Cidade cidade = new Cidade();
-    			System.out.println("======================= HERE - CIDADE ===================");
     			cidade.setId(source.getId());
     			return cidade;
     		}
