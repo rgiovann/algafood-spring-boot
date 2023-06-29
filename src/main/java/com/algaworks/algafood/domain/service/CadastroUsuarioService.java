@@ -2,6 +2,7 @@ package com.algaworks.algafood.domain.service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
+import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.SenhaAlteradaIgualAnteriorException;
 import com.algaworks.algafood.domain.exception.SenhaAtualNaoConfereException;
 import com.algaworks.algafood.domain.exception.UsuarioNaoEncontradoException;
@@ -30,13 +32,22 @@ public class CadastroUsuarioService {
 	}
 
 	public List<Usuario> listar() {
-
+		
 		return usuarioRepository.findAll();
 
 	}
 
 	@Transactional
 	public Usuario salvar(Usuario usuario) {
+		
+		usuarioRepository.detach(usuario);
+		
+		Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
+		
+		if(usuarioExistente.isPresent() && !usuarioExistente.get().equals(usuario)) {
+			throw new NegocioException(String.format("Já existe usuário cadastrado com o email %s",usuario.getEmail()));
+		}
+
 
 		return usuarioRepository.save(usuario);
 	}
@@ -55,10 +66,6 @@ public class CadastroUsuarioService {
 			throw new EntidadeEmUsoException(String.format(MSG_USUARIO_EM_USO, usuarioId));
 		}
 
-	}
-
-	public Usuario buscarOuFalhar(Long usuarioId) {
-		return usuarioRepository.findById(usuarioId).orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
 	}
 
 	@Transactional
@@ -84,6 +91,10 @@ public class CadastroUsuarioService {
     		}
 		}
 		
+	}
+	
+	public Usuario buscarOuFalhar(Long usuarioId) {
+		return usuarioRepository.findById(usuarioId).orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
 	}
 
 }

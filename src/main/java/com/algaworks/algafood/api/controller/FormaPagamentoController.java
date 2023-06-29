@@ -21,17 +21,17 @@ import com.algaworks.algafood.api.assembler.FormaPagamentoInputDisassembler;
 import com.algaworks.algafood.api.dto.FormaPagamentoDto;
 import com.algaworks.algafood.api.input.FormaPagamentoNomeInput;
 import com.algaworks.algafood.domain.model.FormaPagamento;
-import com.algaworks.algafood.domain.service.FormaPagamentoService;
+import com.algaworks.algafood.domain.service.CadastroFormaPagamentoService;
 
 @RestController
 @RequestMapping(value = "/formaspagamento")
 public class FormaPagamentoController {
 
-	private final FormaPagamentoService formaPagamentoService;
+	private final CadastroFormaPagamentoService formaPagamentoService;
 	private final FormaPagamentoDtoAssembler formaPagtoDtoAssembler;
 	private final FormaPagamentoInputDisassembler formaPagtoInputDisassembler;
 
-	  public FormaPagamentoController(FormaPagamentoService formaPagamentoService,
+	  public FormaPagamentoController(CadastroFormaPagamentoService formaPagamentoService,
 			  						  ModelMapper modelMapper,
 			  						  FormaPagamentoDtoAssembler formaPagamentoDtoAssembler,
 			  						  FormaPagamentoInputDisassembler formaPagtoDtoDisassembler) {

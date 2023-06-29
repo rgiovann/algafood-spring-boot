@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 
@@ -17,17 +18,20 @@ public class CadastroRestauranteService {
 	private final RestauranteRepository restauranteRepository;
 	private final CadastroCozinhaService cozinhaService;
 	private final CadastroCidadeService  cidadeService;
-
-
+	private final CadastroFormaPagamentoService  formaPagtoService;
+ 
 	public CadastroRestauranteService(RestauranteRepository restauranteRepository, 
 									  CadastroCozinhaService cozinhaService,
-									  CadastroCidadeService  cidadeService
+									  CadastroCidadeService  cidadeService,
+									  CadastroFormaPagamentoService  formaPagtoService 
+ 									  
 									  ) {
 		
 		this.restauranteRepository = restauranteRepository;
 		this.cozinhaService = cozinhaService;
 		this.cidadeService = cidadeService;
-
+		this.formaPagtoService = formaPagtoService;
+ 
 	 		
 
 	}
@@ -67,12 +71,7 @@ public class CadastroRestauranteService {
 //	}
 //
 //	// TESTE
-//	public Optional<RestauranteDto> restaurantesBuscarPrimeiro() {
-//		Restaurante restaurante = restauranteRepository.buscarPrimeiro().get();
-//		RestauranteDto restauranteDto = modelMapper.map(restaurante, RestauranteDto.class);
-//		return Optional.ofNullable(restauranteDto);
-//
-//	}
+
 //--------------------------------- API OFICIAL-----------------------------------------------------------------------	
 
 //	public Restaurante buscarO(Long restauranteId) {
@@ -124,5 +123,33 @@ public class CadastroRestauranteService {
 		return  restauranteRepository.findById(restauranteId)
 				.orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId) );
 	}
+	
+	
+	public Restaurante restaurantesBuscarPrimeiro() {
+		return restauranteRepository.buscarPrimeiro().get();
+	}
+					
+	@Transactional
+	public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+		
+		Restaurante restaurante = this.buscarOuFalhar(restauranteId);
+		FormaPagamento formaPagto = formaPagtoService.buscarOuFalhar(formaPagamentoId);
+		
+		restaurante.removerFormaPagamento(formaPagto);
+		
+	}
+	
+	@Transactional
+	public void  associarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+		
+		Restaurante restaurante = this.buscarOuFalhar(restauranteId);
+		FormaPagamento formaPagto = formaPagtoService.buscarOuFalhar(formaPagamentoId);
+		
+		restaurante.adicionarFormaPagamento(formaPagto);
+		
+	}
+ 
+
+	 
 
 }

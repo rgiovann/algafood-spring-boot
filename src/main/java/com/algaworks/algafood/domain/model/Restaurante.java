@@ -2,8 +2,8 @@ package com.algaworks.algafood.domain.model;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -50,7 +50,7 @@ public class Restaurante {
 	private Cozinha cozinha;
 	
 	@OneToMany(mappedBy = "restaurante")
-	private List<Produto> produtos = new ArrayList<Produto>();
+	private Set<Produto> produtos = new HashSet<Produto>();   // to preserve order of insertion
 	
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition="datetime")
@@ -69,7 +69,7 @@ public class Restaurante {
 	@JoinTable(name = "restaurante_forma_pagamento",
 	           joinColumns = @JoinColumn(name ="restaurante_id"),
 	           inverseJoinColumns = @JoinColumn(name ="forma_pagamento_id"))
-	private List<FormaPagamento> formasPagamento = new ArrayList<FormaPagamento>();
+	private Set<FormaPagamento> formasPagamento = new HashSet<FormaPagamento>();
 	
 	public void ativar()
 	{
@@ -80,4 +80,21 @@ public class Restaurante {
 	{
 		this.setAtivo(false);
 	}
+	
+	public boolean removerFormaPagamento(FormaPagamento formaPagamento) {
+		return this.getFormasPagamento().remove(formaPagamento);
+	}
+	
+	public boolean adicionarFormaPagamento(FormaPagamento formaPagamento) {
+		return this.getFormasPagamento().add(formaPagamento);
+	}
+	
+	public boolean removerProduto(Produto produto) {
+		return this.getProdutos().remove(produto);
+	}
+	
+	public boolean adicionarProduto(Produto produto) {
+		return this.getProdutos().add(produto);
+	}
+
 }

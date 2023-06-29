@@ -13,12 +13,12 @@ import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.repository.FormaPagamentoRepository;
 
 @Service
-public class FormaPagamentoService {
+public class CadastroFormaPagamentoService {
 	
 	private static final String FORMA_PAGAMENTO_EM_USO = "Forma de pagamento de código %d não pode ser removida, pois está em uso.";
 	private final FormaPagamentoRepository formaPagamentoRepository;
 
-	public FormaPagamentoService(FormaPagamentoRepository formaPagamentoRepository) {
+	public CadastroFormaPagamentoService(FormaPagamentoRepository formaPagamentoRepository) {
 		this.formaPagamentoRepository = formaPagamentoRepository;
 
 	}

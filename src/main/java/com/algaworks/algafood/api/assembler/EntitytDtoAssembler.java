@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.assembler;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public abstract class EntitytDtoAssembler<M, D> {
 	}
 	
  
-	public List<M> toCollectionDto(List<D> listOfEntityObjects) {
+	public List<M> toCollectionDto(Collection<D> listOfEntityObjects) {
 		return listOfEntityObjects.stream().map(o -> this.toDto(o)).collect(Collectors.toList());
 	}
 	

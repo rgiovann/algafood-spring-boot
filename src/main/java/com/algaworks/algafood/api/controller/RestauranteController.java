@@ -86,6 +86,13 @@ public class RestauranteController {
 //------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------
 
+	
+	@GetMapping("/buscar-primeiro")
+	public RestauranteDto restaurantesBuscarPrimeiro() {
+ 
+		return restauranteDtoAssembler.toDto(restauranteService.restaurantesBuscarPrimeiro());
+	}
+	
 	@GetMapping
 	public List<RestauranteDto> listar() {
 
