@@ -39,6 +39,8 @@ public class Restaurante {
 	
 	private Boolean ativo = Boolean.TRUE;
 	
+	private Boolean aberto = Boolean.FALSE;
+	
 //	@PositiveOrZero  // removido porque validation nas clases da API
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
@@ -79,6 +81,16 @@ public class Restaurante {
 	public void inativar()
 	{
 		this.setAtivo(false);
+	}
+	
+	public void fechar()
+	{
+		this.setAberto(false);
+	}
+	
+	public void abrir()
+	{
+		this.setAberto(true);
 	}
 	
 	public boolean removerFormaPagamento(FormaPagamento formaPagamento) {

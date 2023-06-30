@@ -30,7 +30,7 @@ public class CadastroProdutoService {
 		
 		restauranteService.buscarOuFalhar(restauranteId);
 		return  produtoRepository.buscaProdutoRestaurante(restauranteId,produtoId)
-				.orElseThrow(() -> new ProdutoNaoEncontradoException(produtoId) );
+				.orElseThrow(() -> new ProdutoNaoEncontradoException(produtoId,restauranteId) );
 		
 	}
 

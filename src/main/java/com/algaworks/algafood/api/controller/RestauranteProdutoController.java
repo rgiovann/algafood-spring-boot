@@ -50,7 +50,7 @@ public class RestauranteProdutoController {
 	}
 
 	@GetMapping
-	public List<ProdutoDto> listar(@PathVariable Long restauranteId){
+	public List<ProdutoDto> listarProdutos(@PathVariable Long restauranteId){
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 		return produtoDtoAssembler.toCollectionDto(restaurante.getProdutos());		
 	}
@@ -76,7 +76,7 @@ public class RestauranteProdutoController {
 		return produtoDtoAssembler.toDto(produto);
 	}
 	@PutMapping("/{produtoId}")
-	public ProdutoDto associar(@PathVariable Long restauranteId, @PathVariable Long produtoId,@RequestBody @Valid ProdutoInput produtoInput) {
+	public ProdutoDto atualizarProduto(@PathVariable Long restauranteId, @PathVariable Long produtoId,@RequestBody @Valid ProdutoInput produtoInput) {
 		
 		restauranteService.buscarOuFalhar(restauranteId);
 		Produto produto = produtoService.buscarProdutoRestaurante(restauranteId, produtoId);
