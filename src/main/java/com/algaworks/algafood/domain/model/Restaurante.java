@@ -73,6 +73,12 @@ public class Restaurante {
 	           inverseJoinColumns = @JoinColumn(name ="forma_pagamento_id"))
 	private Set<FormaPagamento> formasPagamento = new HashSet<FormaPagamento>();
 	
+	@ManyToMany
+	@JoinTable(name = "restaurante_usuario_responsavel",
+	           joinColumns = @JoinColumn(name ="restaurante_id"),
+	           inverseJoinColumns = @JoinColumn(name ="usuario_id"))
+	private Set<Usuario> responsaveis = new HashSet<Usuario>();
+	
 	public void ativar()
 	{
 		this.setAtivo(true);
@@ -108,5 +114,14 @@ public class Restaurante {
 	public boolean adicionarProduto(Produto produto) {
 		return this.getProdutos().add(produto);
 	}
+	
+	public boolean removerResponsavel(Usuario usuario) {
+		return this.getResponsaveis().remove(usuario);
+	}
+	
+	public boolean adicionarResponsavel(Usuario usuario) {
+		return this.getResponsaveis().add(usuario);
+	}
+
 
 }

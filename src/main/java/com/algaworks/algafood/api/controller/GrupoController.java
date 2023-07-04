@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.GrupoDtoAssembler;
 import com.algaworks.algafood.api.assembler.GrupoNomeInputDisassembler;
-import com.algaworks.algafood.api.assembler.PermissaoDtoAssembler;
 import com.algaworks.algafood.api.dto.GrupoDto;
-import com.algaworks.algafood.api.dto.PermissaoDto;
 import com.algaworks.algafood.api.input.GrupoNomeInput;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.service.CadastroGrupoService;

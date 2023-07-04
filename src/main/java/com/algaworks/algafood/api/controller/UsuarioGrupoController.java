@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.assembler.GrupoDtoAssembler;
 import com.algaworks.algafood.api.dto.GrupoDto;
 import com.algaworks.algafood.domain.model.Usuario;
-import com.algaworks.algafood.domain.service.CadastroGrupoService;
 import com.algaworks.algafood.domain.service.CadastroUsuarioService;
 
 @RestController

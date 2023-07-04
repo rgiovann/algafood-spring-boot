@@ -47,6 +47,7 @@ public class Usuario {
 	           inverseJoinColumns = @JoinColumn(name ="grupo_id"))
 	private Set<Grupo> grupos = new HashSet<Grupo>();
 	
+	
 	public boolean removerGrupo(Grupo grupo) {
 		return this.getGrupos().remove(grupo);
 	}

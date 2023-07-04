@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.FormaPagamentoDtoAssembler;
-import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
 import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
 import com.algaworks.algafood.api.dto.FormaPagamentoDto;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -28,7 +27,6 @@ public class RestauranteFormaPagamentoController {
 
 	public RestauranteFormaPagamentoController(CadastroRestauranteService restauranteService,
 			RestauranteInputDisassembler restauranteInputDissasembler,
-			RestauranteDtoAssembler restauranteDtoAssembler,
 			FormaPagamentoDtoAssembler formaPagtoDtoAssembler) {
 
 		this.restauranteService = restauranteService;
