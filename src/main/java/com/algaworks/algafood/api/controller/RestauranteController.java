@@ -22,6 +22,7 @@ import com.algaworks.algafood.api.input.RestauranteInput;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 
@@ -86,13 +87,12 @@ public class RestauranteController {
 //------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------
 
-	
 	@GetMapping("/buscar-primeiro")
 	public RestauranteDto restaurantesBuscarPrimeiro() {
- 
+
 		return restauranteDtoAssembler.toDto(restauranteService.restaurantesBuscarPrimeiro());
 	}
-	
+
 	@GetMapping
 	public List<RestauranteDto> listar() {
 
@@ -103,7 +103,7 @@ public class RestauranteController {
 	@GetMapping("/{restauranteId}")
 	public RestauranteDto buscar(@PathVariable Long restauranteId) {
 
- 		return restauranteDtoAssembler.toDto(restauranteService.buscarOuFalhar(restauranteId));
+		return restauranteDtoAssembler.toDto(restauranteService.buscarOuFalhar(restauranteId));
 
 	}
 
@@ -120,20 +120,18 @@ public class RestauranteController {
 		} catch (CozinhaNaoEncontradaException e) {
 
 			throw new NegocioException(e.getMessage(), e);
-		}
-		catch (CidadeNaoEncontradaException e) {
+		} catch (CidadeNaoEncontradaException e) {
 
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
-
 
 	@PutMapping("/{restauranteId}")
 	public RestauranteDto atualizar(@PathVariable Long restauranteId,
 			@RequestBody @Valid RestauranteInput restauranteInput) {
 
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
-		
+
 		restauranteInputDissasembler.copyToEntity(restauranteInput, restaurante);
 
 		try {
@@ -142,18 +140,38 @@ public class RestauranteController {
 		} catch (CozinhaNaoEncontradaException e) {
 
 			throw new NegocioException(e.getMessage(), e);
-			
+
 		} catch (CidadeNaoEncontradaException e) {
 
 			throw new NegocioException(e.getMessage(), e);
 		}
 
 	}
-	
+
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativarRestaurante(@PathVariable Long restauranteId) {
 		restauranteService.ativar(restauranteId);
+	}
+
+	@PutMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativarMultiplosRestaurante(@RequestBody List<Long> restauranteIds) {
+		try {
+			restauranteService.ativar(restauranteIds);
+		} catch (RestauranteNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+	}
+
+	@DeleteMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativarMultiplosRestaurante(@RequestBody List<Long> restauranteIds) {
+		try {
+			restauranteService.inativar(restauranteIds);
+		} catch (RestauranteNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
 	}
 
 	@DeleteMapping("/{restauranteId}/ativo")
@@ -162,18 +180,16 @@ public class RestauranteController {
 		restauranteService.inativar(restauranteId);
 	}
 
-	
 	@PutMapping("/{restauranteId}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void abrirRestauranrte(@PathVariable Long restauranteId) {
 		restauranteService.abrir(restauranteId);
 	}
-	
+
 	@PutMapping("/{restauranteId}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void fecharRestauranrte(@PathVariable Long restauranteId) {
 		restauranteService.fechar(restauranteId);
 	}
-	
-	
+
 }
