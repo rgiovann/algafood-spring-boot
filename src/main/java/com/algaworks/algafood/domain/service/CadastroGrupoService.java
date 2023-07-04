@@ -9,7 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.GrupoNaoEncontradoException;
+import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Grupo;
+import com.algaworks.algafood.domain.model.Permissao;
+import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.GrupoRepository;
 
 @Service
@@ -17,9 +20,13 @@ public class CadastroGrupoService {
 
 	private static final String MSG_GRUPO_EM_USO = "Grupo de código %d não pode ser removido, pois está em uso.";
 	private final GrupoRepository grupoRepository;
+	private final CadastroPermissaoService cadastroPermissaoService;
 
-	public CadastroGrupoService(GrupoRepository grupoRepository) {
+
+	public CadastroGrupoService(GrupoRepository grupoRepository,
+			                    CadastroPermissaoService cadastroPermissaoService) {
 		this.grupoRepository = grupoRepository;
+		this.cadastroPermissaoService = cadastroPermissaoService;
 
 	}
 
@@ -29,7 +36,7 @@ public class CadastroGrupoService {
 		return grupoRepository.findAll();
 
 	}
-
+	
 	@Transactional
 	public Grupo salvar(Grupo grupo) {
 
@@ -54,6 +61,26 @@ public class CadastroGrupoService {
 
 	public Grupo buscarOuFalhar(Long grupoId) {
 		return grupoRepository.findById(grupoId).orElseThrow(() -> new GrupoNaoEncontradoException(grupoId));
+	}
+	
+	@Transactional
+	public void desassociarPermissao(Long grupoId, Long permissaoId) {
+		
+		Grupo grupo = this.buscarOuFalhar(grupoId);
+		Permissao permissao = cadastroPermissaoService.buscarOuFalhar(permissaoId);
+		
+		grupo.removerPermissao(permissao);
+ 		
+	}
+	
+	@Transactional
+	public void  associarPermissao(Long grupoId, Long permissaoId) {
+		
+		Grupo grupo = this.buscarOuFalhar(grupoId);
+		Permissao permissao = cadastroPermissaoService.buscarOuFalhar(permissaoId);
+		grupo.adicionarPermissao(permissao);
+
+		
 	}
 
 }

@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.GrupoDtoAssembler;
 import com.algaworks.algafood.api.assembler.GrupoNomeInputDisassembler;
+import com.algaworks.algafood.api.assembler.PermissaoDtoAssembler;
 import com.algaworks.algafood.api.dto.GrupoDto;
+import com.algaworks.algafood.api.dto.PermissaoDto;
 import com.algaworks.algafood.api.input.GrupoNomeInput;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.service.CadastroGrupoService;
@@ -29,14 +31,16 @@ public class GrupoController {
 	private final CadastroGrupoService grupoService;
     private final GrupoDtoAssembler grupoDtoAssembler;
     private final GrupoNomeInputDisassembler grupoNomeInputDisassembler;
-	
 
-	public GrupoController(CadastroGrupoService grupoService, GrupoDtoAssembler grupoDtoAssembler,
-			GrupoNomeInputDisassembler grupoInputDisassembler) {
+
+	public GrupoController(CadastroGrupoService grupoService, 
+			GrupoDtoAssembler grupoDtoAssembler,
+			GrupoNomeInputDisassembler grupoInputDisassembler
+			) {
 		this.grupoService = grupoService;
 		this.grupoDtoAssembler = grupoDtoAssembler;
 		this.grupoNomeInputDisassembler = grupoInputDisassembler;
-	}
+ 	}
 
 	@GetMapping
 	public List<GrupoDto> listar() {
@@ -51,8 +55,7 @@ public class GrupoController {
 		return  grupoDtoAssembler.toDto(grupoService.buscarOuFalhar(grupoId));
 
 	}
-
-
+	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoDto adicionar(@RequestBody @Valid GrupoNomeInput grupoNomeInput) {
