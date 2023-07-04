@@ -14,6 +14,7 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.SenhaAlteradaIgualAnteriorException;
 import com.algaworks.algafood.domain.exception.SenhaAtualNaoConfereException;
 import com.algaworks.algafood.domain.exception.UsuarioNaoEncontradoException;
+import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.UsuarioRepository;
 
@@ -25,9 +26,13 @@ public class CadastroUsuarioService {
 	private static final String MSG_SENHA_ATUAL_INCORRETA = "Senha atual do usuário %d é incorreta.";
 
 	private final UsuarioRepository usuarioRepository;
+	private final CadastroGrupoService cadastroGrupoService;
 
-	public CadastroUsuarioService(UsuarioRepository usuarioRepository) {
+
+	public CadastroUsuarioService(	UsuarioRepository usuarioRepository,
+									CadastroGrupoService cadastroGrupoService) {
 		this.usuarioRepository = usuarioRepository;
+		this.cadastroGrupoService = cadastroGrupoService;
 
 	}
 
@@ -95,6 +100,22 @@ public class CadastroUsuarioService {
 	
 	public Usuario buscarOuFalhar(Long usuarioId) {
 		return usuarioRepository.findById(usuarioId).orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
+	}
+
+	@Transactional
+	public void desassociarGrupo(Long usuarioId, Long grupoId) {
+		Usuario usuario = this.buscarOuFalhar(usuarioId);
+		Grupo   grupo =   cadastroGrupoService.buscarOuFalhar(grupoId);
+		usuario.removerGrupo(grupo);
+		
+	}
+
+	@Transactional
+	public void associarGrupo(Long usuarioId, Long grupoId) {
+		Usuario usuario = this.buscarOuFalhar(usuarioId);
+		Grupo   grupo =   cadastroGrupoService.buscarOuFalhar(grupoId);
+		usuario.adicionarGrupo(grupo);
+		
 	}
 
 }
