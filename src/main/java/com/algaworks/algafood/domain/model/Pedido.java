@@ -22,7 +22,6 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.algaworks.algafood.domain.enumeration.StatusPedido;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,7 +46,7 @@ public class Pedido {
 	private BigDecimal valorTotal;
 	
 	@Enumerated(EnumType.STRING)
-	private StatusPedido status;
+	private StatusPedido status = StatusPedido.CRIADO;
 	
 	@Column(nullable =false)
     @CreationTimestamp
@@ -57,30 +56,33 @@ public class Pedido {
 	private OffsetDateTime dataCancelamento;
 	private OffsetDateTime dataEntrega;
 
-	@JsonIgnore
 	@Embedded
 	private Endereco enderecoEntrega;
 	
-	@JsonIgnore
-	//@ManyToOne(fetch = FetchType.LAZY) 
 	@ManyToOne 
 	@JoinColumn(name ="restaurante_id", nullable=false)
 	private Restaurante restaurante;
 	
 	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-	@JsonIgnore       // para evitar associacao circular
 	private List<ItemPedido> itens = new ArrayList<ItemPedido>();
 	
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+ 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name ="forma_pagamento_id",nullable=false)
  	private FormaPagamento formaPagamento;
 	
-	@JsonIgnore
-	//@ManyToOne(fetch = FetchType.LAZY) 
-	@ManyToOne 
+ 	@ManyToOne 
 	@JoinColumn(name ="usuario_cliente_id",nullable=false)
 	private Usuario cliente;
+ 	
+ 	public void calcularValorTotal() {
+ 	    getItens().forEach(ItemPedido::calcularPrecoTotal);
+ 	    
+ 	    this.subtotal = getItens().stream()
+ 	        .map(item -> item.getPrecoTotal())
+ 	        .reduce(BigDecimal.ZERO, BigDecimal::add);
+ 	    
+ 	    this.valorTotal = this.subtotal.add(this.taxaFrete);
+ 	}
 
 
 }

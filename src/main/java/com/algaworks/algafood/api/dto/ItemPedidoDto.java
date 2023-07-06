@@ -9,11 +9,10 @@ import lombok.Setter;
 @Setter
 public class ItemPedidoDto {
 	
-	private Long produtoId;
-	private String     produtoNome;
- 	private Integer quantidade;
- 	private BigDecimal precoUnitario;
- 	private BigDecimal precoTotal;
+   	private Long id;
+   	private ProdutoCompactDto produto;
+	private Integer quantidade;
+  	private BigDecimal precoTotal;
 	private String     observacao;
 
 }
