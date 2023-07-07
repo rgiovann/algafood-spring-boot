@@ -258,11 +258,25 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	}
 
-	private String joinPath(List<Reference> references) {
-
-		return references.stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
-	}
+//	private String joinPath(List<Reference> references) {
+//
+//		return references.stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
+//	}
+//	
 	
+	// agora trata referencias em Collections
+	private String joinPath(List<Reference> references) {
+		return references.stream()
+				.map(ref -> {
+					// null pega o index do elemento do atributo na collection
+					if (ref.getFieldName() == null) {
+						return "[" + ref.getIndex() + "]";
+					} else {
+						return ref.getFieldName();
+					}
+				})
+				.collect(Collectors.joining("."));
+	}
 	
 	private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult, HttpHeaders headers,
 			HttpStatus status, WebRequest request)

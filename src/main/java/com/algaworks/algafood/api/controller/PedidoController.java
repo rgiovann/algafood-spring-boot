@@ -53,10 +53,10 @@ public class PedidoController {
  
 	}
 	
-	@GetMapping("/{pedidoId}")
-	public PedidoDto buscar(@PathVariable Long pedidoId) {
+	@GetMapping("/{codigoPedido}")
+	public PedidoDto buscar(@PathVariable String codigoPedido) {
 
-		return  pedidoDtoAssembler.toDto(pedidoService.buscarOuFalhar(pedidoId));
+		return  pedidoDtoAssembler.toDto(pedidoService.buscarOuFalhar(codigoPedido));
 
 	}
 	
