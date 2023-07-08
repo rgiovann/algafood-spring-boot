@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
 import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
 import com.algaworks.algafood.api.dto.RestauranteDto;
+import com.algaworks.algafood.api.dto.view.RestauranteView;
 import com.algaworks.algafood.api.input.RestauranteInput;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
@@ -25,6 +26,7 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
+import com.fasterxml.jackson.annotation.JsonView;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
@@ -92,13 +94,55 @@ public class RestauranteController {
 
 		return restauranteDtoAssembler.toDto(restauranteService.restaurantesBuscarPrimeiro());
 	}
+	
+	// OFICIAL // completo só no buscar por Id
 
-	@GetMapping
+	@JsonView(RestauranteView.Resumo.class)
+ 	@GetMapping
 	public List<RestauranteDto> listar() {
 
 		return restauranteDtoAssembler.toCollectionDto(restauranteService.listar());
 
 	}
+ 
+	@JsonView(RestauranteView.ApenasNome.class)
+	@GetMapping(params = "projecao=nome")
+	public List<RestauranteDto> listarResumido() {
+
+		return this.listar();
+
+	}
+//	
+//	@JsonView(RestauranteView.ApenasNome.class)
+//	@GetMapping(params = "projecao=nome")
+//	public List<RestauranteDto> listarApenasNome() {
+//
+//		return this.listar();
+//
+//	}
+	
+	// COMO REFERENCIA SERIALIZATION VIEW DINAMICO
+// 	@GetMapping
+//	public MappingJacksonValue  listar( @RequestParam(required=false) String projecao ) {
+// 		
+// 		List<Restaurante> restaurantes = restauranteService.listar();
+//
+// 		List<RestauranteDto> restaurantesDto = restauranteDtoAssembler.toCollectionDto(restaurantes);
+// 		
+// 		MappingJacksonValue restaurantesWraper = new MappingJacksonValue(restaurantesDto);
+// 		
+//		restaurantesWraper.setSerializationView(RestauranteView.Resumo.class);
+//
+// 		
+// 		if("nome".equals(projecao)) {
+// 			restaurantesWraper.setSerializationView(RestauranteView.ApenasNome.class);
+// 		} else if ("completo".equals(projecao)) {
+// 			restaurantesWraper.setSerializationView(null);
+// 		}
+// 		
+// 		return restaurantesWraper;
+//
+//	}
 
 	@GetMapping("/{restauranteId}")
 	public RestauranteDto buscar(@PathVariable Long restauranteId) {
