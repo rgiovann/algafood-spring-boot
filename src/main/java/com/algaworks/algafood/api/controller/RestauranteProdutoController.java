@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.validation.Valid;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,9 +52,20 @@ public class RestauranteProdutoController {
 	}
 
 	@GetMapping
-	public List<ProdutoDto> listarProdutos(@PathVariable Long restauranteId){
+	public List<ProdutoDto> listarProdutos(@PathVariable Long restauranteId,
+										   @RequestParam(required=false) boolean incluirInativos){
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
-		return produtoDtoAssembler.toCollectionDto(restaurante.getProdutos());		
+
+		List<Produto> todosProdutos = null;
+		if( incluirInativos)
+		{
+			todosProdutos = produtoService.findTodosProdutosByRestaurante(restaurante);
+		} else
+		{
+			todosProdutos = produtoService.findAtivosByRestaurante(restaurante);
+
+		}
+		return produtoDtoAssembler.toCollectionDto(todosProdutos);		
 	}
 	
 	@GetMapping("/{produtoId}")

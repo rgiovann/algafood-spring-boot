@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -92,7 +93,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleValidationInternal( ex,ex.getBindingResult(),new HttpHeaders(), HttpStatus.BAD_REQUEST,request);
 	}
 	
-	
+		
+	@Override
+	protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status,
+			WebRequest request) {
+		return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
+	}
 	
 	@Override
 	protected ResponseEntity<Object> handleNoHandlerFoundException(
@@ -268,7 +274,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	private String joinPath(List<Reference> references) {
 		return references.stream()
 				.map(ref -> {
-					// null pega o index do elemento do atributo na collection
+					// == null pega o index do elemento do atributo na collection
 					if (ref.getFieldName() == null) {
 						return "[" + ref.getIndex() + "]";
 					} else {

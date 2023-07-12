@@ -14,6 +14,8 @@ import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
+import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
+import com.algaworks.algafood.infraestructure.repository.spec.PedidoSpecs;
 
 @Service
 public class CadastroEmissaoPedidoService {
@@ -42,9 +44,9 @@ public class CadastroEmissaoPedidoService {
 
 	}
 
-	public List<Pedido> listar() {
+	public List<Pedido> listar(PedidoFilter filtro) {
 
-		return pedidoRepository.findAll();
+		return pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro));
 
 	}
 
