@@ -4,6 +4,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,11 +52,20 @@ public class PedidoController {
  	}
 
 	@GetMapping
-	public List<PedidoCompactDto> pesquisar(PedidoFilter filter) {
+	public Page<PedidoCompactDto> pesquisar(PedidoFilter filter, @PageableDefault(size=10) Pageable pageable) {
 
-		return pedidoCompactDtoAssembler.toCollectionDto(pedidoService.listar(filter));
+		Page<Pedido> pedidoPage = pedidoService.listar(filter,pageable);
+		
+		List<PedidoCompactDto> pedidoDtoList = pedidoCompactDtoAssembler.toCollectionDto(pedidoPage.getContent());
+		
+		Page<PedidoCompactDto> pedidoCompactDtoPage = new PageImpl<>(pedidoDtoList,pageable,pedidoPage.getTotalElements());
+		
+		
+		return pedidoCompactDtoPage;
  
 	}
+	
+	
 	
 //	@GetMapping
 //	public MappingJacksonValue listar(@RequestParam(required=false) String campos) {

@@ -1,7 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,9 +44,9 @@ public class CadastroEmissaoPedidoService {
 
 	}
 
-	public List<Pedido> listar(PedidoFilter filtro) {
+	public Page<Pedido> listar(PedidoFilter filtro, Pageable pageable) {
 
-		return pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro));
+		return pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
 
 	}
 

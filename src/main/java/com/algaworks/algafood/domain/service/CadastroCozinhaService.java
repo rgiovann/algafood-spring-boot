@@ -1,9 +1,9 @@
 package com.algaworks.algafood.domain.service;
 
-import java.util.List;
-
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +30,9 @@ public class CadastroCozinhaService {
 //
 //	}
 
-	public List<Cozinha> listar() {
+	public Page<Cozinha> listar(Pageable cozinhasPage) {
 
-		return cozinhaRepository.findAll();
+		return cozinhaRepository.findAll(cozinhasPage);
 
 	}
 

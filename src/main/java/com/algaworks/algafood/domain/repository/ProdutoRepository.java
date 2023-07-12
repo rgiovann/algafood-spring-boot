@@ -1,6 +1,5 @@
 package com.algaworks.algafood.domain.repository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
