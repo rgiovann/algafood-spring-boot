@@ -18,11 +18,12 @@ public class PedidoSpecs {
 
 			// verifica se resultado da query é do tipo pedido, caso contrário não faz
 			// fetch, pois pode ser select count() do page.
-			//if (Pedido.class.equals(query.getResultType())) {
+			// exception join fetch só aparece se Page.size() < nr total de registros da query
+			if (Pedido.class.equals(query.getResultType())) {
 				// problema N+1 selects
 				root.fetch("restaurante").fetch("cozinha");
 				root.fetch("cliente");
-			//}
+			}
 
 			var predicates = new ArrayList<Predicate>();
 

@@ -18,6 +18,7 @@ public class PedidoCompactDto {
 	private String     status;
 	private OffsetDateTime dataCriacao;
 	private RestauranteCompactDto restaurante;
-	private UsuarioDto cliente;
+	//private UsuarioDto cliente;
+	private String nomeCliente;
 
 }
