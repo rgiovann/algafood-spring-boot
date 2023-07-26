@@ -18,7 +18,7 @@ public class PedidoCompactDto {
 	private String     status;
 	private OffsetDateTime dataCriacao;
 	private RestauranteCompactDto restaurante;
-	//private UsuarioDto cliente;
-	private String nomeCliente;
+	private UsuarioDto cliente; 
+	//private String nomeCliente; // modelmapper reconhece cliente.nome como nomeCliente
 
 }
