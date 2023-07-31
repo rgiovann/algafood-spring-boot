@@ -60,4 +60,12 @@ public class CatalogoFotoProdutoService {
 				.orElseThrow(() -> new FotoNaoEncontradaException(produtoId,restauranteId) );
 	}
 
+	@Transactional
+	public void excluir(FotoProduto foto) {
+		
+		produtoRepository.delete(foto);
+		produtoRepository.flush(); // salva no BD os dados da foto, commitando a insercao ANTES de salvar a foto.
+		fotoStorageService.remover(foto.getNomeArquivo());
+	}
+
 }

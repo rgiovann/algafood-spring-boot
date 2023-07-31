@@ -1,7 +1,0 @@
-{"properties": [
-  {
-    "name": "algafood.storage.local.diretorio-fotos",
-    "type": "java.lang.String",
-    "description": "Diretório local para salvar fotos de produtos."
-  } 
-]}
