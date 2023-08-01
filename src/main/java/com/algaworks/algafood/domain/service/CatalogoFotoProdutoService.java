@@ -46,7 +46,11 @@ public class CatalogoFotoProdutoService {
 		foto = produtoRepository.save(foto);
 		produtoRepository.flush(); // salva no BD os dados da foto, commitando a insercao ANTES de salvar a foto.
 
-		NovaFoto novaFoto = NovaFoto.builder().nomeArquivo(novoNomeArquivo).inputStream(dadosArquivo).build();
+		NovaFoto novaFoto = NovaFoto.builder()
+				           .nomeArquivo(novoNomeArquivo)
+				           .inputStream(dadosArquivo)
+				           .contentType(foto.getContentType())
+				           .build();
 
 		fotoStorageService.substituir(nomeArquivoExistente, novaFoto);
  
