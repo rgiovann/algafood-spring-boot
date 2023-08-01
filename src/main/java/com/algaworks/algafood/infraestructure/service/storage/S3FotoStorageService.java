@@ -2,8 +2,6 @@ package com.algaworks.algafood.infraestructure.service.storage;
 
 import java.net.URL;
 
-import org.springframework.stereotype.Service;
-
 import com.algaworks.algafood.core.storage.StorageProperties;
 import com.algaworks.algafood.domain.service.FotoStorageService;
 import com.amazonaws.services.s3.AmazonS3;
