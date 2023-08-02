@@ -1,27 +1,32 @@
 package com.algaworks.algafood.infraestructure.service.email;
 
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeUtility;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import com.algaworks.algafood.core.email.EmailProperties;
 import com.algaworks.algafood.domain.service.EnvioEmailService;
 
-@Service
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+
+
 public class SmtpEnvioEmailService implements EnvioEmailService{
 	
-	private JavaMailSender mailSender;
+	private final JavaMailSender mailSender;
 
-	private EmailProperties emailProperties;
+	private final EmailProperties emailProperties;
+	
+	private final Configuration freeMarkerConfig;
 
 	public SmtpEnvioEmailService(JavaMailSender mailSender, 
-								 EmailProperties emailProperties) {
+								 EmailProperties emailProperties,
+								 Configuration freeMarkerConfig) {
 		this.mailSender = mailSender;
 		this.emailProperties = emailProperties;
+		this.freeMarkerConfig = freeMarkerConfig;
 	}
 
 	@Override
@@ -29,13 +34,16 @@ public class SmtpEnvioEmailService implements EnvioEmailService{
 
 		
 		try {
+			
+			String corpo = processarTemplate(mensagem);
+			
 			MimeMessage mimeMessage = mailSender.createMimeMessage(); 									
 			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,"UTF-8");	
-			String tag = emailProperties.getTag();
-			String email = emailProperties.getRemetente();
-			helper.setFrom(email,tag);
+			boolean emailFormatIsHtml = true;
+
+ 			helper.setFrom(emailProperties.getRemetente());
 			helper.setSubject(mensagem.getAssunto());
-			helper.setText(mensagem.getCorpo(),true);
+			helper.setText(corpo,emailFormatIsHtml);
 			helper.setTo(mensagem.getDestinatarios().toArray(new String[0]));
 			
 			this.mailSender.send(mimeMessage);
@@ -44,6 +52,18 @@ public class SmtpEnvioEmailService implements EnvioEmailService{
 		} catch (Exception e) {
 			throw new EmailException("Não foi possível enviar email", e);
 		}
+	}
+	
+	
+	private String processarTemplate( Mensagem mensagem) {
+		try {
+			Template template = this.freeMarkerConfig.getTemplate(mensagem.getNomeTemplate());
+			
+			return FreeMarkerTemplateUtils.processTemplateIntoString(template, mensagem.getVariaveis());
+			
+		} catch (Exception e) {
+			throw new EmailException("Não foi possível montar o corpo do email", e);
+		}  
 	}
 
 }

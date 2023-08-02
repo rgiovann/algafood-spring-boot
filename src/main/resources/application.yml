@@ -1,0 +1,54 @@
+spring:
+  freemarker:
+    settings:
+      locale: pt_BR
+  jackson:
+    deserialization:
+      fail-on-ignored-properties: true
+      fail-on-unknown-properties: true
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        "[format_sql]": true
+    show-sql: true
+  mail:
+    host: email-smtp.us-east-1.amazonaws.com
+    username: AKIAYOMSZWIKHWOZCKVD
+    port: '587'
+  web:
+    resources:
+      add-mappings: false
+  datasource:
+    password: ranger19
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    url: jdbc:mysql://localhost/algafood?createDatabaseIfNotExist=true&serverTimezone=UTC
+  output:
+    ansi:
+      enabled: NEVER
+  flyway:
+    locations: classpath:db/migration,classpath:db/testdata
+  mvc:
+    throw-exception-if-no-handler-found: true
+algafood:
+  email:
+    remetente: AlgaFoods - NÃO Responder <giovanni.rozza@gmail.com>
+    tipo: aws
+  storage:
+    local:
+      diretorio-fotos: /JAVA/ALGAWORKS_ESR/Projeto/algafood-api-catalogo
+    s3:
+      bucket: algafoods-glr
+      regiao: us-east-1
+      diretorio-fotos: catalogo
+    tipo: s3
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+server:
+  error:
+    include-message: always
+    include-stacktrace: always
