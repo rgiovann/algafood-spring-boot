@@ -35,7 +35,7 @@ public class FakeEnvioEmailService implements EnvioEmailService {
 				log.info(String.valueOf(i++)+". " + destinatario );
 			}
 			log.info("Assunto.............: " + mensagem.getAssunto());	 
-			log.info("Corpo...............: " + corpo);
+			log.info("Corpo...............:\n " + corpo);
 
 	}
 

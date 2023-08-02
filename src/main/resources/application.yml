@@ -34,7 +34,11 @@ spring:
 algafood:
   email:
     remetente: AlgaFoods - NÃO Responder <giovanni.rozza@gmail.com>
-    tipo: aws
+    tipo: sandbox
+    sand-box:
+      destinatarios:
+        - giovanni.rozza@gmail.com
+        - opvistar@gmail.com
   storage:
     local:
       diretorio-fotos: /JAVA/ALGAWORKS_ESR/Projeto/algafood-api-catalogo
