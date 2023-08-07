@@ -24,7 +24,7 @@ public class SandBoxEnvioEmailService extends SmtpEnvioEmailService {
         MimeMessage mimeMessage = super.criarMimeMessage(mensagem);
         
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
-        helper.setTo(emailProperties.getSandBox().getDestinatarios().toArray(new String[0]));
+        helper.setTo( getEmailProperties().getSandBox().getDestinatarios().toArray(new String[0]));
         
         return mimeMessage;
     } 

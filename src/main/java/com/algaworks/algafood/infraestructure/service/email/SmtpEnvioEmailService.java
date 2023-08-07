@@ -17,7 +17,7 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
 
 	private final JavaMailSender mailSender;
 
-	protected final EmailProperties emailProperties;
+	private final EmailProperties emailProperties;
 
 	private final Configuration freeMarkerConfig;
 
@@ -69,4 +69,9 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
 		return mimeMessage;
 	}
 
+	public EmailProperties getEmailProperties() {
+		return emailProperties;
+	}
+
+	
 }

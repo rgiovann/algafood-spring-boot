@@ -31,10 +31,8 @@ public class EmailProperties {
 	
 	@Setter
 	@Getter
-	@Validated
 	public class SandBox 
-	{
-		@NotNull
+	{	
 		private Set<String> destinatarios;
 	}
 

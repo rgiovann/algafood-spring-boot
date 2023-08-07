@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,9 @@ import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import com.fasterxml.jackson.annotation.JsonView;
 
+// excluido para habilitar CORS globalmente no projeto
+//@CrossOrigin(origins="http://www.algafood.local:8000")
+//@CrossOrigin(maxAge =20)  // liberado para todos os origin
 @RestController
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {
@@ -96,7 +100,6 @@ public class RestauranteController {
 	}
 	
 	// OFICIAL // completo só no buscar por Id
-
 	@JsonView(RestauranteView.Resumo.class)
  	@GetMapping
 	public List<RestauranteDto> listar() {

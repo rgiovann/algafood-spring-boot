@@ -4,18 +4,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algafood.domain.model.Pedido;
-import com.algaworks.algafood.domain.service.EnvioEmailService.Mensagem;
+import com.algaworks.algafood.domain.repository.PedidoRepository;
 
 @Service
 public class FluxoPedidoService {
 	
-	private CadastroEmissaoPedidoService cadastroEmissaoPedido;
-	private EnvioEmailService envioEmailService;
+	private final CadastroEmissaoPedidoService cadastroEmissaoPedido;
+	private final PedidoRepository pedidoRepository;
 	
 	
-	public FluxoPedidoService(CadastroEmissaoPedidoService cadastroEmissaoPedido, EnvioEmailService envioEmailService) {
+	
+	public FluxoPedidoService(CadastroEmissaoPedidoService cadastroEmissaoPedido,
+							  PedidoRepository pedidoRepository) {
 		this.cadastroEmissaoPedido = cadastroEmissaoPedido;
-		this.envioEmailService = envioEmailService;
+		this.pedidoRepository = pedidoRepository;
+	
 	}
 
 	@Transactional
@@ -25,14 +28,9 @@ public class FluxoPedidoService {
 		
 		pedido.confirmar();
 		
-		var mensagem = Mensagem.builder()
-					   .assunto(pedido.getRestaurante().getNome() + "- Pedido Confirmado")
-					   .nomeTemplate("pedido-confirmado.html")
-					   .variavel("pedido", pedido)
-					   .destinatario(pedido.getCliente().getEmail())
-					   .build();
-
-		this.envioEmailService.enviar(mensagem);
+		// para trigar o eventListener precisa do save()
+		pedidoRepository.save(pedido);
+		
 	}
 	
 	@Transactional
@@ -41,6 +39,8 @@ public class FluxoPedidoService {
 		Pedido pedido = cadastroEmissaoPedido.buscarOuFalhar(codigoPedido);
 			
 		pedido.cancelar();
+		
+		pedidoRepository.save(pedido);
 		
 	}
 	
