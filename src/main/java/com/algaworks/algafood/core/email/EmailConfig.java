@@ -1,10 +1,9 @@
-package com.algaworks.algafood.core.storage;
+package com.algaworks.algafood.core.email;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import com.algaworks.algafood.core.email.EmailProperties;
 import com.algaworks.algafood.domain.service.EnvioEmailService;
 import com.algaworks.algafood.infraestructure.service.email.FakeEnvioEmailService;
 import com.algaworks.algafood.infraestructure.service.email.SandBoxEnvioEmailService;
@@ -31,7 +30,7 @@ public class EmailConfig {
          switch (emailProperties.getTipo()) {
             case FAKE:
                 return new FakeEnvioEmailService(emailProperties, freeMarkerConfig);
-            case AWS:
+            case SMTP:
                 return new SmtpEnvioEmailService(javaMailSender, emailProperties, freeMarkerConfig);
             case SANDBOX:
                 return new SandBoxEnvioEmailService(javaMailSender, emailProperties, freeMarkerConfig);

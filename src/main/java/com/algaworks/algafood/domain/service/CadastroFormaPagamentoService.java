@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,6 +27,12 @@ public class CadastroFormaPagamentoService {
 	public List<FormaPagamento> listar() {
 
 		return formaPagamentoRepository.findAll();
+
+	}
+	
+	public OffsetDateTime getDataUltimaAtualizacao() {
+
+		return formaPagamentoRepository.getDataUltimaAtualizacao();
 
 	}
 

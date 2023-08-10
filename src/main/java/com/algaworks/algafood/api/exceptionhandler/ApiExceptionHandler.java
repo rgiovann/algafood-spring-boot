@@ -50,7 +50,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 			WebRequest request) {
 
 		HttpStatus status = HttpStatus.NOT_FOUND;
-		Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADO, ex.getMessage())
+		ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
+		String detail = ex.getMessage();
+		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(detail)
 				.build();		
 
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
@@ -60,7 +63,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
 
 		HttpStatus status = HttpStatus.BAD_REQUEST;
-		Problem problem = createProblemBuilder(status, ProblemType.PROBLEMA_NA_REQUISICAO, ex.getMessage()).build();
+		ProblemType problemType = ProblemType.PROBLEMA_NA_REQUISICAO;
+		String detail = ex.getMessage();
+		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(detail)
+				.build();
 
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 
@@ -73,7 +80,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		
 		ex.printStackTrace();  // #debug
 		String details = MSG_ERRO_GENERICA_USUARIO_FINAL;
-		Problem problem = createProblemBuilder(status, ProblemType.ERRO_DO_SISTEMA, details).build();
+		Problem problem = createProblemBuilder(status, ProblemType.ERRO_DO_SISTEMA, details)
+						  .userMessage(details)
+				          .build();
 
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
@@ -82,7 +91,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
 
 		HttpStatus status = HttpStatus.CONFLICT;
-		Problem problem = createProblemBuilder(status, ProblemType.ENTIDADE_EM_USO, ex.getMessage()).build();
+		ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
+		String detail = ex.getMessage();
+		Problem problem = createProblemBuilder(status, problemType, detail)
+							.userMessage(detail)
+							.build();
 
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
@@ -118,7 +131,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		String detail = String.format("O recurso '%s', que você tentou acessar, é inexistente",recurso);
 		Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADO, detail) 
 						  .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-						  .build();		
+						  .build();	
+		
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
 
@@ -268,8 +282,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
-		return Problem.builder().status(status.value()).type(problemType.getUri()).title(problemType.getTitle())
-				.detail(detail).timestamp(OffsetDateTime.now());
+		return Problem.builder()
+				.status(status.value())
+				.type(problemType.getUri())
+				.title(problemType.getTitle())
+				.detail(detail)
+				.timestamp(OffsetDateTime.now());
 
 	}
 

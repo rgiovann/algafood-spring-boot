@@ -26,7 +26,7 @@ public class EmailProperties {
 	private TipoEmail tipo = TipoEmail.FAKE; 
 	
 	public enum TipoEmail{
-		FAKE, AWS, SANDBOX
+		FAKE, SMTP, SANDBOX
 	}
 	
 	@Setter

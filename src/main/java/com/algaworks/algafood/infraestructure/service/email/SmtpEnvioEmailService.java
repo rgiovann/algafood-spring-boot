@@ -69,7 +69,8 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
 		return mimeMessage;
 	}
 
-	public EmailProperties getEmailProperties() {
+	// só a classe filha deve acessar.
+	protected EmailProperties getEmailProperties() {
 		return emailProperties;
 	}
 
