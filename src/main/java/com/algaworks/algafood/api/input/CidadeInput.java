@@ -12,12 +12,12 @@ import lombok.Setter;
 public class CidadeInput {
 	
 	@NotBlank
-	@ApiModelProperty(value="Nome da cidade.",example="Blumenau",required=true)  // criar plugin "not blank"
+	@ApiModelProperty(value="Nome da cidade",example="Blumenau",required=true)  // criar plugin "not blank"
 	private String nome;
 	
 	@Valid
 	@NotNull
-	@ApiModelProperty(value="Id do estado.",example="1")
+	@ApiModelProperty(value="Id do estado",example="1")
 	private EstadoIdInput estado;
 
 }

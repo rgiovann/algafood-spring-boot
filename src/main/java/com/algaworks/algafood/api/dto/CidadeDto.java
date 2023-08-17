@@ -5,15 +5,15 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-@ApiModel(value = "Cidade", description = "Representa uma cidade.")
+@ApiModel(value = "Cidade", description = "Representa uma cidade")
 @Setter
 @Getter
 public class CidadeDto {
 	
-	@ApiModelProperty(value="Id da cidade.",example="1")
+	@ApiModelProperty(value="Id da cidade",example="1")
 	private Long id;
 	
-	@ApiModelProperty(value="Nome da cidade.",example="Blumenau")
+	@ApiModelProperty(value="Nome da cidade",example="Blumenau")
 	private String nome;
  
 	EstadoDto estado;

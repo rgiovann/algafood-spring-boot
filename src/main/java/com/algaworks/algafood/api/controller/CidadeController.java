@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.CidadeDtoAssembler;
 import com.algaworks.algafood.api.assembler.CidadeInputDisassembler;
+import com.algaworks.algafood.api.controller.openapi.CidadeControllerOpenApi;
 import com.algaworks.algafood.api.dto.CidadeDto;
 import com.algaworks.algafood.api.input.CidadeInput;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
@@ -24,20 +26,13 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
-@Api(tags ="Cidades")
 @RestController
-@RequestMapping(value = "/cidades")
-public class CidadeController {
+@RequestMapping(path= "/cidades")
+public class CidadeController implements CidadeControllerOpenApi{
 
 	private final CadastroCidadeService cidadeService;
 	private final CidadeInputDisassembler cidadeInputDissasembler;
 	private final CidadeDtoAssembler cidadeDtoAssembler;
- 
- 
 
 	public CidadeController(CadastroCidadeService cidadeService, 
 							CidadeInputDisassembler cidadeInputDissasembler,
@@ -46,33 +41,23 @@ public class CidadeController {
 		this.cidadeInputDissasembler = cidadeInputDissasembler;
 		this.cidadeDtoAssembler = cidadeDtoAssembler;
 	}
-    @ApiOperation("Lista as cidades")
-	@GetMapping
+ 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<CidadeDto> listar() {
 
 		return cidadeDtoAssembler.toCollectionDto(cidadeService.listar());
 
 	}
     
-    // *** issue ****
-    // example ="1" não funciona na versão 3.0.0 (projeto descontinuado)
-    // 
-    @ApiOperation("Busca uma cidade por id")
-	@GetMapping("/{cidadeId}")
-	public CidadeDto buscar(@ApiParam(value ="ID de uma cidade",example ="1")  @PathVariable Long cidadeId) {
+ 	@GetMapping(path="/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public CidadeDto buscar(  @PathVariable Long cidadeId) {
 
 		return cidadeDtoAssembler.toDto(cidadeService.buscarOuFalhar(cidadeId));
 
 	}
 
-    // *** issue ****
-    // @ApiParam(name= "corpo",value ="Representação de uma cidade") não
-    // funciona na versão 3.0.0 (projeto descontinuado)
-    // 
-    @ApiOperation("Cadastra uma cidade")
-	@PostMapping
+ 	@PostMapping( produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	public CidadeDto adicionar( @ApiParam(name= "corpo",value ="Representação de uma cidade")  @RequestBody @Valid CidadeInput cidadeInput) {
+	public CidadeDto adicionar( @RequestBody @Valid CidadeInput cidadeInput) {
 
 		try {
 
@@ -87,9 +72,8 @@ public class CidadeController {
 
 	}
 
-    @ApiOperation("Atualiza uma cidade por id")
-	@PutMapping("/{cidadeId}")
-	public CidadeDto atualizar( @ApiParam(value ="ID de uma cidade",example ="1") @PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeInput) {
+	@PutMapping(path="/{cidadeId}",produces = MediaType.APPLICATION_JSON_VALUE)
+	public CidadeDto atualizar( @PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeInput) {
 
 		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
 		
@@ -106,10 +90,9 @@ public class CidadeController {
 
 	}
 
-    @ApiOperation("Remove uma cidade por id")
-	@DeleteMapping("/{cidadeId}")
+ 	@DeleteMapping("/{cidadeId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@ApiParam(value ="ID de uma cidade",example ="1") @PathVariable Long cidadeId) {
+	public void remover(  @PathVariable Long cidadeId) {
 
 		cidadeService.excluir(cidadeId);
 		
@@ -117,4 +100,3 @@ public class CidadeController {
 	}
 
 }
-;
