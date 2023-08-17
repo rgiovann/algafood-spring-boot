@@ -24,6 +24,11 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+@Api(tags ="Cidades")
 @RestController
 @RequestMapping(value = "/cidades")
 public class CidadeController {
@@ -41,24 +46,33 @@ public class CidadeController {
 		this.cidadeInputDissasembler = cidadeInputDissasembler;
 		this.cidadeDtoAssembler = cidadeDtoAssembler;
 	}
-
+    @ApiOperation("Lista as cidades")
 	@GetMapping
 	public List<CidadeDto> listar() {
 
 		return cidadeDtoAssembler.toCollectionDto(cidadeService.listar());
 
 	}
-
+    
+    // *** issue ****
+    // example ="1" não funciona na versão 3.0.0 (projeto descontinuado)
+    // 
+    @ApiOperation("Busca uma cidade por id")
 	@GetMapping("/{cidadeId}")
-	public CidadeDto buscar(@PathVariable Long cidadeId) {
+	public CidadeDto buscar(@ApiParam(value ="ID de uma cidade",example ="1")  @PathVariable Long cidadeId) {
 
 		return cidadeDtoAssembler.toDto(cidadeService.buscarOuFalhar(cidadeId));
 
 	}
 
+    // *** issue ****
+    // @ApiParam(name= "corpo",value ="Representação de uma cidade") não
+    // funciona na versão 3.0.0 (projeto descontinuado)
+    // 
+    @ApiOperation("Cadastra uma cidade")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CidadeDto adicionar(@RequestBody @Valid CidadeInput cidadeInput) {
+	public CidadeDto adicionar( @ApiParam(name= "corpo",value ="Representação de uma cidade")  @RequestBody @Valid CidadeInput cidadeInput) {
 
 		try {
 
@@ -73,8 +87,9 @@ public class CidadeController {
 
 	}
 
+    @ApiOperation("Atualiza uma cidade por id")
 	@PutMapping("/{cidadeId}")
-	public CidadeDto atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeInput) {
+	public CidadeDto atualizar( @ApiParam(value ="ID de uma cidade",example ="1") @PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeInput) {
 
 		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
 		
@@ -91,9 +106,10 @@ public class CidadeController {
 
 	}
 
+    @ApiOperation("Remove uma cidade por id")
 	@DeleteMapping("/{cidadeId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long cidadeId) {
+	public void remover(@ApiParam(value ="ID de uma cidade",example ="1") @PathVariable Long cidadeId) {
 
 		cidadeService.excluir(cidadeId);
 		

@@ -20,6 +20,7 @@
     <java.version>20</java.version>
     <jasperreports.version>6.20.5</jasperreports.version>
     <aws-sdk-s3.version>1.12.519</aws-sdk-s3.version>
+    <spring-fox.version>3.0.0</spring-fox.version>
   </properties>
 
    <dependencies>
@@ -45,12 +46,27 @@
     	<version>${jasperreports.version}</version>
 	</dependency>
 	
+	<!-- https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter -->
+	<dependency>
+	    <groupId>io.springfox</groupId>
+	    <artifactId>springfox-boot-starter</artifactId>
+	    <version>${spring-fox.version}</version>
+	</dependency>
+	
+		<dependency>
+	    <groupId>io.springfox</groupId>
+	    <artifactId>springfox-bean-validators</artifactId>
+	    <version>${spring-fox.version}</version>
+		</dependency>
+	 
 	<dependency>
     	<groupId>com.amazonaws</groupId>
     	<artifactId>aws-java-sdk-s3</artifactId>
     	<version>${aws-sdk-s3.version}</version>
     </dependency>
     
+    <!-- DESABILITADO O S3 NÃO VAI CONECTAR (COBRA USO)-->
+
     <!-- 
        <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
