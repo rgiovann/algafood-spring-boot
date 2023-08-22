@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.CidadeDtoAssembler;
 import com.algaworks.algafood.api.assembler.CidadeInputDisassembler;
-import com.algaworks.algafood.api.controller.openapi.CidadeControllerOpenApi;
 import com.algaworks.algafood.api.dto.CidadeDto;
 import com.algaworks.algafood.api.input.CidadeInput;
+import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -41,6 +41,18 @@ public class CidadeController implements CidadeControllerOpenApi{
 		this.cidadeInputDissasembler = cidadeInputDissasembler;
 		this.cidadeDtoAssembler = cidadeDtoAssembler;
 	}
+	
+	/*
+	 * === Evitando um NullPointerException === limitação do SpringFox
+     *  Ao adicionar o produces = MediaType.APPLICATION_JSON_VALUE na Annotation @RequestMapping 
+     *  nos Controllers de Grupo ou Cidade, o SpringFox 3 nos apresentará um NullPointerException.
+     *  Isso é um problema conhecido que ainda não foi corrigido nessa biblioteca. Acontece devido
+     *  a alguns métodos das Controllers terem o retorno void, como os de DELETE, que somado ao 
+     *  produces = MediaType.APPLICATION_JSON_VALUE gera um NullPointerException.
+     *  Sendo assim, é necessário adicionar o produces em cada um dos métodos, 
+     *  com exceção daqueles que retornam void, ao invés de adicioná-los na Controller.
+	 */
+	
  	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<CidadeDto> listar() {
 

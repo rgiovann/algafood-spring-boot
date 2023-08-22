@@ -1,20 +1,24 @@
 package com.algaworks.algafood.core.openapi;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.algaworks.algafood.api.dto.CozinhaDto;
 import com.algaworks.algafood.api.exceptionhandler.Problem;
-import com.algaworks.algafood.core.openapi.model.PageableModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.CozinhasDtoOpenApi;
+import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -23,9 +27,14 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RepresentationBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.builders.RequestParameterBuilder;
 import springfox.documentation.builders.ResponseBuilder;
+import springfox.documentation.builders.SimpleParameterSpecificationBuilder;
+import springfox.documentation.schema.AlternateTypeRules;
+import springfox.documentation.schema.ScalarType;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.ParameterType;
 import springfox.documentation.service.Response;
 import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
@@ -54,10 +63,27 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 	        .globalResponses(HttpMethod.PUT, globalPutResponseMessages())
 	        .globalResponses(HttpMethod.POST, globalPostResponseMessages())
 	        .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+	    	.globalRequestParameters(Collections.singletonList(
+	                new RequestParameterBuilder()
+	                        .name("campos")
+	                        .description("Nomes das propriedades para filtrar na resposta, separados por vírgula")
+	                        .in(ParameterType.QUERY)
+	                        .required(false)
+	                        //.query(q -> q.model(m -> m.scalarModel(ScalarType.STRING)))
+	                        .query(this::configureParameterType)
+	                        .build())
+	    			)
 	        .additionalModels(typeResolver.resolve(Problem.class))
 	        .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+	        .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CozinhaDto.class),
+	        		                                                             CozinhasDtoOpenApi.class))
+	        .ignoredParameterTypes(ServletWebRequest.class)
+
 	        .apiInfo(apiInfo())
-	        .tags(new Tag("Cidades","Gerencia as cidades"));
+	        .tags(  new Tag("Cidades", "Gerencia as cidades"),
+	                new Tag("Grupos", "Gerencia os grupos de usuários"),
+	                new Tag("Pagamentos", "Gerencia as formas de pagamento"),	                
+	                new Tag("Cozinhas", "Gerencia as cozinhas"));
 		
 	  }
 	  
@@ -164,6 +190,10 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 			    representationBuilder.model(m -> m.name("Problema")
 			                         .referenceModel(ref -> ref.key(k -> k.qualifiedModelName(q -> q.name("Problema")
 			                         .namespace("com.algaworks.algafood.api.exceptionhandler")))));
+			}
+		  
+		  private void configureParameterType(SimpleParameterSpecificationBuilder simpleParameterSpecificationBuilder) {
+			  simpleParameterSpecificationBuilder.model(m -> m.scalarModel(ScalarType.STRING));
 			}
 		  
 	

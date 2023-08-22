@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 public class PageJsonSerializer extends JsonSerializer<Page<?>> {
 
 	// aqui nos envelopamos o Page com informações customizadas usando o Json Serializer
+	// remodela completamente o objeto Page, com content <array>, e demais parametros
 	@Override
 	public void serialize(Page<?> page, JsonGenerator gen, SerializerProvider serializers) throws IOException {
 		gen.writeStartObject();

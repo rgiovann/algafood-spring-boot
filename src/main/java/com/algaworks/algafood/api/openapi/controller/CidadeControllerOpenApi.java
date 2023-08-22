@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.controller.openapi;
+package com.algaworks.algafood.api.openapi.controller;
 
 import java.util.List;
 
@@ -31,24 +31,27 @@ public interface CidadeControllerOpenApi {
 
  
     @ApiOperation("Cadastra uma cidade")
+    @ApiResponses(  {
+    @ApiResponse(responseCode= "201", description= "Cidade cadastrada com sucesso"),
+    })
 	public CidadeDto adicionar( @ApiParam(name= "corpo",value ="Representação de uma cidade")  CidadeInput cidadeInput);
 
  
     @ApiOperation("Atualiza uma cidade por Id")
     @ApiResponses(  {
     @ApiResponse(responseCode= "404", description= "Cidade não encontrada",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
-    @ApiResponse(responseCode= "400", description= "Id da cidade inválido",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class)))
+    @ApiResponse(responseCode= "200", description= "Cidade atualizada com sucesso"),
+
 
     })
-	public CidadeDto atualizar( @ApiParam(value ="ID de uma cidade",example ="1")  Long cidadeId,  CidadeInput cidadeInput);
+	public CidadeDto atualizar( @ApiParam(value ="Id de uma cidade",example ="1")  Long cidadeId,  CidadeInput cidadeInput);
 
     @ApiOperation("Remove uma cidade por id")
     @ApiResponses(  {
     @ApiResponse(responseCode= "404", description= "Cidade não encontrada",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
-    @ApiResponse(responseCode= "400", description= "Id da cidade inválido",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class)))
-
-    })   
-	public void remover(@ApiParam(value ="ID de uma cidade",example ="1")Long cidadeId);	
+    @ApiResponse(responseCode= "204", description= "Cidade removida com sucesso"),
+    })  
+	public void remover(@ApiParam(value ="Id de uma cidade",example ="1")Long cidadeId);	
 	
 
 }

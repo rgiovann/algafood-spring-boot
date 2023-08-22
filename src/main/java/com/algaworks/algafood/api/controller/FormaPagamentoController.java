@@ -26,12 +26,13 @@ import com.algaworks.algafood.api.assembler.FormaPagamentoDtoAssembler;
 import com.algaworks.algafood.api.assembler.FormaPagamentoInputDisassembler;
 import com.algaworks.algafood.api.dto.FormaPagamentoDto;
 import com.algaworks.algafood.api.input.FormaPagamentoNomeInput;
+import com.algaworks.algafood.api.openapi.controller.FormaPagamentoControllerOpenApi;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.service.CadastroFormaPagamentoService;
 
 @RestController
 @RequestMapping(value = "/formaspagamento")
-public class FormaPagamentoController {
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi{
 
 	private final CadastroFormaPagamentoService formaPagamentoService;
 	private final FormaPagamentoDtoAssembler formaPagtoDtoAssembler;
@@ -152,5 +153,7 @@ public class FormaPagamentoController {
 
 			formaPagamentoService.excluir(fomaPagamentoId);
 	}
+
+
 
 }

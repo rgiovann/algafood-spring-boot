@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,12 +24,13 @@ import com.algaworks.algafood.api.assembler.CozinhaDtoAssembler;
 import com.algaworks.algafood.api.assembler.CozinhaNomeInputDisassembler;
 import com.algaworks.algafood.api.dto.CozinhaDto;
 import com.algaworks.algafood.api.input.CozinhaNomeInput;
+import com.algaworks.algafood.api.openapi.controller.CozinhaControllerOpenApi;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 
 @RestController
 @RequestMapping(value = "/cozinhas")
-public class CozinhaController {
+public class CozinhaController implements CozinhaControllerOpenApi{
 
 	private final CadastroCozinhaService cozinhaService;
 	private final CozinhaDtoAssembler cozinhaDtoAssembler;
@@ -42,8 +44,20 @@ public class CozinhaController {
 		this.cozinhaDtoAssembler = cozinhaDtoAssembler;
 		this.cozinhaNomeInputDisassembler = cozinhaInputDisassembler;
 	}
+	
+	/*
+	 * === Evitando um NullPointerException === limitação do SpringFox
+     *  Ao adicionar o produces = MediaType.APPLICATION_JSON_VALUE na Annotation @RequestMapping 
+     *  nos Controllers de Grupo ou Cidade, o SpringFox 3 nos apresentará um NullPointerException.
+     *  Isso é um problema conhecido que ainda não foi corrigido nessa biblioteca. Acontece devido
+     *  a alguns métodos das Controllers terem o retorno void, como os de DELETE, que somado ao 
+     *  produces = MediaType.APPLICATION_JSON_VALUE gera um NullPointerException.
+     *  Sendo assim, é necessário adicionar o produces em cada um dos métodos, 
+     *  com exceção daqueles que retornam void, ao invés de adicioná-los na Controller.
+	 */
+	
 
-	@GetMapping
+ 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<CozinhaDto> listar(@PageableDefault(size=10) Pageable pageable) {
 		
 		Page<Cozinha> cozinhaPage = cozinhaService.listar(pageable);
@@ -56,14 +70,14 @@ public class CozinhaController {
 
 	}
 
-	@GetMapping("/{cozinhaId}")
+	@GetMapping(value = "/{cozinhaId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CozinhaDto buscar(@PathVariable Long cozinhaId) {
 
 		return cozinhaDtoAssembler.toDto(cozinhaService.buscarOuFalhar(cozinhaId));
 
 	}
 
-	@PostMapping
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaDto adicionar(@RequestBody @Valid CozinhaNomeInput cozinhaNomeInput) {
 
@@ -72,7 +86,7 @@ public class CozinhaController {
 
 	}
 
-	@PutMapping("/{cozinhaId}")
+	@PutMapping(value = "/{cozinhaId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public CozinhaDto atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaNomeInput cozinhaNomeInput) {
 
 		Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
@@ -89,5 +103,6 @@ public class CozinhaController {
 
 		cozinhaService.excluir(cozinhaId);
 	}
+
 
 }
