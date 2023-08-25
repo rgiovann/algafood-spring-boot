@@ -11,7 +11,7 @@ import lombok.Setter;
 public class FormaPagamentoNomeInput {
 	
 	@NotBlank
-	@ApiModelProperty(value="Nome da forma de Ppagameto",example="Cartão de débito",required=true)  // criar plugin "not blank"	
+	@ApiModelProperty(value="Nome da forma de Pagamento",example="Cartão de débito",required=true)  // criar plugin "not blank"	
 	private String descricao;
 
 }

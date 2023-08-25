@@ -1,11 +1,14 @@
 package com.algaworks.algafood.api.dto;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@ApiModel(value = "Forma de Pagamento", description = "Representa a forma de pagamento")
+
 public class FormaPagamentoDto {
 
 	@ApiModelProperty(value="Id da forma de pagamento",example="1")
