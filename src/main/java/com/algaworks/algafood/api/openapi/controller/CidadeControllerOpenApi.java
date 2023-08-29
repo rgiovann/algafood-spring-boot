@@ -34,7 +34,7 @@ public interface CidadeControllerOpenApi {
     @ApiResponses(  {
     @ApiResponse(responseCode= "201", description= "Cidade cadastrada com sucesso"),
     })
-	public CidadeDto adicionar( @ApiParam(name= "corpo",value ="Representação de uma cidade")  CidadeInput cidadeInput);
+	public CidadeDto adicionar( @ApiParam(name= "corpo",value ="Representação de uma cidade", required=true)  CidadeInput cidadeInput);
 
  
     @ApiOperation("Atualiza uma cidade por Id")
@@ -44,7 +44,7 @@ public interface CidadeControllerOpenApi {
 
 
     })
-	public CidadeDto atualizar( @ApiParam(value ="Id de uma cidade",example ="1")  Long cidadeId,  CidadeInput cidadeInput);
+	public CidadeDto atualizar( @ApiParam(value ="Id de uma cidade",example ="1" )  Long cidadeId, @ApiParam(name= "corpo",value ="Representação de uma cidade", required=true) CidadeInput cidadeInput);
 
     @ApiOperation("Remove uma cidade por id")
     @ApiResponses(  {

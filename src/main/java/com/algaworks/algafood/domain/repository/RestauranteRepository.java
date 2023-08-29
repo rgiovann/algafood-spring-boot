@@ -28,7 +28,7 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 	List<Restaurante> consultarPorNome(String nome, @Param("id") Long cozinha);
 	
 	// esse findCustomizado vai ser instanciado pelo Spring pois implementei o método em 
-	// CozinhaRepositoryImpl
+	// RestauranteRepositoryImpl (interface RestauranteRepositoryQueries)
 	List<Restaurante> findCustomizado(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
 
 }

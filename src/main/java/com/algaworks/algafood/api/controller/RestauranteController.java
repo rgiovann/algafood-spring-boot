@@ -1,10 +1,12 @@
 package com.algaworks.algafood.api.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +23,7 @@ import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
 import com.algaworks.algafood.api.dto.RestauranteDto;
 import com.algaworks.algafood.api.dto.view.RestauranteView;
 import com.algaworks.algafood.api.input.RestauranteInput;
+import com.algaworks.algafood.api.openapi.controller.RestauranteControllerOpenApi;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -31,9 +35,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 // excluido para habilitar CORS globalmente no projeto
 //@CrossOrigin(origins="http://www.algafood.local:8000")
 //@CrossOrigin(maxAge =20)  // liberado para todos os origin
+
+
 @RestController
 @RequestMapping(value = "/restaurantes")
-public class RestauranteController {
+
+public class RestauranteController implements RestauranteControllerOpenApi{
 
 	private final CadastroRestauranteService restauranteService;
 	private final RestauranteInputDisassembler restauranteInputDissasembler;
@@ -65,12 +72,16 @@ public class RestauranteController {
 //
 //	}
 //
-//	// TESTE
-//	@GetMapping("/por-nome-taxa-frete")
-//	public List<RestauranteDto> restaurantesPorNomeFrete(String nome, BigDecimal taxaFreteInicial,
-//			BigDecimal taxaFreteFinal) {
-//		return restauranteService.restauranteporNomeCustomizado(nome, taxaFreteInicial, taxaFreteFinal);
-//	}
+ 
+	@GetMapping("/por-nome-taxa-frete")
+	public List<RestauranteDto> restaurantesPorNomeFrete(
+			@RequestParam(required=false) String nome,
+			@RequestParam(required=false) BigDecimal taxaFreteInicial,
+			@RequestParam(required=false) BigDecimal taxaFreteFinal) {
+		
+		return restauranteDtoAssembler.toCollectionDto(restauranteService.restauranteporNomeCustomizado(nome, taxaFreteInicial, taxaFreteFinal));
+		  
+	}
 //
 //	// TESTE
 //	@GetMapping("/com-frete-gratis")
@@ -97,32 +108,21 @@ public class RestauranteController {
 
 		return restauranteDtoAssembler.toDto(restauranteService.restaurantesBuscarPrimeiro());
 	}
-	
-	// OFICIAL // completo só no buscar por Id
+
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@JsonView(RestauranteView.Resumo.class)
- 	@GetMapping
 	public List<RestauranteDto> listar() {
 
 		return restauranteDtoAssembler.toCollectionDto(restauranteService.listar());
 
 	}
- 
+
 	@JsonView(RestauranteView.ApenasNome.class)
-	@GetMapping(params = "projecao=nome")
-	public List<RestauranteDto> listarResumido() {
-
-		return this.listar();
-
+	@GetMapping(params = "projecao=apenas-nome")
+	public List<RestauranteDto> listarApenasNomes() {
+		return listar();
 	}
-//	
-//	@JsonView(RestauranteView.ApenasNome.class)
-//	@GetMapping(params = "projecao=nome")
-//	public List<RestauranteDto> listarApenasNome() {
-//
-//		return this.listar();
-//
-//	}
-	
+
 	// COMO REFERENCIA SERIALIZATION VIEW DINAMICO
 // 	@GetMapping
 //	public MappingJacksonValue  listar( @RequestParam(required=false) String projecao ) {
@@ -145,8 +145,7 @@ public class RestauranteController {
 // 		return restaurantesWraper;
 //
 //	}
-
-	@GetMapping("/{restauranteId}")
+	@GetMapping(value = "/{restauranteId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RestauranteDto buscar(@PathVariable Long restauranteId) {
 
 		return restauranteDtoAssembler.toDto(restauranteService.buscarOuFalhar(restauranteId));
@@ -155,7 +154,7 @@ public class RestauranteController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public RestauranteDto adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
+	public RestauranteDto adicionar( @RequestBody @Valid RestauranteInput restauranteInput) {
 
 		try {
 
@@ -172,9 +171,9 @@ public class RestauranteController {
 		}
 	}
 
-	@PutMapping("/{restauranteId}")
+	@PutMapping(value = "/{restauranteId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RestauranteDto atualizar(@PathVariable Long restauranteId,
-			@RequestBody @Valid RestauranteInput restauranteInput) {
+			                        @RequestBody @Valid RestauranteInput restauranteInput) {
 
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 
@@ -196,13 +195,13 @@ public class RestauranteController {
 
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void ativarRestaurante(@PathVariable Long restauranteId) {
+	public void ativarRestaurante( @PathVariable Long restauranteId) {
 		restauranteService.ativar(restauranteId);
 	}
 
 	@PutMapping("/ativacoes")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void ativarMultiplosRestaurante(@RequestBody List<Long> restauranteIds) {
+	public void ativarMultiplosRestaurante( @RequestBody List<Long> restauranteIds) {
 		try {
 			restauranteService.ativar(restauranteIds);
 		} catch (RestauranteNaoEncontradoException e) {
@@ -222,20 +221,22 @@ public class RestauranteController {
 
 	@DeleteMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void inativarRestaurante(@PathVariable Long restauranteId) {
+	public void inativarRestaurante( @PathVariable Long restauranteId) {
 		restauranteService.inativar(restauranteId);
 	}
 
 	@PutMapping("/{restauranteId}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void abrirRestauranrte(@PathVariable Long restauranteId) {
+	public void abrirRestauranrte( @PathVariable Long restauranteId) {
 		restauranteService.abrir(restauranteId);
 	}
 
 	@PutMapping("/{restauranteId}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void fecharRestauranrte(@PathVariable Long restauranteId) {
+	public void fecharRestaurante(  @PathVariable Long restauranteId) {
 		restauranteService.fechar(restauranteId);
 	}
+
+ 
 
 }

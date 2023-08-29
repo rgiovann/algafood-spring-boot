@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -55,14 +56,13 @@ public class CadastroRestauranteService {
 //
 //	}
 //
-//	// TESTE
-//	public List<RestauranteDto> restauranteporNomeCustomizado(String nome, BigDecimal taxaFreteInicial,
-//			BigDecimal taxaFreteFinal) {
-//		List<Restaurante> restaurante = restauranteRepository.findCustomizado(nome, taxaFreteInicial, taxaFreteFinal);
-//		return restaurante.stream().map(rest -> modelMapper.map(rest, RestauranteDto.class))
-//				.collect(Collectors.toList());
-//
-//	}
+	// TESTE
+	public List<Restaurante> restauranteporNomeCustomizado(String nome, BigDecimal taxaFreteInicial,
+			BigDecimal taxaFreteFinal) {
+		return  restauranteRepository.findCustomizado(nome, taxaFreteInicial, taxaFreteFinal);
+
+
+	}
 //
 //	// TESTE
 //	public List<RestauranteDto> restaurantesPorNomeComFreteGratis(String nome) {

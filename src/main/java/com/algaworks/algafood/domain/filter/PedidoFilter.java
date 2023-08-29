@@ -15,7 +15,7 @@ import lombok.Setter;
 @ApiModel(value = "Filtro de pedidos", description = "Define filtros para a lista de pedidos")
 public class PedidoFilter {
 	
-	@ApiModelProperty(value="Id da cliente",example="1")
+	@ApiModelProperty(value="Id do cliente",example="1")
 	private Long clienteId;
 	@ApiModelProperty(value="Id do restaurante",example="1")
 	private Long restauranteId;

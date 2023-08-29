@@ -24,6 +24,7 @@ import com.algaworks.algafood.api.assembler.PedidoInputDisassembler;
 import com.algaworks.algafood.api.dto.PedidoCompactDto;
 import com.algaworks.algafood.api.dto.PedidoDto;
 import com.algaworks.algafood.api.input.PedidoInput;
+import com.algaworks.algafood.api.openapi.controller.PedidoControllerOpenApi;
 import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -33,16 +34,9 @@ import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.CadastroEmissaoPedidoService;
 import com.google.common.collect.ImmutableMap;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
-@Api(tags ="Pedidos")
 @RestController
 @RequestMapping(value = "/pedidos")
-public class PedidoController {
+public class PedidoController implements PedidoControllerOpenApi {
 
 	private final CadastroEmissaoPedidoService pedidoService;
     private final PedidoDtoAssembler pedidoDtoAssembler;
@@ -61,11 +55,7 @@ public class PedidoController {
 		this.pedidoInputDisassembler = pedidoInputDisassembler;
  	}
 
-    @ApiOperation("Pesquisa os pedidos")
-	@ApiImplicitParams({@ApiImplicitParam(
-			value="Nomes das propriedades para filtrar na resposta, separados por vírgula",
-			name="campos",paramType="query",type ="string")})
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+ 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<PedidoCompactDto> pesquisar(  PedidoFilter filter, @PageableDefault(size=10) Pageable pageable) {
 		
 		pageable = this.traduzirPageable(pageable);
@@ -105,12 +95,8 @@ public class PedidoController {
 //  
 //	}
 	
-    @ApiOperation("Busca um pedido")
-	@ApiImplicitParams({@ApiImplicitParam(
-			value="Nomes das propriedades para filtrar na resposta, separados por vírgula",
-			name="campos",paramType="query",type ="string")})
-	@GetMapping(value ="/{codigoPedido}",produces = MediaType.APPLICATION_JSON_VALUE)
-	public PedidoDto buscar(@ApiParam(value = "Código de um pedido", example = "f9981ca4-5a5e-4da3-af04-933861df3e55") @PathVariable String codigoPedido) {
+ 	@GetMapping(value ="/{codigoPedido}",produces = MediaType.APPLICATION_JSON_VALUE)
+	public PedidoDto buscar( @PathVariable String codigoPedido) {
 
 		return  pedidoDtoAssembler.toDto(pedidoService.buscarOuFalhar(codigoPedido));
 
@@ -137,11 +123,9 @@ public class PedidoController {
 //		}
 //	}
 	
-	
-	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation("Adiciona um pedido")
+ 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	public PedidoDto adicionar(@ApiParam(name = "corpo", value = "Representação de um novo pedido") @Valid @RequestBody PedidoInput pedidoInput) {
+	public PedidoDto adicionar(@Valid @RequestBody PedidoInput pedidoInput) {
 	    try {
 	        Pedido novoPedido = pedidoInputDisassembler.toEntity(pedidoInput);
 

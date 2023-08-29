@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.dto;
 import com.algaworks.algafood.api.dto.view.RestauranteView;
 import com.fasterxml.jackson.annotation.JsonView;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,8 @@ import lombok.Setter;
 
 @Setter
 @Getter
+@ApiModel(value = "Cozinha", description = "Representa uma cozinha")
+
 public class CozinhaDto {
 
 	@JsonView(RestauranteView.Resumo.class)

@@ -4,7 +4,7 @@ import com.algaworks.algafood.api.dto.CozinhaDto;
 
 import io.swagger.annotations.ApiModel;
 
-@ApiModel("CozinhasDto")
+@ApiModel(value ="Cozinhas",description = "Representa uma lista paginada de cozinhas")
 public class CozinhasDtoOpenApi extends PagedModelOpenApi<CozinhaDto>{
 	
 
