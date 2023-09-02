@@ -50,7 +50,7 @@ algafood:
             diretorio-fotos: catalogo
             id-chave-acesso: ${AWS_S3_KEY}
             chave-acesso-secreta: ${AWS_S3_SECRET_KEY}
-        tipo: s3
+        tipo: local
 logging:
     level:
         org:
