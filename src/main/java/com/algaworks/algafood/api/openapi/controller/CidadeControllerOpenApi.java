@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 public interface CidadeControllerOpenApi {
 	
     @ApiOperation("Lista as cidades")
-	public List<CidadeDto> listar();
+	List<CidadeDto> listar();
     
     @ApiOperation("Busca uma cidade por id")
     @ApiResponses(  {
@@ -27,14 +27,14 @@ public interface CidadeControllerOpenApi {
     @ApiResponse(responseCode= "400", description= "Id da cidade inválido",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class)))
 
     })
-	public CidadeDto buscar(@ApiParam(value ="ID de uma cidade",example ="1") Long cidadeId);
+	CidadeDto buscar(@ApiParam(value ="ID de uma cidade",example ="1") Long cidadeId);
 
  
     @ApiOperation("Cadastra uma cidade")
     @ApiResponses(  {
     @ApiResponse(responseCode= "201", description= "Cidade cadastrada com sucesso"),
     })
-	public CidadeDto adicionar( @ApiParam(name= "corpo",value ="Representação de uma cidade", required=true)  CidadeInput cidadeInput);
+	CidadeDto adicionar( @ApiParam(name= "corpo",value ="Representação de uma cidade", required=true)  CidadeInput cidadeInput);
 
  
     @ApiOperation("Atualiza uma cidade por Id")
@@ -44,14 +44,14 @@ public interface CidadeControllerOpenApi {
 
 
     })
-	public CidadeDto atualizar( @ApiParam(value ="Id de uma cidade",example ="1" )  Long cidadeId, @ApiParam(name= "corpo",value ="Representação de uma cidade", required=true) CidadeInput cidadeInput);
+	CidadeDto atualizar( @ApiParam(value ="Id de uma cidade",example ="1" )  Long cidadeId, @ApiParam(name= "corpo",value ="Representação de uma cidade", required=true) CidadeInput cidadeInput);
 
     @ApiOperation("Remove uma cidade por id")
     @ApiResponses(  {
     @ApiResponse(responseCode= "404", description= "Cidade não encontrada",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
     @ApiResponse(responseCode= "204", description= "Cidade removida com sucesso"),
     })  
-	public void remover(@ApiParam(value ="Id de uma cidade",example ="1")Long cidadeId);	
+	void remover(@ApiParam(value ="Id de uma cidade",example ="1")Long cidadeId);	
 	
 
 }

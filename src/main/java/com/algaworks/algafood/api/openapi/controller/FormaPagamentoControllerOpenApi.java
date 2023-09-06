@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 public interface FormaPagamentoControllerOpenApi {
 	
     @ApiOperation("Lista as formas de Pagamento")
-	public ResponseEntity< List<FormaPagamentoDto> >listar(ServletWebRequest request);
+	ResponseEntity< List<FormaPagamentoDto> >listar(ServletWebRequest request);
     
     @ApiOperation("Busca uma forma de pagamento por id")
     @ApiResponses(  {
@@ -30,14 +30,14 @@ public interface FormaPagamentoControllerOpenApi {
     @ApiResponse(responseCode= "400", description= "Id da forma de pagamento inválido",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class)))
 
     })
-	public ResponseEntity<FormaPagamentoDto> buscar(@ApiParam(value ="ID de uma forma de pagamento",example ="1") Long formaPagamentoId,ServletWebRequest request);
+	ResponseEntity<FormaPagamentoDto> buscar(@ApiParam(value ="ID de uma forma de pagamento",example ="1") Long formaPagamentoId,ServletWebRequest request);
 
  
     @ApiOperation("Cadastra uma forma de pagamento")
     @ApiResponses(  {
     @ApiResponse(responseCode= "201", description= "Forma de pagamento cadastrada com sucesso"),
     })
-	public FormaPagamentoDto adicionar( @ApiParam(name= "corpo",value ="Representação de uma forma de pagamento")  FormaPagamentoNomeInput formaPagamentoInput);
+	FormaPagamentoDto adicionar( @ApiParam(name= "corpo",value ="Representação de uma forma de pagamento")  FormaPagamentoNomeInput formaPagamentoInput);
 
  
     @ApiOperation("Atualiza uma forma de pagamento por Id")
@@ -47,14 +47,14 @@ public interface FormaPagamentoControllerOpenApi {
 
 
     })
-	public FormaPagamentoDto atualizar( @ApiParam(value ="Id de uma forma de pagamento",example ="1")  Long formaPagamentoId,  FormaPagamentoNomeInput formaPagamentoInput);
+	FormaPagamentoDto atualizar( @ApiParam(value ="Id de uma forma de pagamento",example ="1")  Long formaPagamentoId,  FormaPagamentoNomeInput formaPagamentoInput);
 
     @ApiOperation("Remove uma forma de pagamento por id")
     @ApiResponses(  {
     @ApiResponse(responseCode= "404", description= "Forma de pagamento não encontrada",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
     @ApiResponse(responseCode= "204", description= "Forma de pagamento removida com sucesso"),
     })  
-	public void remover(@ApiParam(value ="Id de uma forma de pagamento",example ="1")Long formaPagamentoId);	
+	void remover(@ApiParam(value ="Id de uma forma de pagamento",example ="1")Long formaPagamentoId);	
 	
 
 }

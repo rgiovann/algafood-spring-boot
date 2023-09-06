@@ -19,21 +19,21 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 public interface GrupoControllerOpenApi {
 	
     @ApiOperation("Lista os grupos de usuários")
-	public List<GrupoDto> listar();
+	List<GrupoDto> listar();
     
     @ApiResponses(  {
     @ApiResponse(responseCode= "404", description= "Grupo de usuário não encontrado",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
 
     })
     @ApiOperation("Busca uma grupo de usuário por Id")
-	public GrupoDto buscar(@ApiParam(value ="Id de um grupo de usuário",example ="1") Long grupoId);
+	GrupoDto buscar(@ApiParam(value ="Id de um grupo de usuário",example ="1") Long grupoId);
 
  
     @ApiOperation("Cadastra uma grupo de usuário")
     @ApiResponses(  {
     @ApiResponse(responseCode= "201", description= "Grupo de usuário criado com sucesso")
     })
-	public GrupoDto adicionar( @ApiParam(name= "corpo",value ="Representação de um grupo de usuário")  GrupoNomeInput grupoNomeInput);
+	GrupoDto adicionar( @ApiParam(name= "corpo",value ="Representação de um grupo de usuário")  GrupoNomeInput grupoNomeInput);
 
  
     @ApiOperation("Atualiza uma grupo de usuário por Id")
@@ -41,14 +41,14 @@ public interface GrupoControllerOpenApi {
     @ApiResponse(responseCode= "404", description= "Grupo de usuário não encontrado",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
     @ApiResponse(responseCode= "200", description= "Grupo de usuário atualizado com sucesso")
     })
-	public GrupoDto atualizar( @ApiParam(value ="ID de um  grupo de usuário",example ="1")  Long grupoId,  GrupoNomeInput grupoNomeInput);
+	GrupoDto atualizar( @ApiParam(value ="ID de um  grupo de usuário",example ="1")  Long grupoId,  GrupoNomeInput grupoNomeInput);
     
     @ApiOperation("Remove uma grupo de usuário por id")
     @ApiResponses(  {
     @ApiResponse(responseCode= "404", description= "Grupo de usuário não encontrado",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
     @ApiResponse(responseCode= "204", description= "Grupo de usuário removido com sucesso")
     })
-	public void remover(@ApiParam(value ="Id de um  grupo de usuário",example ="1") Long grupoId);	
+	void remover(@ApiParam(value ="Id de um  grupo de usuário",example ="1") Long grupoId);	
 	
 
 }

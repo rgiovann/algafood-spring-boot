@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,12 +20,13 @@ import com.algaworks.algafood.api.assembler.EstadoDtoAssembler;
 import com.algaworks.algafood.api.assembler.EstadoNomeInputDisassembler;
 import com.algaworks.algafood.api.dto.EstadoDto;
 import com.algaworks.algafood.api.input.EstadoNomeInput;
+import com.algaworks.algafood.api.openapi.controller.EstadoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
 
 @RestController
 @RequestMapping(value = "/estados")
-public class EstadoController {
+public class EstadoController implements EstadoControllerOpenApi {
 
 	private final CadastroEstadoService estadoService;
     private final EstadoDtoAssembler estadoDtoAssembler;
@@ -38,14 +40,14 @@ public class EstadoController {
 		this.estadoNomeInputDisassembler = estadoInputDisassembler;
 	}
 
-	@GetMapping
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<EstadoDto> listar() {
 
 		return estadoDtoAssembler.toCollectionDto(estadoService.listar());
  
 	}
 	
-	@GetMapping("/{estadoId}")
+	@GetMapping(value= "/{estadoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public EstadoDto buscar(@PathVariable Long estadoId) {
 
 		return  estadoDtoAssembler.toDto(estadoService.buscarOuFalhar(estadoId));
@@ -53,7 +55,7 @@ public class EstadoController {
 	}
 
 
-	@PostMapping
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public EstadoDto adicionar(@RequestBody @Valid EstadoNomeInput estadoNomeInput) {
 		
@@ -62,7 +64,7 @@ public class EstadoController {
 
 	}
 	
-	@PutMapping("/{estadoId}")
+	@PutMapping(value= "/{estadoId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public EstadoDto atualizar(@PathVariable Long estadoId, @RequestBody @Valid  EstadoNomeInput estadoNomeInput)
 	{        
 			Estado estado = estadoService.buscarOuFalhar(estadoId);
@@ -73,7 +75,7 @@ public class EstadoController {
   
 	}
 
-	@DeleteMapping("/{estadoId}")
+	@DeleteMapping(value="/{estadoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long estadoId) {
 

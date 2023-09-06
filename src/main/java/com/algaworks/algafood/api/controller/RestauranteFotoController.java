@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.algaworks.algafood.api.assembler.FotoProdutoDtoAssembler;
 import com.algaworks.algafood.api.dto.FotoProdutoDto;
 import com.algaworks.algafood.api.input.FotoProdutoInput;
+import com.algaworks.algafood.api.openapi.controller.RestauranteProdutoFotoControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.model.Produto;
@@ -34,7 +35,7 @@ import com.algaworks.algafood.domain.service.FotoStorageService.FotoRecuperada;
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteFotoController {
+public class RestauranteFotoController implements RestauranteProdutoFotoControllerOpenApi {
 	
 	
 	private final CatalogoFotoProdutoService catalogoFotoProdutoService;
@@ -81,7 +82,7 @@ public class RestauranteFotoController {
 		
 	}
 	
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping()
 	public FotoProdutoDto  consultarFoto(@PathVariable Long restauranteId,
 							  @PathVariable Long produtoId){
 		
@@ -91,7 +92,7 @@ public class RestauranteFotoController {
 		
 	}
 
-	@GetMapping
+	@GetMapping(produces = MediaType.ALL_VALUE)
 	public ResponseEntity<?>  servirFoto(@PathVariable Long restauranteId,
 							                               @PathVariable Long produtoId,
 							                               @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException{

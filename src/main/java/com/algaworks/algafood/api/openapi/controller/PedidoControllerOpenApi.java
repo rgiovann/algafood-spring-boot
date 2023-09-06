@@ -23,7 +23,7 @@ public interface PedidoControllerOpenApi {
 	@ApiImplicitParams({@ApiImplicitParam(
 			value="Nomes das propriedades para filtrar na resposta, separados por vírgula",
 			name="campos",paramType="query",type ="string")})
-	public Page<PedidoCompactDto> pesquisar(  PedidoFilter filter,  Pageable pageable) ;
+	Page<PedidoCompactDto> pesquisar(  PedidoFilter filter,  Pageable pageable) ;
 	
 	
 	
@@ -32,9 +32,9 @@ public interface PedidoControllerOpenApi {
 			value="Nomes das propriedades para filtrar na resposta, separados por vírgula",
 			name="campos",paramType="query",type ="string")})
 	@GetMapping(value ="/{codigoPedido}",produces = MediaType.APPLICATION_JSON_VALUE)
-	public PedidoDto buscar(@ApiParam(value = "Código de um pedido", example = "f9981ca4-5a5e-4da3-af04-933861df3e55")  String codigoPedido); 
+	PedidoDto buscar(@ApiParam(value = "Código de um pedido", example = "f9981ca4-5a5e-4da3-af04-933861df3e55")  String codigoPedido); 
 	
     @ApiOperation("Adiciona um pedido")
-	public PedidoDto adicionar(@ApiParam(name = "corpo", value = "Representação de um novo pedido") PedidoInput pedidoInput);
+	PedidoDto adicionar(@ApiParam(name = "corpo", value = "Representação de um novo pedido") PedidoInput pedidoInput);
 	
 }
