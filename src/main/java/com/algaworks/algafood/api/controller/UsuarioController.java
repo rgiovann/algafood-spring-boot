@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import com.algaworks.algafood.api.dto.UsuarioDto;
 import com.algaworks.algafood.api.input.UsuarioComSenhaInput;
 import com.algaworks.algafood.api.input.UsuarioInput;
 import com.algaworks.algafood.api.input.UsuarioSoSenhaInput;
+import com.algaworks.algafood.api.openapi.controller.UsuarioControllerOpenApi;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.SenhaAlteradaIgualAnteriorException;
 import com.algaworks.algafood.domain.exception.SenhaAtualNaoConfereException;
@@ -29,7 +31,7 @@ import com.algaworks.algafood.domain.service.CadastroUsuarioService;
 
 @RestController
 @RequestMapping(value = "/usuarios")
-public class UsuarioController {
+public class UsuarioController implements UsuarioControllerOpenApi{
 
 	private final CadastroUsuarioService usuarioService;
 	private final UsuarioDtoAssembler usuarioDtoAssembler;
@@ -43,21 +45,21 @@ public class UsuarioController {
 		this.usuarioInputDisassembler = usuarioInputDisassembler;
 	}
 
-	@GetMapping
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<UsuarioDto> listar() {
 
 		return usuarioDtoAssembler.toCollectionDto(usuarioService.listar());
 
 	}
 
-	@GetMapping("/{usuarioId}")
+	@GetMapping(path="/{usuarioId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public UsuarioDto buscar(@PathVariable Long usuarioId) {
 
 		return usuarioDtoAssembler.toDto(usuarioService.buscarOuFalhar(usuarioId));
 
 	}
 
-	@PostMapping
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioDto adicionar(@RequestBody @Valid UsuarioComSenhaInput usuarioNomeInput) {
 
@@ -65,7 +67,7 @@ public class UsuarioController {
 
 	}
 
-	@PutMapping("/{usuarioId}")
+	@PutMapping(path="/{usuarioId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public UsuarioDto atualizar(@PathVariable Long usuarioId,
 			@RequestBody @Valid UsuarioInput usuarioSemSenhaInput) {
 		

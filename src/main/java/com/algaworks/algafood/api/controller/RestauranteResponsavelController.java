@@ -46,7 +46,7 @@ public class RestauranteResponsavelController implements RestauranteUsuarioRespo
 		restauranteService.desassociarResponsavel(restauranteId, usuarioId);
 	}
 	
-	@PutMapping(value = "/{usuarioId}",produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/{usuarioId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void associarResponsavel(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {
 		restauranteService.associarResponsavel(restauranteId, usuarioId);

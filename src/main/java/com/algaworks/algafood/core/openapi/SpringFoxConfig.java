@@ -1,5 +1,10 @@
 package com.algaworks.algafood.core.openapi;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLStreamHandler;
 import java.util.Arrays;
 import java.util.List;
 
@@ -76,8 +81,9 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 	        		                                                             CozinhasDtoOpenApi.class))
 	        .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, PedidoCompactDto.class),
                     PedidosDtoOpenApi.class))
-	        .ignoredParameterTypes(ServletWebRequest.class)
-
+            .ignoredParameterTypes(ServletWebRequest.class,
+                    URL.class, URI.class, URLStreamHandler.class,
+                    File.class, InputStream.class)
 	        .apiInfo(apiInfo())
 	        .tags(  new Tag("Cidades", "Gerencia as cidades"),
 	                new Tag("Grupos", "Gerencia os grupos de usuários"),
@@ -86,7 +92,9 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 	                new Tag("Pedidos", "Gerencia os pedidos"),	 
 	                new Tag("Restaurantes", "Gerencia os restaurantes"),	                
 	                new Tag("Estados", "Gerencia os estados"),
-	                new Tag("Produtos", "Gerencia os produtos de restaurantes")
+	                new Tag("Produtos", "Gerencia os produtos de restaurantes"),
+	                new Tag("Usuários", "Gerencia os usuários"),
+	                new Tag("Estatísticas", "Estatísticas da AlgaFood")
 	        		);
 		
 	  }

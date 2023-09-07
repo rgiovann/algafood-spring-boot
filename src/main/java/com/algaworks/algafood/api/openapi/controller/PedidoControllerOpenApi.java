@@ -2,8 +2,6 @@ package com.algaworks.algafood.api.openapi.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import com.algaworks.algafood.api.dto.PedidoCompactDto;
 import com.algaworks.algafood.api.dto.PedidoDto;

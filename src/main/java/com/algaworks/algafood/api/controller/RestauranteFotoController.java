@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,14 +62,17 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 
 
 
-	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public FotoProdutoDto atualizarFoto(@PathVariable Long restauranteId,
 							  @PathVariable Long produtoId,
-							  @Valid FotoProdutoInput fotoProdutoInput) throws IOException {
+							  @Valid FotoProdutoInput fotoProdutoInput,
+							  @RequestPart(required=true) MultipartFile arquivo) throws IOException {
 		
 		Produto produto = cadastroProdutoService.buscarProdutoRestaurante(restauranteId, produtoId);
 		
-		MultipartFile arquivo = fotoProdutoInput.getArquivo();
+		// ja vem no request
+		//MultipartFile arquivo = fotoProdutoInput.getArquivo();
+		
 		FotoProduto foto = new FotoProduto();
 		foto.setProduto(produto);
 		foto.setDescricao(fotoProdutoInput.getDescricao());
@@ -81,10 +85,15 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 		return fotoProdutoDtoAssembler.toDto(fotoSalva);
 		
 	}
-	
-	@GetMapping()
+	// Accept = application/json
+	// Accept = application/json AND Accept = image/*
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public FotoProdutoDto  consultarFoto(@PathVariable Long restauranteId,
 							  @PathVariable Long produtoId){
+		
+	    // debug on
+		//System.out.println("DEBUG 0000 ====== >> PASSEI AQUI" );
+		// debug off
 		
 		FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 		
@@ -92,12 +101,23 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 		
 	}
 
+	// Accept = image/*
+	// not defined
 	@GetMapping(produces = MediaType.ALL_VALUE)
 	public ResponseEntity<?>  servirFoto(@PathVariable Long restauranteId,
 							                               @PathVariable Long produtoId,
 							                               @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException{
 		try {
+			
+	    // debug on
+		//System.out.println("DEBUG 0001 ====== >> acceptHeader = " + acceptHeader );
+		// debug off
+			
 		FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
+		
+	    // debug on
+		//System.out.println("DEBUG 0002 ====== >> fotoProduto.getContentType() = " + fotoProduto.getContentType() );
+		// debug off
 		
 		MediaType  mediaTypeFoto = MediaType.parseMediaType(fotoProduto.getContentType());
 		
@@ -143,7 +163,19 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 
 	private void verificarCompatibilidadeMediaType(MediaType mediaTypeFoto, List<MediaType> mediaTypeAceitas) throws HttpMediaTypeNotAcceptableException 
 	{
+		
+	    // debug on
+		//System.out.println("DEBUG 0003 ====== >> mediaTypeFoto.getType() = " + mediaTypeFoto.getType() );
+		// debug off
 
+		// debug on
+		//for (MediaType mt : mediaTypeAceitas) {
+		//    
+		//	 System.out.println("DEBUG 0004 ====== >> for each mt.getType() = " + mt.getType() );
+		//	
+		//}
+		// debug off
+		
 		boolean compativel = mediaTypeAceitas.stream()
 				.anyMatch(mediaTypeAceita -> mediaTypeAceita.isCompatibleWith(mediaTypeFoto));
 		
