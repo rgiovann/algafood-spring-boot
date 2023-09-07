@@ -31,7 +31,6 @@ public interface PedidoControllerOpenApi {
 	@ApiImplicitParams({@ApiImplicitParam(
 			value="Nomes das propriedades para filtrar na resposta, separados por vírgula",
 			name="campos",paramType="query",type ="string")})
-	@GetMapping(value ="/{codigoPedido}",produces = MediaType.APPLICATION_JSON_VALUE)
 	PedidoDto buscar(@ApiParam(value = "Código de um pedido", example = "f9981ca4-5a5e-4da3-af04-933861df3e55")  String codigoPedido); 
 	
     @ApiOperation("Adiciona um pedido")

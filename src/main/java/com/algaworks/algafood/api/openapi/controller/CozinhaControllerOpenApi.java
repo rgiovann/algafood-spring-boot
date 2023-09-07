@@ -10,49 +10,51 @@ import com.algaworks.algafood.api.input.CozinhaNomeInput;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
-@Api(tags ="Cozinhas")
-
+@Api(tags = "Cozinhas")
 public interface CozinhaControllerOpenApi {
-	
-    @ApiOperation("Lista as cozinhas")
-	Page<CozinhaDto> listar(Pageable pageable);
-    
-    @ApiOperation("Busca uma cozinha por id")
-    @ApiResponses(  {
-    @ApiResponse(responseCode= "404", description= "Cozinha não encontrada",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
-    @ApiResponse(responseCode= "400", description= "Id da cozinha inválido",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class)))
 
-    })
-	CozinhaDto buscar(@ApiParam(value ="ID de uma cozinha",example ="1") Long cozinhaId);
+	@ApiOperation("Lista as cozinhas com paginação")
+	public Page<CozinhaDto> listar(Pageable pageable);
 
- 
-    @ApiOperation("Cadastra uma cozinha")
-    @ApiResponses(  {
-    @ApiResponse(responseCode= "201", description= "Cozinha cadastrada com sucesso"),
-    })
-	CozinhaDto adicionar( @ApiParam(name= "corpo",value ="Representação de uma cozinha")  CozinhaNomeInput cozinhaInput);
+	@ApiOperation("Busca uma cozinha por ID")
+	@ApiResponses({
+			@ApiResponse(code = 400, message = "ID da cozinha inválido", response = Problem.class),
+			@ApiResponse(code = 404, message = "Cozinha não encontrada", response = Problem.class)
+	})
+	public CozinhaDto buscar(
+			@ApiParam(value = "ID de uma cozinha", example = "1", required = true)
+					Long cozinhaId);
 
- 
-    @ApiOperation("Atualiza uma cozinha por Id")
-    @ApiResponses(  {
-    @ApiResponse(responseCode= "404", description= "Cozinha não encontrada",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
-    @ApiResponse(responseCode= "200", description= "Cozinha atualizada com sucesso"),
+	@ApiOperation("Cadastra uma cozinha")
+	@ApiResponses({
+			@ApiResponse(code = 201, message = "Cozinha cadastrada"),
+	})
+	public CozinhaDto adicionar(
+			@ApiParam(name = "corpo", value = "Representação de uma nova cozinha", required = true)
+			CozinhaNomeInput cozinhaInput);
 
+	@ApiOperation("Atualiza uma cozinha por ID")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Cozinha atualizada"),
+			@ApiResponse(code = 404, message = "Cozinha não encontrada", response = Problem.class)
+	})
+	public CozinhaDto atualizar(
+			@ApiParam(value = "ID de uma cozinha", example = "1", required = true)
+					Long cozinhaId,
 
-    })
-	CozinhaDto atualizar( @ApiParam(value ="Id de uma cozinha",example ="1")  Long cozinhaId, @ApiParam(name= "corpo",value ="Representação de uma cozinha")  CozinhaNomeInput cozinhaInput);
+			@ApiParam(name = "corpo", value = "Representação de uma cozinha com os novos dados")
+					CozinhaNomeInput cozinhaInput);
 
-    @ApiOperation("Remove uma cozinha por id")
-    @ApiResponses(  {
-    @ApiResponse(responseCode= "404", description= "Cozinha não encontrada",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
-    @ApiResponse(responseCode= "204", description= "Cozinha removida com sucesso"),
-    })  
-	void remover(@ApiParam(value ="Id de uma cozinha",example ="1")Long cozinhaId);	
-	
+	@ApiOperation("Exclui uma cozinha por ID")
+	@ApiResponses({
+			@ApiResponse(code = 204, message = "Cozinha excluída"),
+			@ApiResponse(code = 404, message = "Cozinha não encontrada", response = Problem.class)
+	})
+	public void remover(
+			@ApiParam(value = "ID de uma cozinha", example = "1", required = true)
+					Long cozinhaId);
 
 }

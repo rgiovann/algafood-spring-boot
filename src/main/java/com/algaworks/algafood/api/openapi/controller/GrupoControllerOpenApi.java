@@ -9,46 +9,52 @@ import com.algaworks.algafood.api.input.GrupoNomeInput;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
-@Api(tags ="Grupos")
-
+@Api(tags = "Grupos")
 public interface GrupoControllerOpenApi {
-	
-    @ApiOperation("Lista os grupos de usuários")
-	List<GrupoDto> listar();
-    
-    @ApiResponses(  {
-    @ApiResponse(responseCode= "404", description= "Grupo de usuário não encontrado",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
 
-    })
-    @ApiOperation("Busca uma grupo de usuário por Id")
-	GrupoDto buscar(@ApiParam(value ="Id de um grupo de usuário",example ="1") Long grupoId);
+	@ApiOperation("Lista os grupos")
+	public List<GrupoDto> listar();
 
- 
-    @ApiOperation("Cadastra uma grupo de usuário")
-    @ApiResponses(  {
-    @ApiResponse(responseCode= "201", description= "Grupo de usuário criado com sucesso")
-    })
-	GrupoDto adicionar( @ApiParam(name= "corpo",value ="Representação de um grupo de usuário")  GrupoNomeInput grupoNomeInput);
+	@ApiOperation("Busca um grupo por ID")
+	@ApiResponses({
+			@ApiResponse(code = 400, message = "ID da grupo inválido", response = Problem.class),
+			@ApiResponse(code = 404, message = "Grupo não encontrado", response = Problem.class)
+	})
+	public GrupoDto buscar(
+			@ApiParam(value = "ID de um grupo", example = "1", required = true)
+					Long grupoId);
 
- 
-    @ApiOperation("Atualiza uma grupo de usuário por Id")
-    @ApiResponses(  {
-    @ApiResponse(responseCode= "404", description= "Grupo de usuário não encontrado",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
-    @ApiResponse(responseCode= "200", description= "Grupo de usuário atualizado com sucesso")
-    })
-	GrupoDto atualizar( @ApiParam(value ="ID de um  grupo de usuário",example ="1")  Long grupoId,  GrupoNomeInput grupoNomeInput);
-    
-    @ApiOperation("Remove uma grupo de usuário por id")
-    @ApiResponses(  {
-    @ApiResponse(responseCode= "404", description= "Grupo de usuário não encontrado",content = @Content(mediaType = "application/json",schema = @Schema(implementation = Problem.class))),
-    @ApiResponse(responseCode= "204", description= "Grupo de usuário removido com sucesso")
-    })
-	void remover(@ApiParam(value ="Id de um  grupo de usuário",example ="1") Long grupoId);	
-	
+	@ApiOperation("Cadastra um grupo")
+	@ApiResponses({
+			@ApiResponse(code = 201, message = "Grupo cadastrado"),
+	})
+	public GrupoDto adicionar(
+			@ApiParam(name = "corpo", value = "Representação de um novo grupo", required = true)
+					GrupoNomeInput grupoNomeInput);
+
+	@ApiOperation("Atualiza um grupo por ID")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Grupo atualizado"),
+			@ApiResponse(code = 404, message = "Grupo não encontrado", response = Problem.class)
+	})
+	public GrupoDto atualizar(
+			@ApiParam(value = "ID de um grupo", example = "1", required = true)
+					Long grupoId,
+
+			@ApiParam(name = "corpo", value = "Representação de um grupo com os novos dados",
+					required = true)
+			GrupoNomeInput grupoInput);
+
+	@ApiOperation("Exclui um grupo por ID")
+	@ApiResponses({
+			@ApiResponse(code = 204, message = "Grupo excluído"),
+			@ApiResponse(code = 404, message = "Grupo não encontrado", response = Problem.class)
+	})
+	public void remover(
+			@ApiParam(value = "ID de um grupo", example = "1", required = true)
+					Long grupoId);
 
 }

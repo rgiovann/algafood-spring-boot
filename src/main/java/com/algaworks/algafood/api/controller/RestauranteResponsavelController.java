@@ -40,7 +40,7 @@ public class RestauranteResponsavelController implements RestauranteUsuarioRespo
 		
 	}
 	
-	@DeleteMapping(value = "/{usuarioId}",produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "/{usuarioId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desassociarResponsavel(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {
 		restauranteService.desassociarResponsavel(restauranteId, usuarioId);

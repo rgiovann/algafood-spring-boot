@@ -45,8 +45,7 @@ public interface RestauranteProdutoFotoControllerOpenApi {
             @ApiParam(value = "Id do produto", example = "1", required = true)
             Long produtoId);
 
-    @ApiOperation(value = "Busca a foto do produto de um restaurante",
-            produces = "application/json, image/jpeg, image/png")
+    @ApiOperation(value = "Busca a foto do produto de um restaurante")
     @ApiResponses({
         @ApiResponse(code = 400, message = "Id do restaurante ou produto inválido", response = Problem.class),
         @ApiResponse(code = 404, message = "Foto de produto não encontrada", response = Problem.class)
