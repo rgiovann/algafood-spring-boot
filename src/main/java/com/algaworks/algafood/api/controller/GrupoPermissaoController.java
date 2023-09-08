@@ -32,7 +32,7 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
 		this.cadastroGrupoService = cadastroGrupoService;
 		this.permissaoDtoAssembler = permissaoDtoAssembler;
  	}
-
+	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<PermissaoDto> listarPermissoes(@PathVariable Long grupoId){
 		Grupo grupo = cadastroGrupoService.buscarOuFalhar(grupoId);
@@ -40,13 +40,13 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
 		
 	}
 	
-	
+	@Override
 	@DeleteMapping("/{permissaoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desassociar(@PathVariable Long grupoId, @PathVariable Long permissaoId) {
 		cadastroGrupoService.desassociarPermissao(grupoId, permissaoId);
 	}
-	
+	@Override
 	@PutMapping("/{permissaoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void associar(@PathVariable Long grupoId, @PathVariable Long permissaoId) {

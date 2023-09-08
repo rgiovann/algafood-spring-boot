@@ -44,7 +44,8 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 		this.usuarioDtoAssembler = usuarioDtoAssembler;
 		this.usuarioInputDisassembler = usuarioInputDisassembler;
 	}
-
+	
+	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<UsuarioDto> listar() {
 
@@ -52,6 +53,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 
 	}
 
+	@Override
 	@GetMapping(path="/{usuarioId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public UsuarioDto buscar(@PathVariable Long usuarioId) {
 
@@ -59,6 +61,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 
 	}
 
+	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioDto adicionar(@RequestBody @Valid UsuarioComSenhaInput usuarioNomeInput) {
@@ -67,6 +70,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 
 	}
 
+	@Override
 	@PutMapping(path="/{usuarioId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public UsuarioDto atualizar(@PathVariable Long usuarioId,
 			@RequestBody @Valid UsuarioInput usuarioSemSenhaInput) {
@@ -79,6 +83,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 
 	}
 
+	
 	@DeleteMapping("/{usuarioId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long usuarioId) {
@@ -86,6 +91,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 		usuarioService.excluir(usuarioId);
 	}
 
+	@Override
 	@PutMapping("/{usuarioId}/senha")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void alterarSenha(@PathVariable Long usuarioId,

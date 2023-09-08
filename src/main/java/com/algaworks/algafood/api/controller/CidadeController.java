@@ -53,6 +53,7 @@ public class CidadeController implements CidadeControllerOpenApi{
      *  com exceção daqueles que retornam void, ao invés de adicioná-los na Controller.
 	 */
 	
+	@Override
  	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<CidadeDto> listar() {
 
@@ -60,6 +61,7 @@ public class CidadeController implements CidadeControllerOpenApi{
 
 	}
     
+	@Override
  	@GetMapping(path="/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeDto buscar(  @PathVariable Long cidadeId) {
 
@@ -67,6 +69,7 @@ public class CidadeController implements CidadeControllerOpenApi{
 
 	}
 
+	@Override
  	@PostMapping( produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeDto adicionar( @RequestBody @Valid CidadeInput cidadeInput) {
@@ -84,6 +87,7 @@ public class CidadeController implements CidadeControllerOpenApi{
 
 	}
 
+	@Override
 	@PutMapping(path="/{cidadeId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeDto atualizar( @PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeInput) {
 
@@ -102,6 +106,7 @@ public class CidadeController implements CidadeControllerOpenApi{
 
 	}
 
+	@Override
  	@DeleteMapping("/{cidadeId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(  @PathVariable Long cidadeId) {

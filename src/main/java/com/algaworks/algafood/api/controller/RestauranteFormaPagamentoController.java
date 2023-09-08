@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,20 +34,20 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 		this.restauranteService = restauranteService;
 		this.formaPagtoDtoAssembler = formaPagtoDtoAssembler;
 	}
-
-	@GetMapping
+	@Override
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<FormaPagamentoDto> listar(@PathVariable Long restauranteId){
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 		return formaPagtoDtoAssembler.toCollectionDto(restaurante.getFormasPagamento());
 		
 	}
-	
+	@Override
 	@DeleteMapping("/{formaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desassociar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
 		restauranteService.desassociarFormaPagamento(restauranteId, formaPagamentoId);
 	}
-	
+	@Override
 	@PutMapping("/{formaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void associar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {

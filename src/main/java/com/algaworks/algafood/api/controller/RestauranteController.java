@@ -72,7 +72,7 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 //
 //	}
 //
- 
+	@Override
 	@GetMapping("/por-nome-taxa-frete")
 	public List<RestauranteDto> restaurantesPorNomeFrete(
 			@RequestParam(required=false) String nome,
@@ -102,13 +102,13 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 //---------------------------------------- API OFICIAL -------------------------------------------------
 //------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------
-
+	@Override
 	@GetMapping("/buscar-primeiro")
 	public RestauranteDto restaurantesBuscarPrimeiro() {
 
 		return restauranteDtoAssembler.toDto(restauranteService.restaurantesBuscarPrimeiro());
 	}
-
+	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@JsonView(RestauranteView.Resumo.class)
 	public List<RestauranteDto> listar() {
@@ -116,7 +116,7 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 		return restauranteDtoAssembler.toCollectionDto(restauranteService.listar());
 
 	}
-
+	@Override
 	@JsonView(RestauranteView.ApenasNome.class)
 	@GetMapping(params = "projecao=apenas-nome")
 	public List<RestauranteDto> listarApenasNomes() {
@@ -145,13 +145,15 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 // 		return restaurantesWraper;
 //
 //	}
+	@Override
 	@GetMapping(value = "/{restauranteId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RestauranteDto buscar(@PathVariable Long restauranteId) {
 
 		return restauranteDtoAssembler.toDto(restauranteService.buscarOuFalhar(restauranteId));
 
 	}
-
+	
+	@Override
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public RestauranteDto adicionar( @RequestBody @Valid RestauranteInput restauranteInput) {
@@ -171,6 +173,7 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 		}
 	}
 
+	@Override
 	@PutMapping(value = "/{restauranteId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RestauranteDto atualizar(@PathVariable Long restauranteId,
 			                        @RequestBody @Valid RestauranteInput restauranteInput) {
@@ -193,12 +196,14 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 
 	}
 
+	@Override
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativarRestaurante( @PathVariable Long restauranteId) {
 		restauranteService.ativar(restauranteId);
 	}
 
+	@Override
 	@PutMapping("/ativacoes")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativarMultiplosRestaurante( @RequestBody List<Long> restauranteIds) {
@@ -209,6 +214,7 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 		}
 	}
 
+	@Override
 	@DeleteMapping("/ativacoes")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativarMultiplosRestaurante(@RequestBody List<Long> restauranteIds) {
@@ -219,18 +225,21 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 		}
 	}
 
+	@Override
 	@DeleteMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativarRestaurante( @PathVariable Long restauranteId) {
 		restauranteService.inativar(restauranteId);
 	}
 
+	@Override
 	@PutMapping("/{restauranteId}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void abrirRestauranrte( @PathVariable Long restauranteId) {
 		restauranteService.abrir(restauranteId);
 	}
 
+	@Override
 	@PutMapping("/{restauranteId}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void fecharRestaurante(  @PathVariable Long restauranteId) {

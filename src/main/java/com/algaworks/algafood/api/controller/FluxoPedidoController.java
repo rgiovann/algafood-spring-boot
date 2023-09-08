@@ -21,19 +21,19 @@ public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
 	}
 	
 	
-	
+	@Override
 	@PutMapping("/confirmacao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void confirmarPedido(@PathVariable String codigoPedido) {
 		fluxoPedidoService.confirmarPedido(codigoPedido);
 	}
-	
+	@Override
 	@PutMapping("/cancelamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void cancelarPedido(@PathVariable String codigoPedido) {
 		fluxoPedidoService.cancelarPedido(codigoPedido);
 	}
-	
+	@Override
 	@PutMapping("/entrega")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void entregarPedido(@PathVariable String codigoPedido) {

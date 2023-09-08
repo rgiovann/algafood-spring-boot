@@ -47,13 +47,14 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
 //	}
 // ***************************************************************************************************************	
 	
+	@Override
 	@GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro,
 			@RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
 		return vendaQueryService.consultarVendasDiarias(filtro, timeOffset);
 	}
 	
-	
+	@Override
 	@GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<byte[]> consultarVendasDiariasPdf(VendaDiariaFilter vendaDiariaFilter,
 			                               @PageableDefault(size=10)  Pageable pageable, 

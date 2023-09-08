@@ -61,7 +61,7 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 	}
 
 
-
+ 	@Override
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public FotoProdutoDto atualizarFoto(@PathVariable Long restauranteId,
 							  @PathVariable Long produtoId,
@@ -87,6 +87,7 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 	}
 	// Accept = application/json
 	// Accept = application/json AND Accept = image/*
+ 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public FotoProdutoDto  consultarFoto(@PathVariable Long restauranteId,
 							  @PathVariable Long produtoId){
@@ -103,6 +104,7 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 
 	// Accept = image/*
 	// not defined
+ 	@Override
 	@GetMapping(produces = MediaType.ALL_VALUE)
 	public ResponseEntity<?>  servirFoto(@PathVariable Long restauranteId,
 							                               @PathVariable Long produtoId,
@@ -150,6 +152,7 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 		
 	}
 	
+ 	@Override
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void excluirFoto(@PathVariable Long restauranteId,

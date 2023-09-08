@@ -35,6 +35,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 		this.grupoDtoAssembler = grupoDtoAssembler;
  	}
 
+	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<GrupoDto> listarPermissoes(@PathVariable Long usuarioId){
 		Usuario usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
@@ -42,13 +43,14 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 		
 	}
 	
-	
+	@Override
 	@DeleteMapping("/{grupoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removerGrupo(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
 		cadastroUsuarioService.desassociarGrupo(usuarioId, grupoId);
 	}
 	
+	@Override
 	@PutMapping("/{grupoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void adicionarGrupo(@PathVariable Long usuarioId, @PathVariable Long grupoId) {

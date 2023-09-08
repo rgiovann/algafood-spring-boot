@@ -52,7 +52,8 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 		this.produtoService = produtoService;
 	}
 
-	@GetMapping
+	@Override
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<ProdutoDto> listarProdutos(@PathVariable Long restauranteId,
 										   @RequestParam(required=false) boolean incluirInativos){
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
@@ -69,6 +70,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 		return produtoDtoAssembler.toCollectionDto(todosProdutos);		
 	}
 	
+	@Override
 	@GetMapping(path = "/{produtoId}",produces = MediaType.APPLICATION_JSON_VALUE)
  	public ProdutoDto buscarProduto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 
@@ -76,6 +78,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 		return produtoDtoAssembler.toDto(produto);
 	}
 	
+	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE) 
 	@ResponseStatus(HttpStatus.CREATED)
 	public ProdutoDto inserirProduto(@PathVariable Long restauranteId,@RequestBody @Valid ProdutoInput produtoInput) {
@@ -89,6 +92,8 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 		
 		return produtoDtoAssembler.toDto(produto);
 	}
+	
+	@Override
 	@PutMapping(path= "/{produtoId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public ProdutoDto atualizarProduto(@PathVariable Long restauranteId, @PathVariable Long produtoId,@RequestBody @Valid ProdutoInput produtoInput) {
 		

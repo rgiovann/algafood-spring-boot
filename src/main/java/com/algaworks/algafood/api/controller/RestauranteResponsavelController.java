@@ -33,6 +33,7 @@ public class RestauranteResponsavelController implements RestauranteUsuarioRespo
 		this.usuarioDtoAssembler = usuarioDtoAssembler;
 	}
 
+	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<UsuarioDto> listar(@PathVariable Long restauranteId){
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
@@ -40,12 +41,14 @@ public class RestauranteResponsavelController implements RestauranteUsuarioRespo
 		
 	}
 	
+	@Override
 	@DeleteMapping(value = "/{usuarioId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desassociarResponsavel(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {
 		restauranteService.desassociarResponsavel(restauranteId, usuarioId);
 	}
 	
+	@Override
 	@PutMapping(value = "/{usuarioId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void associarResponsavel(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {

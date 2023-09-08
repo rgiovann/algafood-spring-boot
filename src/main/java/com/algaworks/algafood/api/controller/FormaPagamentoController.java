@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,8 +63,8 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 //---------------------------------------- API OFICIAL -------------------------------------------------
 //------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------
-
-	@GetMapping
+	@Override
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity< List<FormaPagamentoDto> >listar(ServletWebRequest request) {
 		
 		// desabilita o Spring de gerar o eTag
@@ -96,8 +97,8 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 				.body(formasPagamentoDto);
 
 	}
-	
-	@GetMapping("/{fomaPagamentoId}")
+	@Override	
+	@GetMapping(path="/{fomaPagamentoId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<FormaPagamentoDto> buscar(@PathVariable Long fomaPagamentoId,ServletWebRequest request) {
 
 		// desabilita o Spring de gerar o eTag
@@ -124,8 +125,8 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 
 	}
 
-
-	@PostMapping
+	@Override
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public FormaPagamentoDto adicionar(@RequestBody @Valid FormaPagamentoNomeInput formaPagamentoInput) {
 		
@@ -135,8 +136,8 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 		return formaPagtoDtoAssembler.toDto(formaPagamento);
 
 	}
-	
-	@PutMapping("/{formaPagamentoId}")
+	@Override	
+	@PutMapping(path="/{formaPagamentoId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public FormaPagamentoDto atualizar(@PathVariable Long formaPagamentoId, @RequestBody @Valid  FormaPagamentoNomeInput formaPagamentoInput)
 	{        
 		FormaPagamento formaPagamento  = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
@@ -146,7 +147,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 		return formaPagtoDtoAssembler.toDto(formaPagamentoService.salvar(formaPagamento));
  
 	}
-
+	@Override
 	@DeleteMapping("/{fomaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long fomaPagamentoId) {

@@ -54,7 +54,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 		this.pedidoCompactDtoAssembler = pedidoCompactDtoAssembler;
 		this.pedidoInputDisassembler = pedidoInputDisassembler;
  	}
-
+	@Override
  	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<PedidoCompactDto> pesquisar(  PedidoFilter filter, @PageableDefault(size=10) Pageable pageable) {
 		
@@ -94,7 +94,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 //		return pedidosWrapper;
 //  
 //	}
-	
+	@Override
  	@GetMapping(value ="/{codigoPedido}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public PedidoDto buscar( @PathVariable String codigoPedido) {
 
@@ -122,7 +122,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 //			throw new NegocioException(e.getMessage(), e);
 //		}
 //	}
-	
+	@Override
  	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public PedidoDto adicionar(@Valid @RequestBody PedidoInput pedidoInput) {

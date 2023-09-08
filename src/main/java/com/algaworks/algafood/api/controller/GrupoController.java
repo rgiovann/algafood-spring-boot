@@ -42,20 +42,21 @@ public class GrupoController implements GrupoControllerOpenApi {
 		this.grupoNomeInputDisassembler = grupoInputDisassembler;
  	}
 
+	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<GrupoDto> listar() {
 
 		return grupoDtoAssembler.toCollectionDto(grupoService.listar());
  
 	}
-	
+	@Override	
 	@GetMapping(path="/{grupoId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public GrupoDto buscar(@PathVariable Long grupoId) {
 
 		return  grupoDtoAssembler.toDto(grupoService.buscarOuFalhar(grupoId));
 
 	}
-	
+	@Override	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoDto adicionar(@RequestBody @Valid GrupoNomeInput grupoNomeInput) {
@@ -64,7 +65,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 				.toDto( grupoService.salvar( grupoNomeInputDisassembler.toEntity(grupoNomeInput)));
 
 	}
-	
+	@Override	
 	@PutMapping(path="/{grupoId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public GrupoDto atualizar(@PathVariable Long grupoId, @RequestBody @Valid  GrupoNomeInput grupoNomeInput)
 	{        
@@ -75,7 +76,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 			return  grupoDtoAssembler.toDto( grupoService.salvar(grupo));
   
 	}
-
+	@Override
 	@DeleteMapping("/{grupoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long grupoId) {
