@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
@@ -22,6 +23,7 @@ public class FotoProduto {
 	
 	@OneToOne( fetch = FetchType.LAZY)
 	@MapsId     // link Id da foto com Id do produto
+
 	private Produto produto;
 	
 	private String nomeArquivo;

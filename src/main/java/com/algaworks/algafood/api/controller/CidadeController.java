@@ -1,9 +1,12 @@
 package com.algaworks.algafood.api.controller;
 
+import java.net.URI;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.assembler.CidadeDtoAssembler;
 import com.algaworks.algafood.api.assembler.CidadeInputDisassembler;
 import com.algaworks.algafood.api.dto.CidadeDto;
@@ -78,7 +85,19 @@ public class CidadeController implements CidadeControllerOpenApi{
 
 			Cidade cidade = cidadeInputDissasembler.toEntity(cidadeInput);
 			
-			return cidadeDtoAssembler.toDto(cidadeService.salvar(cidade));
+			CidadeDto cidadeDto = cidadeDtoAssembler.toDto(cidadeService.salvar(cidade));
+			
+			ResourceUriHelper.addUriResponseHeader(cidadeDto.getId());
+			
+//			URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
+//			.path("/{id}")
+//			.buildAndExpand(cidadeDto.getId()).toUri();
+			
+//			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse(); 
+			
+//			response.setHeader(HttpHeaders.LOCATION, uri.toString());
+			
+			return cidadeDto;
 
 		} catch (EstadoNaoEncontradoException e) {
 

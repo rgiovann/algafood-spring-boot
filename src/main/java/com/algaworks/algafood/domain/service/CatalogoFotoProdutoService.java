@@ -42,7 +42,7 @@ public class CatalogoFotoProdutoService {
 			nomeArquivoExistente = fotoExistente.get().getNomeArquivo();
 			produtoRepository.delete(fotoExistente.get());
 		}
-
+		//System.out.println("FOTO ID-------------------------" + foto.getId());
 		foto = produtoRepository.save(foto);
 		produtoRepository.flush(); // salva no BD os dados da foto, commitando a insercao ANTES de salvar a foto.
 
