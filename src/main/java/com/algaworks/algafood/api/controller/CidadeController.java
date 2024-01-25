@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.http.HttpHeaders;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -72,7 +73,22 @@ public class CidadeController implements CidadeControllerOpenApi{
  	@GetMapping(path="/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeDto buscar(  @PathVariable Long cidadeId) {
 
-		return cidadeDtoAssembler.toDto(cidadeService.buscarOuFalhar(cidadeId));
+		CidadeDto cidadeDto =  cidadeDtoAssembler.toDto(cidadeService.buscarOuFalhar(cidadeId));
+		
+		// metodo DEPRECATED
+		//cidadeDto.add(new Link("http://localhost:8080/cidades/1"));
+		
+		cidadeDto.add(Link.of("http://localhost:8080/cidades/1"));
+//		cidadeModel.add(Link.of("http://localhost:8080/cidades/1", IanaLinkRelations.SELF));
+		
+		cidadeDto.add(Link.of("http://localhost:8080/cidades", "cidades"));
+//		cidadeModel.add(Link.of("http://localhost:8080/cidades", IanaLinkRelations.COLLECTION));
+		
+		cidadeDto.getEstado().add(Link.of("http://localhost:8080/estados/1"));
+		//cidadeDto.add(Link.of("http://localhost:8080/estados", "estados"));
+
+		
+		return cidadeDto;
 
 	}
 
