@@ -1,13 +1,11 @@
 package com.algaworks.algafood.api.controller;
 
-import java.net.URI;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.http.HttpHeaders;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,10 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.assembler.CidadeDtoAssembler;
 import com.algaworks.algafood.api.assembler.CidadeInputDisassembler;
@@ -63,9 +57,34 @@ public class CidadeController implements CidadeControllerOpenApi{
 	
 	@Override
  	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<CidadeDto> listar() {
+	public CollectionModel<CidadeDto> listar() {
 
-		return cidadeDtoAssembler.toCollectionDto(cidadeService.listar());
+		List<CidadeDto> cidadesDto = cidadeDtoAssembler.toCollectionDto(cidadeService.listar());
+		
+		cidadesDto.forEach( cidadeDto ->
+		{
+			cidadeDto.add(WebMvcLinkBuilder.linkTo(
+					  WebMvcLinkBuilder.methodOn(CidadeController.class) 
+				      .buscar(cidadeDto.getId())).withSelfRel()
+				     );
+
+		cidadeDto.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class)
+				.listar()).withRel("cidades"));
+
+
+		cidadeDto.getEstado().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EstadoController.class)
+		.buscar(cidadeDto.getEstado().getId())).withSelfRel());
+			
+		}
+	
+				);
+		
+		CollectionModel<CidadeDto> collectionCidadeDto = CollectionModel.of(cidadesDto);
+		
+		// adicionado link no final .../cidades
+		collectionCidadeDto.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withSelfRel());
+		
+		return collectionCidadeDto;
 
 	}
     
@@ -78,14 +97,41 @@ public class CidadeController implements CidadeControllerOpenApi{
 		// metodo DEPRECATED
 		//cidadeDto.add(new Link("http://localhost:8080/cidades/1"));
 		
-		cidadeDto.add(Link.of("http://localhost:8080/cidades/1"));
-//		cidadeModel.add(Link.of("http://localhost:8080/cidades/1", IanaLinkRelations.SELF));
+
+		cidadeDto.add(WebMvcLinkBuilder.linkTo(
+					  WebMvcLinkBuilder.methodOn(CidadeController.class) 
+				      .buscar(cidadeDto.getId())).withSelfRel()
+				     );
+
 		
-		cidadeDto.add(Link.of("http://localhost:8080/cidades", "cidades"));
-//		cidadeModel.add(Link.of("http://localhost:8080/cidades", IanaLinkRelations.COLLECTION));
+//		cidadeDto.add(WebMvcLinkBuilder.linkTo(CidadeController.class)
+//				.slash(cidadeDto.getId())
+//				.withSelfRel());
+
+//cidadeDto.add(Link.of("http://localhost:8080/cidades/1"));
+//		cidadeDto.add(Link.of("http://localhost:8080/cidades/1", IanaLinkRelations.SELF));
 		
-		cidadeDto.getEstado().add(Link.of("http://localhost:8080/estados/1"));
-		//cidadeDto.add(Link.of("http://localhost:8080/estados", "estados"));
+
+		cidadeDto.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class)
+				.listar()).withRel("cidades"));
+		
+//cidadeDto.add(WebMvcLinkBuilder.linkTo(CidadeController.class)
+//.withRel("cidades"));
+		
+//cidadeDto.add(Link.of("http://localhost:8080/cidades", "cidades"));
+//cidadeDto.add(Link.of("http://localhost:8080/cidades", IanaLinkRelations.COLLECTION));
+
+
+		cidadeDto.getEstado().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EstadoController.class)
+		.buscar(cidadeDto.getEstado().getId())).withSelfRel());
+		
+//cidadeDto.getEstado().add(WebMvcLinkBuilder.linkTo(EstadoController.class)
+//.slash(cidadeDto.getEstado().getId())
+//.withSelfRel());
+		
+		
+//cidadeDto.getEstado().add(Link.of("http://localhost:8080/estados/1"));	
+//cidadeDto.add(Link.of("http://localhost:8080/estados", "estados"));
 
 		
 		return cidadeDto;
