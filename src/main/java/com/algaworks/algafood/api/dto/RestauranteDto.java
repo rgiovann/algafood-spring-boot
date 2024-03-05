@@ -2,6 +2,8 @@ package com.algaworks.algafood.api.dto;
 
 import java.math.BigDecimal;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.algaworks.algafood.api.dto.view.RestauranteView;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -11,7 +13,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class RestauranteDto {
+public class RestauranteDto extends RepresentationModel<RestauranteDto> {
  
 	@JsonView({RestauranteView.Resumo.class,RestauranteView.ApenasNome.class})
 	@ApiModelProperty(value="Id do restaurante",example="1")

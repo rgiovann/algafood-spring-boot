@@ -1,5 +1,7 @@
 package com.algaworks.algafood.api.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -9,7 +11,8 @@ import lombok.Setter;
 @Setter
 @ApiModel(value = "Usuário", description = "Representa os dados de um usuário")
 
-public class UsuarioDto {
+public class UsuarioDto extends RepresentationModel<UsuarioDto>{
+	
 	@ApiModelProperty(value="Id do usuário",example="1")
 	private Long id;
 	

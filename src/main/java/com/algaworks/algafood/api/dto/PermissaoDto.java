@@ -1,12 +1,14 @@
 package com.algaworks.algafood.api.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PermissaoDto {
+public class PermissaoDto  extends RepresentationModel<PermissaoDto> {
 	
 	@ApiModelProperty(example = "1")
  	private Long id;

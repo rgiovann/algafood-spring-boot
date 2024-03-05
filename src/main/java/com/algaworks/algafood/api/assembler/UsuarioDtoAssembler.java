@@ -3,16 +3,23 @@ package com.algaworks.algafood.api.assembler;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.controller.UsuarioController;
 import com.algaworks.algafood.api.dto.UsuarioDto;
 import com.algaworks.algafood.domain.model.Usuario;
 
  
 
 @Component
-public class UsuarioDtoAssembler extends EntitytDtoAssembler<UsuarioDto, Usuario>{
+public class UsuarioDtoAssembler extends EntitytDtoAssembler<UsuarioDto, Usuario,UsuarioController>{
 
 	public UsuarioDtoAssembler(ModelMapper mapper) {
-		super(mapper);
+		super(mapper,UsuarioDto.class,UsuarioController.class);
+	}
+
+	@Override
+	public UsuarioDto toModel(Usuario entity) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

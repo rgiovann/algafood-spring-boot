@@ -6,26 +6,35 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 
 import lombok.Getter;
 
 @Getter
-public abstract class EntitytDtoAssembler<M, D> {
+public abstract class EntitytDtoAssembler<M extends RepresentationModel<M>, D, C> 
+extends RepresentationModelAssemblerSupport<D,M > 
+{
 	
 	 
 	private final ModelMapper mapper;
-	private final Class<M> dtoObject;
+	private  Class<M> dtoRepresentationObject=null;
+	private  Class<C> controllerObject=null;;
+
 	
-		
 	@SuppressWarnings("unchecked")
-	public EntitytDtoAssembler(ModelMapper mapper) {
+	public EntitytDtoAssembler(ModelMapper mapper,
+			                   Class<M>dtoRepresentationObject,
+			                   Class<C> controllerObject  ) {
+		super(controllerObject,dtoRepresentationObject);
 		ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
 		this.mapper = mapper;
-		this.dtoObject = (Class<M>) type.getActualTypeArguments()[0];
+		this.dtoRepresentationObject = (Class<M>) type.getActualTypeArguments()[0];
+
 	}
 	
 	public M toDto(D entityObject) {
-		return  this.mapper.map(entityObject, this.dtoObject);
+		return  this.mapper.map(entityObject, this.dtoRepresentationObject);
 	}
 	
  
