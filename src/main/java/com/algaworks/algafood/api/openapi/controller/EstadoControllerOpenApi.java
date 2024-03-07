@@ -2,6 +2,8 @@ package com.algaworks.algafood.api.openapi.controller;
 
 import java.util.List;
 
+import org.springframework.hateoas.CollectionModel;
+
 import com.algaworks.algafood.api.dto.EstadoDto;
 import com.algaworks.algafood.api.exceptionhandler.Problem;
 import com.algaworks.algafood.api.input.EstadoNomeInput;
@@ -16,7 +18,7 @@ import io.swagger.annotations.ApiResponses;
 public interface EstadoControllerOpenApi {
 
     @ApiOperation("Lista os estados")
-    List<EstadoDto> listar();
+    CollectionModel<EstadoDto>  listar();
 
     @ApiOperation("Busca um estado por Id")
     @ApiResponses({

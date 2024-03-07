@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @ApiModel(value = "Cozinha", description = "Representa uma cozinha")
 
-public class CozinhaDto extends RepresentationModel<CozinhaDto>{
+public class CozinhaDto extends RepresentationModel<CozinhaDto> implements DtoInterface<CozinhaDto>{
 
 	@JsonView(RestauranteView.Resumo.class)
 	@ApiModelProperty(value="Id da cozinha",example="1")

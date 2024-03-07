@@ -12,7 +12,7 @@ import lombok.Setter;
 @ApiModel(value = "Cidade", description = "Representa uma cidade")
 @Setter
 @Getter
-public class CidadeDto extends RepresentationModel<CidadeDto> {
+public class CidadeDto extends RepresentationModel<CidadeDto> implements DtoInterface<CidadeDto> {
 	
 	@ApiModelProperty(value="Id da cidade",example="1")
 	private Long id;

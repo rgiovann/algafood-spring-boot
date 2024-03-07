@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,7 +32,7 @@ import com.algaworks.algafood.domain.service.CadastroCidadeService;
 
 @RestController
 @RequestMapping(path= "/cidades")
-public class CidadeController implements CidadeControllerOpenApi{
+public class CidadeController implements CidadeControllerOpenApi, ControllerInterface<CidadeDto>{
 
 	private final CadastroCidadeService cidadeService;
 	private final CidadeInputDisassembler cidadeInputDissasembler;
@@ -195,6 +197,11 @@ public class CidadeController implements CidadeControllerOpenApi{
 		cidadeService.excluir(cidadeId);
 		
 		return;
+	}
+
+	@Override
+	public PagedModel<CidadeDto> listarPaged(Pageable pageable) {
+		return null;
 	}
 
 }

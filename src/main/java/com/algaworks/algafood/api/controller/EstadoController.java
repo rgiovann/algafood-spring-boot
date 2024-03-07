@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +29,7 @@ import com.algaworks.algafood.domain.service.CadastroEstadoService;
 
 @RestController
 @RequestMapping(value = "/estados")
-public class EstadoController implements EstadoControllerOpenApi {
+public class EstadoController implements EstadoControllerOpenApi,ControllerInterface<EstadoDto> {
 
 	private final CadastroEstadoService estadoService;
     private final EstadoDtoAssembler estadoDtoAssembler;
@@ -41,10 +44,13 @@ public class EstadoController implements EstadoControllerOpenApi {
 	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<EstadoDto> listar() {
+	public CollectionModel<EstadoDto> listar() {
 
-		return estadoDtoAssembler.toCollectionDto(estadoService.listar());
- 
+		List<EstadoDto> estadosDto = estadoDtoAssembler.toCollectionDto(estadoService.listar());
+		
+		CollectionModel<EstadoDto> collectionCidadeDto = CollectionModel.of(estadosDto);
+
+        return collectionCidadeDto;
 	}
 	
 	@GetMapping(value= "/{estadoId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -80,6 +86,11 @@ public class EstadoController implements EstadoControllerOpenApi {
 	public void remover(@PathVariable Long estadoId) {
 
 			estadoService.excluir(estadoId);
+	}
+
+	@Override
+	public PagedModel<EstadoDto> listarPaged(Pageable pageable) {
+		return null;
 	}
 
 }
