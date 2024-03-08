@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.PagedModel;
@@ -19,11 +20,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.assembler.CidadeDtoAssembler;
 import com.algaworks.algafood.api.assembler.CidadeInputDisassembler;
 import com.algaworks.algafood.api.dto.CidadeDto;
+import com.algaworks.algafood.api.dto.FotoProdutoDto;
 import com.algaworks.algafood.api.input.CidadeInput;
+import com.algaworks.algafood.api.input.FotoProdutoInput;
 import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -32,7 +37,7 @@ import com.algaworks.algafood.domain.service.CadastroCidadeService;
 
 @RestController
 @RequestMapping(path= "/cidades")
-public class CidadeController implements CidadeControllerOpenApi, ControllerInterface<CidadeDto>{
+public class CidadeController implements CidadeControllerOpenApi{
 
 	private final CadastroCidadeService cidadeService;
 	private final CidadeInputDisassembler cidadeInputDissasembler;
@@ -201,7 +206,13 @@ public class CidadeController implements CidadeControllerOpenApi, ControllerInte
 
 	@Override
 	public PagedModel<CidadeDto> listarPaged(Pageable pageable) {
-		return null;
+		throw new NotImplementedException();
+ 	}
+
+	@Override
+	public FotoProdutoDto atualizarFoto(Long restauranteId, Long produtoId, FotoProdutoInput fotoProdutoInput,
+			MultipartFile arquivo) {
+		throw new NotImplementedException();
 	}
 
 }

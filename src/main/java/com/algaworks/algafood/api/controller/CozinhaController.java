@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -21,11 +22,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.algaworks.algafood.api.assembler.CozinhaDtoAssembler;
 import com.algaworks.algafood.api.assembler.CozinhaNomeInputDisassembler;
 import com.algaworks.algafood.api.dto.CozinhaDto;
+import com.algaworks.algafood.api.dto.FotoProdutoDto;
 import com.algaworks.algafood.api.input.CozinhaNomeInput;
+import com.algaworks.algafood.api.input.FotoProdutoInput;
 import com.algaworks.algafood.api.openapi.controller.CozinhaControllerOpenApi;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
@@ -111,10 +115,17 @@ public class CozinhaController implements CozinhaControllerOpenApi,ControllerInt
 		cozinhaService.excluir(cozinhaId);
 	}
 
+	// métodos não implementados
 	@Override
 	public CollectionModel<CozinhaDto> listar() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public FotoProdutoDto atualizarFoto(Long restauranteId, Long produtoId, FotoProdutoInput fotoProdutoInput,
+			MultipartFile arquivo) {
+		throw new NotImplementedException();
+
 	}
 
 }

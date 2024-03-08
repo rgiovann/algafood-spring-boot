@@ -20,7 +20,6 @@ public class FormaPagamentoDtoAssembler extends EntitytDtoAssembler<FormaPagamen
 
 	@Override
 	public FormaPagamentoDto toModel(FormaPagamento entity) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

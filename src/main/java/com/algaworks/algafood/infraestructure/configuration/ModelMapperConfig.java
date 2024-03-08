@@ -25,9 +25,9 @@ import com.algaworks.algafood.domain.model.Restaurante;
 public class ModelMapperConfig {
 
     @Bean
-    ModelMapper modelMapper() {
+    Mapper mapper() {
     	
-    	var modelMapper = new ModelMapper(); 
+    	final  var modelMapper = new ModelMapper(); 
     	
     	var enderecoToEnderecoDtoTypeMap = modelMapper.createTypeMap(Endereco.class, EnderecoDto.class);
     	
@@ -101,10 +101,17 @@ public class ModelMapperConfig {
     	modelMapper.addConverter(cidadeConverter, CidadeIdInput.class, Cidade.class);
     	
     	
-    	return modelMapper;
-        
-        
-        
+    	return new Mapper() {
+            @Override
+            public <D> D map(Object source, Class<D> destinationType) {
+                return modelMapper.map(source, destinationType);
+            }
+
+            @Override
+            public void map(Object source, Object destination) {
+                modelMapper.map(source, destination);
+            }
+        };     
     }
 
 }

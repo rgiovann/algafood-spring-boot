@@ -7,6 +7,9 @@ import java.util.concurrent.TimeUnit;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,7 +36,7 @@ import com.algaworks.algafood.domain.service.CadastroFormaPagamentoService;
 
 @RestController
 @RequestMapping(value = "/formaspagamento")
-public class FormaPagamentoController implements FormaPagamentoControllerOpenApi{
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi,ControllerInterface<FormaPagamentoDto> {
 
 	private final CadastroFormaPagamentoService formaPagamentoService;
 	private final FormaPagamentoDtoAssembler formaPagtoDtoAssembler;
@@ -153,6 +156,12 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	public void remover(@PathVariable Long fomaPagamentoId) {
 
 			formaPagamentoService.excluir(fomaPagamentoId);
+	}
+
+
+	@Override
+	public PagedModel<FormaPagamentoDto> listarPaged(Pageable pageable) {
+		return null;
 	}
 
 

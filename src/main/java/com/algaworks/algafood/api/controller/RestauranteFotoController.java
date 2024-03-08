@@ -6,6 +6,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,7 +39,7 @@ import com.algaworks.algafood.domain.service.FotoStorageService.FotoRecuperada;
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteFotoController implements RestauranteProdutoFotoControllerOpenApi {
+public class RestauranteFotoController implements RestauranteProdutoFotoControllerOpenApi,ControllerInterface<FotoProdutoDto> {
 	
 	
 	private final CatalogoFotoProdutoService catalogoFotoProdutoService;
@@ -186,6 +189,24 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 			throw new HttpMediaTypeNotAcceptableException(mediaTypeAceitas);
 		}
 		
+	}
+
+
+	@Override
+	public FotoProdutoDto buscar(Long id) {
+		return null;
+	}
+
+
+	@Override
+	public CollectionModel<FotoProdutoDto> listar() {
+		return null;
+	}
+
+
+	@Override
+	public PagedModel<FotoProdutoDto> listarPaged(Pageable pageable) {
+		return null;
 	}
 	
 	

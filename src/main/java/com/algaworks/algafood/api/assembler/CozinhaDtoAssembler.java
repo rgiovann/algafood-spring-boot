@@ -10,7 +10,7 @@ import com.algaworks.algafood.domain.model.Cozinha;
  
 
 @Component
-public class CozinhaDtoAssembler extends EntitytDtoAssembler<CozinhaDto, Cozinha,CozinhaController>{
+public class CozinhaDtoAssembler extends EntitytDtoAssembler<CozinhaDto,Cozinha,CozinhaController>{
 
 	public CozinhaDtoAssembler(ModelMapper mapper) {
 		super(mapper,CozinhaDto.class,CozinhaController.class);

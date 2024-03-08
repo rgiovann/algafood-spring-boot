@@ -4,17 +4,19 @@ import java.lang.reflect.ParameterizedType;
 
 import org.modelmapper.ModelMapper;
 
+import com.algaworks.algafood.infraestructure.configuration.Mapper;
+
 import lombok.Getter;
 
 @Getter
 public abstract class EntityInputDisassembler<I, D> {
  
 
-	protected final ModelMapper mapper;
+	protected final Mapper mapper;
 	private final Class<D> entityObject;
 		
 	@SuppressWarnings("unchecked")
-	public EntityInputDisassembler(ModelMapper mapper) {
+	public EntityInputDisassembler(Mapper mapper) {
 		// The line ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass(); 
 		// is needed to get the generic type of the class EntityInputDisassembler. 
 		// The generic type of a class is the type of the object that is being used to instantiate the class. 

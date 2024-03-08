@@ -11,7 +11,8 @@ import lombok.Setter;
 @Setter
 @ApiModel(value = "Forma de Pagamento", description = "Representa a forma de pagamento")
 
-public class FormaPagamentoDto extends RepresentationModel<FormaPagamentoDto> {
+public class FormaPagamentoDto extends RepresentationModel<FormaPagamentoDto>
+							   implements DtoInterface<FormaPagamentoDto>{
 
 	@ApiModelProperty(value="Id da forma de pagamento",example="1")
 	private Long id;

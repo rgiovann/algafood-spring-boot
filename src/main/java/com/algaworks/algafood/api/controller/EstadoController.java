@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.PagedModel;
@@ -90,7 +91,7 @@ public class EstadoController implements EstadoControllerOpenApi,ControllerInter
 
 	@Override
 	public PagedModel<EstadoDto> listarPaged(Pageable pageable) {
-		return null;
+		throw new NotImplementedException();
 	}
 
 }
