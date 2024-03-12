@@ -39,7 +39,7 @@ import com.algaworks.algafood.domain.service.FotoStorageService.FotoRecuperada;
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteFotoController implements RestauranteProdutoFotoControllerOpenApi,ControllerInterface<FotoProdutoDto> {
+public class RestauranteFotoController implements RestauranteProdutoFotoControllerOpenApi  {
 	
 	
 	private final CatalogoFotoProdutoService catalogoFotoProdutoService;

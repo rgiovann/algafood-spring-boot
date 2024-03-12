@@ -36,7 +36,7 @@ import com.algaworks.algafood.domain.service.CadastroFormaPagamentoService;
 
 @RestController
 @RequestMapping(value = "/formaspagamento")
-public class FormaPagamentoController implements FormaPagamentoControllerOpenApi,ControllerInterface<FormaPagamentoDto> {
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi {
 
 	private final CadastroFormaPagamentoService formaPagamentoService;
 	private final FormaPagamentoDtoAssembler formaPagtoDtoAssembler;

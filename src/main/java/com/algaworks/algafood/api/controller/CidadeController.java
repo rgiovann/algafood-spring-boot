@@ -4,10 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,15 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.assembler.CidadeDtoAssembler;
 import com.algaworks.algafood.api.assembler.CidadeInputDisassembler;
 import com.algaworks.algafood.api.dto.CidadeDto;
-import com.algaworks.algafood.api.dto.FotoProdutoDto;
 import com.algaworks.algafood.api.input.CidadeInput;
-import com.algaworks.algafood.api.input.FotoProdutoInput;
 import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -66,82 +60,16 @@ public class CidadeController implements CidadeControllerOpenApi{
  	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<CidadeDto> listar() {
 
-		List<CidadeDto> cidadesDto = cidadeDtoAssembler.toCollectionDto(cidadeService.listar());
+		return cidadeDtoAssembler.toCollectionDto(cidadeService.listar());
 		
-		cidadesDto.forEach( cidadeDto ->
-		{
-			cidadeDto.add(WebMvcLinkBuilder.linkTo(
-					  WebMvcLinkBuilder.methodOn(CidadeController.class) 
-				      .buscar(cidadeDto.getId())).withSelfRel()
-				     );
-
-		cidadeDto.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class)
-				.listar()).withRel("cidades"));
-
-
-		cidadeDto.getEstado().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EstadoController.class)
-		.buscar(cidadeDto.getEstado().getId())).withSelfRel());
-			
-		}
-	
-				);
-		
-		CollectionModel<CidadeDto> collectionCidadeDto = CollectionModel.of(cidadesDto);
-		
-		// adicionado link no final .../cidades
-		collectionCidadeDto.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withSelfRel());
-		
-		return collectionCidadeDto;
-
 	}
     
 	@Override
  	@GetMapping(path="/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeDto buscar(  @PathVariable Long cidadeId) {
 
-		CidadeDto cidadeDto =  cidadeDtoAssembler.toDto(cidadeService.buscarOuFalhar(cidadeId));
 		
-		// metodo DEPRECATED
-		//cidadeDto.add(new Link("http://localhost:8080/cidades/1"));
-		
-
-		cidadeDto.add(WebMvcLinkBuilder.linkTo(
-					  WebMvcLinkBuilder.methodOn(CidadeController.class) 
-				      .buscar(cidadeDto.getId())).withSelfRel()
-				     );
-
-		
-//		cidadeDto.add(WebMvcLinkBuilder.linkTo(CidadeController.class)
-//				.slash(cidadeDto.getId())
-//				.withSelfRel());
-
-//cidadeDto.add(Link.of("http://localhost:8080/cidades/1"));
-//		cidadeDto.add(Link.of("http://localhost:8080/cidades/1", IanaLinkRelations.SELF));
-		
-
-		cidadeDto.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class)
-				.listar()).withRel("cidades"));
-		
-//cidadeDto.add(WebMvcLinkBuilder.linkTo(CidadeController.class)
-//.withRel("cidades"));
-		
-//cidadeDto.add(Link.of("http://localhost:8080/cidades", "cidades"));
-//cidadeDto.add(Link.of("http://localhost:8080/cidades", IanaLinkRelations.COLLECTION));
-
-
-		cidadeDto.getEstado().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EstadoController.class)
-		.buscar(cidadeDto.getEstado().getId())).withSelfRel());
-		
-//cidadeDto.getEstado().add(WebMvcLinkBuilder.linkTo(EstadoController.class)
-//.slash(cidadeDto.getEstado().getId())
-//.withSelfRel());
-		
-		
-//cidadeDto.getEstado().add(Link.of("http://localhost:8080/estados/1"));	
-//cidadeDto.add(Link.of("http://localhost:8080/estados", "estados"));
-
-		
-		return cidadeDto;
+		return cidadeDtoAssembler.toDto(cidadeService.buscarOuFalhar(cidadeId));
 
 	}
 
@@ -202,17 +130,6 @@ public class CidadeController implements CidadeControllerOpenApi{
 		cidadeService.excluir(cidadeId);
 		
 		return;
-	}
-
-	@Override
-	public PagedModel<CidadeDto> listarPaged(Pageable pageable) {
-		throw new NotImplementedException();
- 	}
-
-	@Override
-	public FotoProdutoDto atualizarFoto(Long restauranteId, Long produtoId, FotoProdutoInput fotoProdutoInput,
-			MultipartFile arquivo) {
-		throw new NotImplementedException();
 	}
 
 }

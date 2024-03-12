@@ -26,7 +26,8 @@ public class CidadeDtoAssembler extends EntitytDtoAssembler<CidadeDto,Cidade>{
 			    		               .withRel(("cidades")),
 			    		      linkTo( methodOn(EstadoController.class).buscar(dtoObject.getEstado().getId()))
 			                              .withSelfRel()			    		               
-						));
+						),
+				linkTo(CidadeController.class).withSelfRel());
 	}
 
 }

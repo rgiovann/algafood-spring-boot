@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import com.algaworks.algafood.api.controller.FormaPagamentoController;
 import com.algaworks.algafood.api.dto.FormaPagamentoDto;
 import com.algaworks.algafood.domain.model.FormaPagamento;
+import com.algaworks.algafood.infraestructure.configuration.Mapper;
 
  
 
@@ -14,7 +15,7 @@ public class FormaPagamentoDtoAssembler extends EntitytDtoAssembler<FormaPagamen
                                                                     FormaPagamento,
                                                                     FormaPagamentoController>{
 
-	public FormaPagamentoDtoAssembler(ModelMapper mapper) {
+	public FormaPagamentoDtoAssembler(Mapper mapper) {
 		super(mapper,FormaPagamentoDto.class,FormaPagamentoController.class);
 	}
 

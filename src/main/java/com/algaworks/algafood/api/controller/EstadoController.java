@@ -30,7 +30,7 @@ import com.algaworks.algafood.domain.service.CadastroEstadoService;
 
 @RestController
 @RequestMapping(value = "/estados")
-public class EstadoController implements EstadoControllerOpenApi,ControllerInterface<EstadoDto> {
+public class EstadoController implements EstadoControllerOpenApi {
 
 	private final CadastroEstadoService estadoService;
     private final EstadoDtoAssembler estadoDtoAssembler;
