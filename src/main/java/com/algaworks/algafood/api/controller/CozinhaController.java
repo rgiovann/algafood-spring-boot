@@ -115,17 +115,4 @@ public class CozinhaController implements CozinhaControllerOpenApi{
 		cozinhaService.excluir(cozinhaId);
 	}
 
-	// métodos não implementados
-	@Override
-	public CollectionModel<CozinhaDto> listar() {
-		throw new NotImplementedException();
-	}
-
-	@Override
-	public FotoProdutoDto atualizarFoto(Long restauranteId, Long produtoId, FotoProdutoInput fotoProdutoInput,
-			MultipartFile arquivo) {
-		throw new NotImplementedException();
-
-	}
-
 }
