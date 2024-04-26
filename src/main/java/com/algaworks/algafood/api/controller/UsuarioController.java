@@ -1,9 +1,8 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,7 +46,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 	
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<UsuarioDto> listar() {
+	public CollectionModel<UsuarioDto> listar() {
 
 		return usuarioDtoAssembler.toCollectionDto(usuarioService.listar());
 

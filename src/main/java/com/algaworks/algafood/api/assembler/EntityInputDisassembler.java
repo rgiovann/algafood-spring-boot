@@ -2,8 +2,6 @@ package com.algaworks.algafood.api.assembler;
 
 import java.lang.reflect.ParameterizedType;
 
-import org.modelmapper.ModelMapper;
-
 import com.algaworks.algafood.infraestructure.configuration.Mapper;
 
 import lombok.Getter;

@@ -49,11 +49,11 @@ public abstract class EntitytDtoAssembler<M extends RepresentationModel<M>, D >
 	public CollectionModel<M> toCollectionDto(Collection<D> listOfEntityObjects) {
 		List<M> listOfDtos = listOfEntityObjects.stream().map(this::toDto).collect(Collectors.toList());
 		
-		CollectionModel<M> collectionCidadeDto =  CollectionModel.of(listOfDtos);
+		CollectionModel<M> collectionDto =  CollectionModel.of(listOfDtos);
 		
-		collectionCidadeDto.add(collectionLink.withSelfRel());
+		collectionDto.add(collectionLink.withSelfRel());
 		
-		return  collectionCidadeDto;
+		return  collectionDto;
 	}
 	
 }

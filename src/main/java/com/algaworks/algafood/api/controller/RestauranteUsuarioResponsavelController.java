@@ -1,7 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,13 +22,13 @@ import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/responsaveis")
-public class RestauranteResponsavelController implements RestauranteUsuarioResponsavelControllerOpenApi {
+public class RestauranteUsuarioResponsavelController implements RestauranteUsuarioResponsavelControllerOpenApi {
 
 	private final CadastroRestauranteService restauranteService;
   	private final UsuarioDtoAssembler usuarioDtoAssembler;
 
 
-	public RestauranteResponsavelController(CadastroRestauranteService restauranteService,
+	public RestauranteUsuarioResponsavelController(CadastroRestauranteService restauranteService,
 			UsuarioDtoAssembler usuarioDtoAssembler) {
 
 		this.restauranteService = restauranteService;
@@ -35,9 +37,16 @@ public class RestauranteResponsavelController implements RestauranteUsuarioRespo
 
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<UsuarioDto> listar(@PathVariable Long restauranteId){
+	public CollectionModel<UsuarioDto> listar(@PathVariable Long restauranteId){
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
-		return usuarioDtoAssembler.toCollectionDto(restaurante.getResponsaveis());
+		
+		CollectionModel<UsuarioDto> collectionUsuarioDto = usuarioDtoAssembler.toCollectionDto(restaurante.getResponsaveis());
+		collectionUsuarioDto
+		.removeLinks()
+		.add(linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
+				.listar(restauranteId)).withSelfRel()); 
+		
+		return collectionUsuarioDto;
 		
 	}
 	

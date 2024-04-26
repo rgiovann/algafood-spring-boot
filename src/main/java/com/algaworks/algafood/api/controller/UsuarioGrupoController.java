@@ -1,7 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +36,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<GrupoDto> listarPermissoes(@PathVariable Long usuarioId){
+	public CollectionModel<GrupoDto> listarPermissoes(@PathVariable Long usuarioId){
 		Usuario usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 		return grupoDtoAssembler.toCollectionDto(usuario.getGrupos());
 		

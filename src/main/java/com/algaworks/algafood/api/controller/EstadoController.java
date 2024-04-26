@@ -1,13 +1,8 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,8 +42,8 @@ public class EstadoController implements EstadoControllerOpenApi {
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<EstadoDto> listar() {
 
-		List<EstadoDto> estadosDto = estadoDtoAssembler.toCollectionDto(estadoService.listar());
-		
+		CollectionModel<EstadoDto> estadosDto = estadoDtoAssembler.toCollectionDto(estadoService.listar());
+ 		
 		CollectionModel<EstadoDto> collectionCidadeDto = CollectionModel.of(estadosDto);
 
         return collectionCidadeDto;
@@ -58,7 +53,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 	public EstadoDto buscar(@PathVariable Long estadoId) {
 
 		return  estadoDtoAssembler.toDto(estadoService.buscarOuFalhar(estadoId));
-
+ 
 	}
 
 
@@ -66,9 +61,8 @@ public class EstadoController implements EstadoControllerOpenApi {
 	@ResponseStatus(HttpStatus.CREATED)
 	public EstadoDto adicionar(@RequestBody @Valid EstadoNomeInput estadoNomeInput) {
 		
-		return  estadoDtoAssembler
-				.toDto( estadoService.salvar( estadoNomeInputDisassembler.toEntity(estadoNomeInput)));
-
+		return  estadoDtoAssembler.toDto(estadoService.salvar( estadoNomeInputDisassembler.toEntity(estadoNomeInput)));
+ 
 	}
 	
 	@PutMapping(value= "/{estadoId}",produces = MediaType.APPLICATION_JSON_VALUE)
@@ -78,7 +72,8 @@ public class EstadoController implements EstadoControllerOpenApi {
 			
 			estadoNomeInputDisassembler.copyToEntity(estadoNomeInput,estado);
 		 
-			return  estadoDtoAssembler.toDto( estadoService.salvar(estado));
+			return  estadoDtoAssembler.toDto(estadoService.salvar(estado));
+			 
   
 	}
 
@@ -87,11 +82,6 @@ public class EstadoController implements EstadoControllerOpenApi {
 	public void remover(@PathVariable Long estadoId) {
 
 			estadoService.excluir(estadoId);
-	}
-
-	@Override
-	public PagedModel<EstadoDto> listarPaged(Pageable pageable) {
-		throw new NotImplementedException();
 	}
 
 }
