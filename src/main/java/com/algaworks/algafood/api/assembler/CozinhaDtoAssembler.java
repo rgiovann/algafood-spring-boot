@@ -23,7 +23,7 @@ public class CozinhaDtoAssembler extends EntitytDtoAssembler<CozinhaDto,Cozinha>
 				Arrays.asList(linkTo( methodOn(CozinhaController.class).buscar(dtoObject.getId()))
 		                              .withSelfRel(),
 		        	          linkTo( methodOn(CozinhaController.class).listarPaged(null))
-			    		               .withRel(("cidades"))		    		               
+			    		               .withRel(("cozinhas"))		    		               
 						),
 				linkTo(CozinhaController.class).withSelfRel());
 	}

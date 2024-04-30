@@ -1,14 +1,15 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
@@ -22,14 +23,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.algaworks.algafood.api.assembler.CozinhaDtoAssembler;
 import com.algaworks.algafood.api.assembler.CozinhaNomeInputDisassembler;
 import com.algaworks.algafood.api.dto.CozinhaDto;
-import com.algaworks.algafood.api.dto.FotoProdutoDto;
 import com.algaworks.algafood.api.input.CozinhaNomeInput;
-import com.algaworks.algafood.api.input.FotoProdutoInput;
 import com.algaworks.algafood.api.openapi.controller.CozinhaControllerOpenApi;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
@@ -41,10 +39,10 @@ public class CozinhaController implements CozinhaControllerOpenApi{
 	private final CadastroCozinhaService cozinhaService;
 	private final CozinhaDtoAssembler cozinhaDtoAssembler;
 	private final CozinhaNomeInputDisassembler cozinhaNomeInputDisassembler;
-
 	public CozinhaController(CadastroCozinhaService cozinhaService, 
 			                 CozinhaDtoAssembler cozinhaDtoAssembler,
-			                 CozinhaNomeInputDisassembler cozinhaInputDisassembler) {
+			                 CozinhaNomeInputDisassembler cozinhaInputDisassembler
+			                 ) {
 		
 		this.cozinhaService = cozinhaService;
 		this.cozinhaDtoAssembler = cozinhaDtoAssembler;
@@ -68,9 +66,11 @@ public class CozinhaController implements CozinhaControllerOpenApi{
 		
 		Page<Cozinha> cozinhaPage = cozinhaService.listar(pageable);
 		
-		List<CozinhaDto> cozinhaDtoList = cozinhaDtoAssembler.toCollectionDto(cozinhaPage.getContent());
+		CollectionModel<CozinhaDto> cozinhaDtoCollectionModel = cozinhaDtoAssembler.toCollectionDto(cozinhaPage.getContent());
 		
-		Page<CozinhaDto> cozinhaDtoPage = new PageImpl<>(cozinhaDtoList,pageable,cozinhaPage.getTotalElements());
+	    List<CozinhaDto> cozinhaDtoList = cozinhaDtoCollectionModel.getContent().stream().collect(Collectors.toList());
+		
+		Page<CozinhaDto> cozinhaDtoPage = new PageImpl<CozinhaDto>(cozinhaDtoList,pageable,cozinhaPage.getTotalElements());
 
 		PagedModel<CozinhaDto> cozinhaPagedModel = PagedModel.of(cozinhaDtoPage.getContent(), 
                 new PagedModel.PageMetadata(cozinhaDtoPage.getSize(),
@@ -78,8 +78,12 @@ public class CozinhaController implements CozinhaControllerOpenApi{
                                             cozinhaDtoPage.getTotalElements()));
 		
 		return cozinhaPagedModel;
+		
+//		PagedModel<CozinhaDto> cozinhasPageModel = 
+//				pagedResourcesAssemblerCozinha.toModel(cozinhaPage,cozinhaDtoAssembler);
 
 	}
+	
 	@Override
 	@GetMapping(value = "/{cozinhaId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CozinhaDto buscar(@PathVariable Long cozinhaId) {
