@@ -53,7 +53,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 	@GetMapping(path="/{grupoId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public GrupoDto buscar(@PathVariable Long grupoId) {
 
-		return  grupoDtoAssembler.toDto(grupoService.buscarOuFalhar(grupoId));
+		return  grupoDtoAssembler.toModel(grupoService.buscarOuFalhar(grupoId));
 
 	}
 	@Override	
@@ -62,7 +62,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 	public GrupoDto adicionar(@RequestBody @Valid GrupoNomeInput grupoNomeInput) {
 		
 		return  grupoDtoAssembler
-				.toDto( grupoService.salvar( grupoNomeInputDisassembler.toEntity(grupoNomeInput)));
+				.toModel( grupoService.salvar( grupoNomeInputDisassembler.toEntity(grupoNomeInput)));
 
 	}
 	@Override	
@@ -73,7 +73,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 			
 			grupoNomeInputDisassembler.copyToEntity(grupoNomeInput,grupo);
 		 
-			return  grupoDtoAssembler.toDto( grupoService.salvar(grupo));
+			return  grupoDtoAssembler.toModel( grupoService.salvar(grupo));
   
 	}
 	@Override

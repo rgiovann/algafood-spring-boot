@@ -1,5 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,14 +43,18 @@ public class CozinhaController implements CozinhaControllerOpenApi{
 	private final CadastroCozinhaService cozinhaService;
 	private final CozinhaDtoAssembler cozinhaDtoAssembler;
 	private final CozinhaNomeInputDisassembler cozinhaNomeInputDisassembler;
+	private final PagedResourcesAssembler <Cozinha> pagedResourceAssembler;
+	
 	public CozinhaController(CadastroCozinhaService cozinhaService, 
 			                 CozinhaDtoAssembler cozinhaDtoAssembler,
-			                 CozinhaNomeInputDisassembler cozinhaInputDisassembler
+			                 CozinhaNomeInputDisassembler cozinhaInputDisassembler,
+			                 PagedResourcesAssembler <Cozinha> pagedResourceAssembler
 			                 ) {
 		
 		this.cozinhaService = cozinhaService;
 		this.cozinhaDtoAssembler = cozinhaDtoAssembler;
 		this.cozinhaNomeInputDisassembler = cozinhaInputDisassembler;
+		this.pagedResourceAssembler = null;
 	}
 	
 	/*
@@ -66,18 +74,20 @@ public class CozinhaController implements CozinhaControllerOpenApi{
 		
 		Page<Cozinha> cozinhaPage = cozinhaService.listar(pageable);
 		
-		CollectionModel<CozinhaDto> cozinhaDtoCollectionModel = cozinhaDtoAssembler.toCollectionDto(cozinhaPage.getContent());
+		PagedModel<CozinhaDto> cozinhasPagedMode = pagedResourceAssembler.toModel(cozinhaPage, cozinhaDtoAssembler);
 		
-	    List<CozinhaDto> cozinhaDtoList = cozinhaDtoCollectionModel.getContent().stream().collect(Collectors.toList());
-		
-		Page<CozinhaDto> cozinhaDtoPage = new PageImpl<CozinhaDto>(cozinhaDtoList,pageable,cozinhaPage.getTotalElements());
-
-		PagedModel<CozinhaDto> cozinhaPagedModel = PagedModel.of(cozinhaDtoPage.getContent(), 
-                new PagedModel.PageMetadata(cozinhaDtoPage.getSize(),
-                                            cozinhaDtoPage.getNumber(),
-                                            cozinhaDtoPage.getTotalElements()));
-		
-		return cozinhaPagedModel;
+//		CollectionModel<CozinhaDto> cozinhaDtoCollectionModel = cozinhaDtoAssembler.toCollectionDto(cozinhaPage.getContent());
+//		
+//	    List<CozinhaDto> cozinhaDtoList = cozinhaDtoCollectionModel.getContent().stream().collect(Collectors.toList());
+//		
+//		Page<CozinhaDto> cozinhaDtoPage = new PageImpl<CozinhaDto>(cozinhaDtoList,pageable,cozinhaPage.getTotalElements());
+//
+//		PagedModel<CozinhaDto> cozinhaPagedModel = PagedModel.of(cozinhaDtoPage.getContent(), 
+//                new PagedModel.PageMetadata(cozinhaDtoPage.getSize(),
+//                                            cozinhaDtoPage.getNumber(),
+//                                            cozinhaDtoPage.getTotalElements()));
+		this.setLinks(null);
+		return cozinhasPagedMode;
 		
 //		PagedModel<CozinhaDto> cozinhasPageModel = 
 //				pagedResourcesAssemblerCozinha.toModel(cozinhaPage,cozinhaDtoAssembler);
@@ -88,7 +98,7 @@ public class CozinhaController implements CozinhaControllerOpenApi{
 	@GetMapping(value = "/{cozinhaId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CozinhaDto buscar(@PathVariable Long cozinhaId) {
 
-		return cozinhaDtoAssembler.toDto(cozinhaService.buscarOuFalhar(cozinhaId));
+		return cozinhaDtoAssembler.toModel(cozinhaService.buscarOuFalhar(cozinhaId));
 
 	}
 	@Override
@@ -97,7 +107,7 @@ public class CozinhaController implements CozinhaControllerOpenApi{
 	public CozinhaDto adicionar(@RequestBody @Valid CozinhaNomeInput cozinhaNomeInput) {
 
 		return cozinhaDtoAssembler
-				.toDto(cozinhaService.salvar(cozinhaNomeInputDisassembler.toEntity(cozinhaNomeInput)));
+				.toModel(cozinhaService.salvar(cozinhaNomeInputDisassembler.toEntity(cozinhaNomeInput)));
 
 	}
 	@Override
@@ -108,7 +118,7 @@ public class CozinhaController implements CozinhaControllerOpenApi{
 
 		cozinhaNomeInputDisassembler.copyToEntity(cozinhaNomeInput, cozinha);
 
-		return cozinhaDtoAssembler.toDto(cozinhaService.salvar(cozinha));
+		return cozinhaDtoAssembler.toModel(cozinhaService.salvar(cozinha));
 
 	}
 	@Override
@@ -118,5 +128,7 @@ public class CozinhaController implements CozinhaControllerOpenApi{
 
 		cozinhaService.excluir(cozinhaId);
 	}
+	
+
 
 }

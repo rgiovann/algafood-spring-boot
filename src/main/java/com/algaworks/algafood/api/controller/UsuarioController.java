@@ -56,7 +56,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 	@GetMapping(path="/{usuarioId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public UsuarioDto buscar(@PathVariable Long usuarioId) {
 
-		return usuarioDtoAssembler.toDto(usuarioService.buscarOuFalhar(usuarioId));
+		return usuarioDtoAssembler.toModel(usuarioService.buscarOuFalhar(usuarioId));
 
 	}
 
@@ -65,7 +65,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioDto adicionar(@RequestBody @Valid UsuarioComSenhaInput usuarioNomeInput) {
 
-		return usuarioDtoAssembler.toDto(usuarioService.salvar(usuarioInputDisassembler.toEntity(usuarioNomeInput)));
+		return usuarioDtoAssembler.toModel(usuarioService.salvar(usuarioInputDisassembler.toEntity(usuarioNomeInput)));
 
 	}
 
@@ -78,7 +78,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 
 		usuarioInputDisassembler.copyToEntity(usuarioSemSenhaInput, usuario);
 
-		return usuarioDtoAssembler.toDto(usuarioService.salvar(usuario));
+		return usuarioDtoAssembler.toModel(usuarioService.salvar(usuario));
 
 	}
 

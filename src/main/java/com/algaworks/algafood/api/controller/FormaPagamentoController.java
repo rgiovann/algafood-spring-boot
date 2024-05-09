@@ -119,7 +119,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 			return null;
 		}
 		
-		FormaPagamentoDto formaPagamentoDto = formaPagtoDtoAssembler.toDto(formaPagamentoService.buscarOuFalhar(fomaPagamentoId));
+		FormaPagamentoDto formaPagamentoDto = formaPagtoDtoAssembler.toModel(formaPagamentoService.buscarOuFalhar(fomaPagamentoId));
 		
 		return ResponseEntity.ok()
 				.cacheControl(CacheControl.maxAge(20,TimeUnit.SECONDS).cachePublic())
@@ -136,7 +136,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 		FormaPagamento formaPagamento  = formaPagamentoService
 									     .salvar( formaPagtoInputDisassembler.toEntity(formaPagamentoInput)); 
  		
-		return formaPagtoDtoAssembler.toDto(formaPagamento);
+		return formaPagtoDtoAssembler.toModel(formaPagamento);
 
 	}
 	@Override	
@@ -147,7 +147,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 			
 		formaPagtoInputDisassembler.copyToEntity(formaPagamentoInput, formaPagamento);
 			
-		return formaPagtoDtoAssembler.toDto(formaPagamentoService.salvar(formaPagamento));
+		return formaPagtoDtoAssembler.toModel(formaPagamentoService.salvar(formaPagamento));
  
 	}
 	@Override

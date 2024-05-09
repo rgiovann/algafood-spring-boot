@@ -65,7 +65,7 @@ public class CidadeController implements CidadeControllerOpenApi{
 	public CidadeDto buscar(  @PathVariable Long cidadeId) {
 
 		
-		return cidadeDtoAssembler.toDto(cidadeService.buscarOuFalhar(cidadeId));
+		return cidadeDtoAssembler.toModel(cidadeService.buscarOuFalhar(cidadeId));
 
 	}
 
@@ -78,7 +78,7 @@ public class CidadeController implements CidadeControllerOpenApi{
 
 			Cidade cidade = cidadeInputDissasembler.toEntity(cidadeInput);
 			
-			CidadeDto cidadeDto = cidadeDtoAssembler.toDto(cidadeService.salvar(cidade));
+			CidadeDto cidadeDto = cidadeDtoAssembler.toModel(cidadeService.salvar(cidade));
 			
 //			ResourceUriHelper.addUriResponseHeader(cidadeDto.getId());
 			
@@ -109,7 +109,7 @@ public class CidadeController implements CidadeControllerOpenApi{
 		
 		try {
 			
-			return cidadeDtoAssembler.toDto(cidadeService.salvar(cidade));
+			return cidadeDtoAssembler.toModel(cidadeService.salvar(cidade));
 
 		} catch (EstadoNaoEncontradoException e) {
 			

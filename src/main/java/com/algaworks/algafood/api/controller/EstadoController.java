@@ -52,7 +52,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 	@GetMapping(value= "/{estadoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public EstadoDto buscar(@PathVariable Long estadoId) {
 
-		return  estadoDtoAssembler.toDto(estadoService.buscarOuFalhar(estadoId));
+		return  estadoDtoAssembler.toModel(estadoService.buscarOuFalhar(estadoId));
  
 	}
 
@@ -61,7 +61,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 	@ResponseStatus(HttpStatus.CREATED)
 	public EstadoDto adicionar(@RequestBody @Valid EstadoNomeInput estadoNomeInput) {
 		
-		return  estadoDtoAssembler.toDto(estadoService.salvar( estadoNomeInputDisassembler.toEntity(estadoNomeInput)));
+		return  estadoDtoAssembler.toModel(estadoService.salvar( estadoNomeInputDisassembler.toEntity(estadoNomeInput)));
  
 	}
 	
@@ -72,7 +72,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 			
 			estadoNomeInputDisassembler.copyToEntity(estadoNomeInput,estado);
 		 
-			return  estadoDtoAssembler.toDto(estadoService.salvar(estado));
+			return  estadoDtoAssembler.toModel(estadoService.salvar(estado));
 			 
   
 	}

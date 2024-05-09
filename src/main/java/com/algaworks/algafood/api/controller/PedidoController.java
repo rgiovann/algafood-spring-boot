@@ -98,7 +98,7 @@ public class PedidoController implements PedidoControllerOpenApi {
  	@GetMapping(value ="/{codigoPedido}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public PedidoDto buscar( @PathVariable String codigoPedido) {
 
-		return  pedidoDtoAssembler.toDto(pedidoService.buscarOuFalhar(codigoPedido));
+		return  pedidoDtoAssembler.toModel(pedidoService.buscarOuFalhar(codigoPedido));
 
 	}
 	
@@ -135,7 +135,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 
 	        novoPedido = pedidoService.emitirPedido(novoPedido);
 
-	        return pedidoDtoAssembler.toDto(novoPedido);
+	        return pedidoDtoAssembler.toModel(novoPedido);
 	    } catch (EntidadeNaoEncontradaException e) {
 	        throw new NegocioException(e.getMessage(), e);
 	    }

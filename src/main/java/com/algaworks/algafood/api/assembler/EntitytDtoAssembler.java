@@ -9,36 +9,39 @@ import java.util.stream.Collectors;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
+
 import com.algaworks.algafood.infraestructure.configuration.Mapper;
 
 import lombok.Getter;
 
 @Getter
-public abstract class EntitytDtoAssembler<M extends RepresentationModel<M>, D > 
+//public abstract class EntitytDtoAssembler<M extends RepresentationModel<M>, D >
+public abstract class EntitytDtoAssembler<M extends RepresentationModel<M>, D, C > 
+                      extends RepresentationModelAssemblerSupport<D, M> 
+ 
 {
 	
 	 
 	private final Mapper mapper;
 	private  Class<M> dtoRepresentationObject;
+	private  Class<C> controllerRepresentationObject;
     private  List<Link> linkList;
     private  Link collectionLink;
 
 	@SuppressWarnings("unchecked")
-	public EntitytDtoAssembler(Mapper mapper,
-			                   Class<M> dtoRepresentationObject,
-			                   List<Link> linkList,
-			                   Link collectionLink)
+	public EntitytDtoAssembler(Mapper mapper,Class<C> controllerClass,Class<M> dtoClass)
 	{
-		super();
+		super(controllerClass, dtoClass);
 		ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
 		this.mapper = mapper;
 		this.dtoRepresentationObject = (Class<M>) type.getActualTypeArguments()[0];
-        this.linkList = linkList;
-        this.collectionLink = collectionLink;
+
 	}
 	
-	public M toDto(D entityObject) {
-		M dtoObject =  this.mapper.map(entityObject, this.dtoRepresentationObject);		
+	public M toModel(D entityObject) {
+		M dtoObject =  this.mapper.map(entityObject, this.dtoRepresentationObject);
+		this.linkList = constructLinks(entityObject);
 		for (Link link : linkList) {
 			dtoObject.add(link); // add links to object
 			}   
@@ -47,7 +50,7 @@ public abstract class EntitytDtoAssembler<M extends RepresentationModel<M>, D >
 	
  
 	public CollectionModel<M> toCollectionDto(Collection<D> listOfEntityObjects) {
-		List<M> listOfDtos = listOfEntityObjects.stream().map(this::toDto).collect(Collectors.toList());
+		List<M> listOfDtos = listOfEntityObjects.stream().map(this::toModel).collect(Collectors.toList());
 		
 		CollectionModel<M> collectionDto =  CollectionModel.of(listOfDtos);
 		
@@ -55,5 +58,8 @@ public abstract class EntitytDtoAssembler<M extends RepresentationModel<M>, D >
 		
 		return  collectionDto;
 	}
+	
+	
+	public abstract List<Link> constructLinks(D entityObject) ; 
 	
 }

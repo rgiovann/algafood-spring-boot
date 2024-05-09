@@ -4,11 +4,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.Arrays;
+import java.util.List;
 
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import com.algaworks.algafood.api.controller.CozinhaController;
-import com.algaworks.algafood.api.dto.CidadeDto;
 import com.algaworks.algafood.api.dto.CozinhaDto;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.infraestructure.configuration.Mapper;
@@ -16,16 +17,20 @@ import com.algaworks.algafood.infraestructure.configuration.Mapper;
  
 
 @Component
-public class CozinhaDtoAssembler extends EntitytDtoAssembler<CozinhaDto,Cozinha>{
+public class CozinhaDtoAssembler extends EntitytDtoAssembler<CozinhaDto,Cozinha,CozinhaController>{
 
-	public CozinhaDtoAssembler(Mapper mapper,CidadeDto dtoObject) {
-		super(mapper,CozinhaDto.class,
-				Arrays.asList(linkTo( methodOn(CozinhaController.class).buscar(dtoObject.getId()))
-		                              .withSelfRel(),
-		        	          linkTo( methodOn(CozinhaController.class).listarPaged(null))
-			    		               .withRel(("cozinhas"))		    		               
-						),
-				linkTo(CozinhaController.class).withSelfRel());
+	public CozinhaDtoAssembler(Mapper mapper) {
+		super(mapper,CozinhaController.class,CozinhaDto.class);
 	}
+
+	public  List<Link> constructLinks(Cozinha cozinha ) {
+		return  
+				Arrays.asList(
+						linkTo( methodOn(CozinhaController.class).buscar(cozinha.getId())).withSelfRel(),	
+						linkTo( CozinhaController.class).withRel(("cozinhas"))
+						);
+		//,linkTo(CozinhaController.class).withSelfRel() ;
+	}
+
 
 }

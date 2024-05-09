@@ -75,7 +75,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
  	public ProdutoDto buscarProduto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 
 		Produto produto = produtoService.buscarProdutoRestaurante(restauranteId, produtoId);
-		return produtoDtoAssembler.toDto(produto);
+		return produtoDtoAssembler.toModel(produto);
 	}
 	
 	@Override
@@ -90,7 +90,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 		
 		produto = produtoService.salvar(produto);
 		
-		return produtoDtoAssembler.toDto(produto);
+		return produtoDtoAssembler.toModel(produto);
 	}
 	
 	@Override
@@ -104,7 +104,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 		
 		produto = produtoService.salvar(produto);
 		
-		return produtoDtoAssembler.toDto(produto);
+		return produtoDtoAssembler.toModel(produto);
 		
 	}
 

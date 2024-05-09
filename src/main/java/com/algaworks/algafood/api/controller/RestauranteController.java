@@ -106,7 +106,7 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 	@GetMapping("/buscar-primeiro")
 	public RestauranteDto restaurantesBuscarPrimeiro() {
 
-		return restauranteDtoAssembler.toDto(restauranteService.restaurantesBuscarPrimeiro());
+		return restauranteDtoAssembler.toModel(restauranteService.restaurantesBuscarPrimeiro());
 	}
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -149,7 +149,7 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 	@GetMapping(value = "/{restauranteId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RestauranteDto buscar(@PathVariable Long restauranteId) {
 
-		return restauranteDtoAssembler.toDto(restauranteService.buscarOuFalhar(restauranteId));
+		return restauranteDtoAssembler.toModel(restauranteService.buscarOuFalhar(restauranteId));
 
 	}
 	
@@ -162,7 +162,7 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 
 			Restaurante restaurante = restauranteInputDissasembler.toEntity(restauranteInput);
 
-			return restauranteDtoAssembler.toDto(restauranteService.salvar(restaurante));
+			return restauranteDtoAssembler.toModel(restauranteService.salvar(restaurante));
 
 		} catch (CozinhaNaoEncontradaException e) {
 
@@ -183,7 +183,7 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 		restauranteInputDissasembler.copyToEntity(restauranteInput, restaurante);
 
 		try {
-			return restauranteDtoAssembler.toDto(restauranteService.salvar(restaurante));
+			return restauranteDtoAssembler.toModel(restauranteService.salvar(restaurante));
 
 		} catch (CozinhaNaoEncontradaException e) {
 

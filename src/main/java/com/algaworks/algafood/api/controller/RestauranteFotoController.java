@@ -85,7 +85,7 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 		
 		FotoProduto fotoSalva = catalogoFotoProdutoService.salvar(foto, arquivo.getInputStream());
 		
-		return fotoProdutoDtoAssembler.toDto(fotoSalva);
+		return fotoProdutoDtoAssembler.toModel(fotoSalva);
 		
 	}
 	// Accept = application/json
@@ -101,7 +101,7 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 		
 		FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 		
-		return fotoProdutoDtoAssembler.toDto(fotoProduto);
+		return fotoProdutoDtoAssembler.toModel(fotoProduto);
 		
 	}
 
