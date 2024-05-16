@@ -1,20 +1,11 @@
 package com.algaworks.algafood.api.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -86,7 +77,6 @@ public class CozinhaController implements CozinhaControllerOpenApi{
 //                new PagedModel.PageMetadata(cozinhaDtoPage.getSize(),
 //                                            cozinhaDtoPage.getNumber(),
 //                                            cozinhaDtoPage.getTotalElements()));
-		this.setLinks(null);
 		return cozinhasPagedMode;
 		
 //		PagedModel<CozinhaDto> cozinhasPageModel = 

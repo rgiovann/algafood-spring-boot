@@ -1,6 +1,8 @@
 package com.algaworks.algafood.api.assembler;
 
-import org.modelmapper.ModelMapper;
+import java.util.List;
+
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import com.algaworks.algafood.api.controller.RestauranteFotoController;
@@ -15,13 +17,15 @@ public class FotoProdutoDtoAssembler extends EntitytDtoAssembler<FotoProdutoDto,
                                                                  RestauranteFotoController>{
 
 	public FotoProdutoDtoAssembler(Mapper mapper) {
-		super(mapper,FotoProdutoDto.class,RestauranteFotoController.class);
+		super(mapper,RestauranteFotoController.class,FotoProdutoDto.class);
+	}
+
+	@Override
+	public List<Link> constructLinks(FotoProduto entityObject) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
 
-	@Override
-	public FotoProdutoDto toModel(FotoProduto entity) {
-		// TODO Auto-generated method stub
-		return null;
-	}}
+	 }

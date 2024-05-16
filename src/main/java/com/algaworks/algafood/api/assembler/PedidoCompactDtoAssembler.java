@@ -1,6 +1,8 @@
 package com.algaworks.algafood.api.assembler;
 
-import org.modelmapper.ModelMapper;
+import java.util.List;
+
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import com.algaworks.algafood.api.controller.PedidoController;
@@ -13,13 +15,15 @@ public class PedidoCompactDtoAssembler extends EntitytDtoAssembler<PedidoCompact
                                                                    PedidoController>{
 
 	public PedidoCompactDtoAssembler(Mapper mapper) {
-		super(mapper,PedidoCompactDto.class,PedidoController.class);
+		super(mapper,PedidoController.class, PedidoCompactDto.class);
 	}
 
 	@Override
-	public PedidoCompactDto toModel(Pedido entity) {
+	public List<Link> constructLinks(Pedido entityObject) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+ 
 
 }

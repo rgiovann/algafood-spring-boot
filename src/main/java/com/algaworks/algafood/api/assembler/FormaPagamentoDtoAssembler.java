@@ -1,8 +1,15 @@
 package com.algaworks.algafood.api.assembler;
 
-import org.modelmapper.ModelMapper;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.controller.CozinhaController;
 import com.algaworks.algafood.api.controller.FormaPagamentoController;
 import com.algaworks.algafood.api.dto.FormaPagamentoDto;
 import com.algaworks.algafood.domain.model.FormaPagamento;
@@ -16,12 +23,18 @@ public class FormaPagamentoDtoAssembler extends EntitytDtoAssembler<FormaPagamen
                                                                     FormaPagamentoController>{
 
 	public FormaPagamentoDtoAssembler(Mapper mapper) {
-		super(mapper,FormaPagamentoDto.class,FormaPagamentoController.class);
+		super(mapper,FormaPagamentoController.class,FormaPagamentoDto.class );
 	}
 
 	@Override
-	public FormaPagamentoDto toModel(FormaPagamento entity) {
-		return null;
+	public List<Link> constructLinks(FormaPagamento entityObject) {
+		// TODO Auto-generated method stub
+		return 				Arrays.asList(
+				linkTo( methodOn(CozinhaController.class).buscar(entityObject.getId())).withSelfRel(),	
+				linkTo( CozinhaController.class).withRel(("formas de pagamento"))
+				);
 	}
+
+ 
 
 }

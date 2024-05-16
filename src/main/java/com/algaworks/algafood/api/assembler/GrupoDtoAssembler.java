@@ -5,28 +5,33 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.Arrays;
+import java.util.List;
 
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import com.algaworks.algafood.api.controller.GrupoController;
-import com.algaworks.algafood.api.dto.GrupoDto;
-import com.algaworks.algafood.domain.model.Grupo;
+ import com.algaworks.algafood.api.controller.GrupoController;
+ import com.algaworks.algafood.domain.model.Grupo;
+ import com.algaworks.algafood.api.dto.GrupoDto; 
 import com.algaworks.algafood.infraestructure.configuration.Mapper;
 
  @Component
-public class GrupoDtoAssembler extends EntitytDtoAssembler<GrupoDto, Grupo >{
+public class GrupoDtoAssembler extends EntitytDtoAssembler<GrupoDto, Grupo, GrupoController >{
 
-	public GrupoDtoAssembler(Mapper mapper, GrupoDto grupoDto) {
- 		super(mapper,GrupoDto.class,
- 				Arrays.asList(linkTo( methodOn(GrupoController.class).buscar(grupoDto.getId()))
- 		                              .withSelfRel(),
- 		        	          linkTo( methodOn(GrupoController.class).listar())
- 			    		               .withRel(("cidades")) 		    		               
- 						),
- 				linkTo(GrupoController.class).withSelfRel());	}
-
- 
-}
+	public GrupoDtoAssembler(Mapper mapper) {
+ 		super(mapper,GrupoController.class,GrupoDto.class);
+	}
+	
+	@Override
+	public List<Link> constructLinks(Grupo entityObject) {
+		// TODO Auto-generated method stub
+		return Arrays.asList(linkTo( methodOn(GrupoController.class).buscar(entityObject.getId()))
+                .withSelfRel(),
+        linkTo( methodOn(GrupoController.class).listar())
+	               .withRel(("grupos")) 	    		               
+	);
+	}	
+ }
  
  /*
  @Component

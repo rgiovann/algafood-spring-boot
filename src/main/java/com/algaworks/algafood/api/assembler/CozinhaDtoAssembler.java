@@ -23,6 +23,7 @@ public class CozinhaDtoAssembler extends EntitytDtoAssembler<CozinhaDto,Cozinha,
 		super(mapper,CozinhaController.class,CozinhaDto.class);
 	}
 
+	@Override
 	public  List<Link> constructLinks(Cozinha cozinha ) {
 		return  
 				Arrays.asList(
