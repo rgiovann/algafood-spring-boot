@@ -20,7 +20,6 @@ public class PedidoCompactDtoAssembler extends EntitytDtoAssembler<PedidoCompact
 
 	@Override
 	public List<Link> constructLinks(Pedido entityObject) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

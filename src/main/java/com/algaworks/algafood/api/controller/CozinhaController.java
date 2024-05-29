@@ -45,7 +45,7 @@ public class CozinhaController implements CozinhaControllerOpenApi{
 		this.cozinhaService = cozinhaService;
 		this.cozinhaDtoAssembler = cozinhaDtoAssembler;
 		this.cozinhaNomeInputDisassembler = cozinhaInputDisassembler;
-		this.pagedResourceAssembler = null;
+		this.pagedResourceAssembler = pagedResourceAssembler;
 	}
 	
 	/*

@@ -27,7 +27,7 @@ public class ModelMapperConfig {
     @Bean
     Mapper mapper() {
     	
-    	final  var modelMapper = new ModelMapper(); 
+    	final  ModelMapper modelMapper = new ModelMapper(); 
     	
     	var enderecoToEnderecoDtoTypeMap = modelMapper.createTypeMap(Endereco.class, EnderecoDto.class);
     	

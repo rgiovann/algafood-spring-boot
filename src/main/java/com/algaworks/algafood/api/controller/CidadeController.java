@@ -56,7 +56,7 @@ public class CidadeController implements CidadeControllerOpenApi{
  	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<CidadeDto> listar() {
 
-		return cidadeDtoAssembler.toCollectionDto(cidadeService.listar());
+		return cidadeDtoAssembler.toCollectionModel(cidadeService.listar());
 		
 	}
     
@@ -79,17 +79,7 @@ public class CidadeController implements CidadeControllerOpenApi{
 			Cidade cidade = cidadeInputDissasembler.toEntity(cidadeInput);
 			
 			CidadeDto cidadeDto = cidadeDtoAssembler.toModel(cidadeService.salvar(cidade));
-			
-//			ResourceUriHelper.addUriResponseHeader(cidadeDto.getId());
-			
-//			URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-//			.path("/{id}")
-//			.buildAndExpand(cidadeDto.getId()).toUri();
-			
-//			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse(); 
-			
-//			response.setHeader(HttpHeaders.LOCATION, uri.toString());
-			
+						
 			return cidadeDto;
 
 		} catch (EstadoNaoEncontradoException e) {

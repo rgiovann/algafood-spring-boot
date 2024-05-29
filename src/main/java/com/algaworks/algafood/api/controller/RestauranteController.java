@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -74,12 +75,12 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 //
 	@Override
 	@GetMapping("/por-nome-taxa-frete")
-	public List<RestauranteDto> restaurantesPorNomeFrete(
+	public CollectionModel<RestauranteDto> restaurantesPorNomeFrete(
 			@RequestParam(required=false) String nome,
 			@RequestParam(required=false) BigDecimal taxaFreteInicial,
 			@RequestParam(required=false) BigDecimal taxaFreteFinal) {
 		
-		return restauranteDtoAssembler.toCollectionDto(restauranteService.restauranteporNomeCustomizado(nome, taxaFreteInicial, taxaFreteFinal));
+		return restauranteDtoAssembler.toCollectionModel(restauranteService.restauranteporNomeCustomizado(nome, taxaFreteInicial, taxaFreteFinal));
 		  
 	}
 //
@@ -111,15 +112,15 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@JsonView(RestauranteView.Resumo.class)
-	public List<RestauranteDto> listar() {
+	public CollectionModel<RestauranteDto> listar() {
 
-		return restauranteDtoAssembler.toCollectionDto(restauranteService.listar());
+		return restauranteDtoAssembler.toCollectionModel(restauranteService.listar());
 
 	}
 	@Override
 	@JsonView(RestauranteView.ApenasNome.class)
 	@GetMapping(params = "projecao=apenas-nome")
-	public List<RestauranteDto> listarApenasNomes() {
+	public CollectionModel<RestauranteDto> listarApenasNomes() {
 		return listar();
 	}
 

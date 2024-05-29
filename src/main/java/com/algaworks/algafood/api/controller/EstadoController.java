@@ -42,7 +42,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<EstadoDto> listar() {
 
-		CollectionModel<EstadoDto> estadosDto = estadoDtoAssembler.toCollectionDto(estadoService.listar());
+		CollectionModel<EstadoDto> estadosDto = estadoDtoAssembler.toCollectionModel(estadoService.listar());
  		
 		CollectionModel<EstadoDto> collectionCidadeDto = CollectionModel.of(estadosDto);
 

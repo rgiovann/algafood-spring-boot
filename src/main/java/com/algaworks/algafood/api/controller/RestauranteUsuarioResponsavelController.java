@@ -40,7 +40,7 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
 	public CollectionModel<UsuarioDto> listar(@PathVariable Long restauranteId){
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 		
-		CollectionModel<UsuarioDto> collectionUsuarioDto = usuarioDtoAssembler.toCollectionDto(restaurante.getResponsaveis());
+		CollectionModel<UsuarioDto> collectionUsuarioDto = usuarioDtoAssembler.toCollectionModel(restaurante.getResponsaveis());
 		collectionUsuarioDto
 		.removeLinks()
 		.add(linkTo(methodOn(RestauranteUsuarioResponsavelController.class)

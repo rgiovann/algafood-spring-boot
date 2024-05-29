@@ -1,7 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,9 +33,9 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
  	}
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<PermissaoDto> listarPermissoes(@PathVariable Long grupoId){
+	public CollectionModel<PermissaoDto> listarPermissoes(@PathVariable Long grupoId){
 		Grupo grupo = cadastroGrupoService.buscarOuFalhar(grupoId);
-		return permissaoDtoAssembler.toCollectionDto(grupo.getPermissoes());
+		return permissaoDtoAssembler.toCollectionModel(grupo.getPermissoes());
 		
 	}
 	

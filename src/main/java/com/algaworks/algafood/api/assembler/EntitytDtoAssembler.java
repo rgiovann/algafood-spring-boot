@@ -21,8 +21,6 @@ public abstract class EntitytDtoAssembler<M extends RepresentationModel<M>, D, C
                       extends RepresentationModelAssemblerSupport<D, M> 
  
 {
-	
-	 
 	private final Mapper mapper;
 	private  Class<M> dtoRepresentationObject;
 	private  Class<C> controllerRepresentationObject;
@@ -39,6 +37,7 @@ public abstract class EntitytDtoAssembler<M extends RepresentationModel<M>, D, C
 
 	}
 	
+	@Override   // RepresentationModelAssembler method interface
 	public M toModel(D entityObject) {
 		M dtoObject =  this.mapper.map(entityObject, this.dtoRepresentationObject);
 		this.linkList = constructLinks(entityObject);
@@ -48,18 +47,24 @@ public abstract class EntitytDtoAssembler<M extends RepresentationModel<M>, D, C
 		return dtoObject;
 	}
 	
- 
-	public CollectionModel<M> toCollectionDto(Collection<D> listOfEntityObjects) {
-		List<M> listOfDtos = listOfEntityObjects.stream().map(this::toModel).collect(Collectors.toList());
-		
-		CollectionModel<M> collectionDto =  CollectionModel.of(listOfDtos);
-		
-		collectionDto.add(collectionLink.withSelfRel());
-		
-		return  collectionDto;
+	// o problema é o collectionLink atributo que é nulo.
+	//	public CollectionModel<D> toCollectionModel(Iterable<? extends D> entities) {
+	//		return this.map(entities).toResources();
+	//	}
+	
+	@Override // RepresentationModelAssembler method interface
+ 	public CollectionModel<M> toCollectionModel(Iterable<? extends D>  listOfEntityObjects) {
+		//List<M> listOfDtos = listOfEntityObjects.stream().map(this::toModel).collect(Collectors.toList());
+		//CollectionModel<M> collectionDto =  CollectionModel.of(listOfDtos);
+		//collectionDto.add( constructCollectionLinks());
+		return super.toCollectionModel(listOfEntityObjects).add(constructCollectionLinks());
+		//return  collectionDto;
 	}
 	
 	
 	public abstract List<Link> constructLinks(D entityObject) ; 
+	
+	public abstract Link constructCollectionLinks() ; 
+
 	
 }

@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-@Relation(collectionRelation = "blablablá")
+@Relation(collectionRelation = "cidades")
 @ApiModel(value = "Cidade", description = "Representa uma cidade")
 @Setter
 @Getter

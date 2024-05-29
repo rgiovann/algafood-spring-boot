@@ -1,8 +1,15 @@
 package com.algaworks.algafood.api.assembler;
 
-import org.modelmapper.ModelMapper;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.controller.CozinhaController;
 import com.algaworks.algafood.api.controller.RestauranteController;
 import com.algaworks.algafood.api.dto.RestauranteDto;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -14,13 +21,17 @@ import com.algaworks.algafood.infraestructure.configuration.Mapper;
 public class RestauranteDtoAssembler extends EntitytDtoAssembler<RestauranteDto, Restaurante,RestauranteController>{
 
 	public RestauranteDtoAssembler(Mapper mapper) {
-		super(mapper,RestauranteDto.class,RestauranteController.class);
+		super(mapper,RestauranteController.class,RestauranteDto.class);
 	}
 
+
 	@Override
-	public RestauranteDto toModel(Restaurante entity) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Link> constructLinks(Restaurante entityObject) {
+		return  
+				Arrays.asList(
+						linkTo( methodOn(CozinhaController.class).buscar(entityObject.getId())).withSelfRel(),	
+						linkTo( CozinhaController.class).withRel(("restaurantes"))
+						);
 	}
 
 }

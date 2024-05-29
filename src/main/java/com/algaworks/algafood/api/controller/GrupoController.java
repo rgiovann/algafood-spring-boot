@@ -1,9 +1,8 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,9 +43,9 @@ public class GrupoController implements GrupoControllerOpenApi {
 
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<GrupoDto> listar() {
+	public CollectionModel<GrupoDto> listar() {
 
-		return grupoDtoAssembler.toCollectionDto(grupoService.listar());
+		return grupoDtoAssembler.toCollectionModel(grupoService.listar());
  
 	}
 	@Override	

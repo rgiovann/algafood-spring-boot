@@ -38,7 +38,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<GrupoDto> listarPermissoes(@PathVariable Long usuarioId){
 		Usuario usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
-		return grupoDtoAssembler.toCollectionDto(usuario.getGrupos());
+		return grupoDtoAssembler.toCollectionModel(usuario.getGrupos());
 		
 	}
 	

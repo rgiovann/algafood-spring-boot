@@ -6,9 +6,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -191,7 +188,7 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 		
 	}
 
-
+/*
 	@Override
 	public FotoProdutoDto buscar(Long id) {
 		return null;
@@ -208,6 +205,6 @@ public class RestauranteFotoController implements RestauranteProdutoFotoControll
 	public PagedModel<FotoProdutoDto> listarPaged(Pageable pageable) {
 		return null;
 	}
-	
+	*/
 	
 }

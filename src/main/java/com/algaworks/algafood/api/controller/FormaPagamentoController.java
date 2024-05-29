@@ -1,15 +1,12 @@
 package com.algaworks.algafood.api.controller;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -43,7 +40,6 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	private final FormaPagamentoInputDisassembler formaPagtoInputDisassembler;
 
 	  public FormaPagamentoController(CadastroFormaPagamentoService formaPagamentoService,
-			  						  ModelMapper modelMapper,
 			  						  FormaPagamentoDtoAssembler formaPagamentoDtoAssembler,
 			  						  FormaPagamentoInputDisassembler formaPagtoDtoDisassembler) {
 	    this.formaPagamentoService = formaPagamentoService;
@@ -68,7 +64,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 //------------------------------------------------------------------------------------------------------
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity< List<FormaPagamentoDto> >listar(ServletWebRequest request) {
+	public ResponseEntity<CollectionModel<FormaPagamentoDto>> listar(ServletWebRequest request) {
 		
 		// desabilita o Spring de gerar o eTag
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -87,8 +83,8 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 			return null;
 		}
 
-		List<FormaPagamentoDto> formasPagamentoDto = formaPagtoDtoAssembler
-				                                     .toCollectionDto(formaPagamentoService.listar());
+		CollectionModel<FormaPagamentoDto> formasPagamentoDto = formaPagtoDtoAssembler
+				                                     .toCollectionModel(formaPagamentoService.listar());
 		
 		return ResponseEntity.ok()
 				//.cacheControl(CacheControl.maxAge(20,TimeUnit.SECONDS))
@@ -100,6 +96,8 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 				.body(formasPagamentoDto);
 
 	}
+	
+	
 	@Override	
 	@GetMapping(path="/{fomaPagamentoId}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<FormaPagamentoDto> buscar(@PathVariable Long fomaPagamentoId,ServletWebRequest request) {
@@ -157,13 +155,6 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 
 			formaPagamentoService.excluir(fomaPagamentoId);
 	}
-
-
-	@Override
-	public PagedModel<FormaPagamentoDto> listarPaged(Pageable pageable) {
-		return null;
-	}
-
 
 
 }

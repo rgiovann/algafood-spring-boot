@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.openapi.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -27,7 +28,7 @@ public interface RestauranteControllerOpenApi {
 
  
 	@GetMapping("/por-nome-taxa-frete")
-	List<RestauranteDto> restaurantesPorNomeFrete(
+	CollectionModel<RestauranteDto> restaurantesPorNomeFrete(
 			@ApiParam(value = "Texto a ser pesquisado", example = "brasi",type = "query",  required = false) 
 			String nome,
 			@ApiParam(value = "Taxa de frete inicial da pesquisa", example = "10.45", type = "query", required = false) 
@@ -42,10 +43,10 @@ public interface RestauranteControllerOpenApi {
 	@ApiOperation(value = "Lista resumo dos restaurantes")
 	@ApiImplicitParams({
 			@ApiImplicitParam(value = "Resumo dos restaurantes", allowableValues = "apenas-nome", name = "projecao", paramType = "query", dataType = "java.lang.String") })
-	List<RestauranteDto> listar(); 
+	CollectionModel<RestauranteDto> listar(); 
 
 	@ApiOperation(value = "Lista restaurantes", hidden = true)
-	List<RestauranteDto> listarApenasNomes();
+	CollectionModel<RestauranteDto> listarApenasNomes();
 
 	@ApiOperation("Busca um restaurante por Id")
 	@ApiResponses({ @ApiResponse(code = 400, message = "Id do restaurante inválido", response = Problem.class),

@@ -48,7 +48,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<UsuarioDto> listar() {
 
-		return usuarioDtoAssembler.toCollectionDto(usuarioService.listar());
+		return usuarioDtoAssembler.toCollectionModel(usuarioService.listar());
 
 	}
 

@@ -33,8 +33,16 @@ public class CidadeDtoAssembler extends EntitytDtoAssembler<CidadeDto,Cidade,Cid
         linkTo( methodOn(CidadeController.class).listar())
 	               .withRel(("cidades")),
 	      linkTo( methodOn(EstadoController.class).buscar(entityObject.getEstado().getId()))
-                    .withSelfRel()			    		               
+                    .withSelfRel(),
+         linkTo( methodOn(EstadoController.class).listar())
+ 	               .withRel(("estados"))
 	);
 	}
+
+	@Override
+	public  Link  constructCollectionLinks( ) {
+ 		return linkTo(CidadeController.class).withSelfRel();
+	}
+	
 
 }

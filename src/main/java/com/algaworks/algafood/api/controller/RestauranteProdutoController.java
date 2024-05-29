@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,7 +55,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<ProdutoDto> listarProdutos(@PathVariable Long restauranteId,
+	public CollectionModel<ProdutoDto> listarProdutos(@PathVariable Long restauranteId,
 										   @RequestParam(required=false) boolean incluirInativos){
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 
@@ -67,7 +68,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 			todosProdutos = produtoService.findAtivosByRestaurante(restaurante);
 
 		}
-		return produtoDtoAssembler.toCollectionDto(todosProdutos);		
+		return produtoDtoAssembler.toCollectionModel(todosProdutos);		
 	}
 	
 	@Override

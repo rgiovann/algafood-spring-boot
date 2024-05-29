@@ -30,7 +30,7 @@ public class EstadoDtoAssembler extends EntitytDtoAssembler<EstadoDto,Estado,Est
  	return Arrays.asList(linkTo( methodOn(EstadoController.class).buscar(entityObject.getId()))
  				 .withSelfRel(),
  				 linkTo( methodOn(EstadoController.class).listar())
- 				 .withRel(("cidades")) 		    		               
+ 				 .withRel(("estados")) 		    		               
 );
 	}
 

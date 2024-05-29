@@ -1,13 +1,12 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,32 +41,42 @@ public class PedidoController implements PedidoControllerOpenApi {
     private final PedidoDtoAssembler pedidoDtoAssembler;
     private final PedidoCompactDtoAssembler pedidoCompactDtoAssembler;
     private final PedidoInputDisassembler pedidoInputDisassembler;
+	private final PagedResourcesAssembler <Pedido> pagedResourceAssembler;
 
 
 	public PedidoController(CadastroEmissaoPedidoService pedidoService, 
 							PedidoDtoAssembler pedidoDtoAssembler,
 							PedidoCompactDtoAssembler pedidoCompactDtoAssembler,
-							PedidoInputDisassembler pedidoInputDisassembler
+							PedidoInputDisassembler pedidoInputDisassembler,
+							PagedResourcesAssembler <Pedido> pagedResourceAssembler
 			) {
 		this.pedidoService = pedidoService;
 		this.pedidoDtoAssembler = pedidoDtoAssembler;
 		this.pedidoCompactDtoAssembler = pedidoCompactDtoAssembler;
 		this.pedidoInputDisassembler = pedidoInputDisassembler;
+		this.pagedResourceAssembler = pagedResourceAssembler;
  	}
 	@Override
  	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Page<PedidoCompactDto> pesquisar(  PedidoFilter filter, @PageableDefault(size=10) Pageable pageable) {
+	public PagedModel<PedidoCompactDto> pesquisar(  PedidoFilter filter, @PageableDefault(size=10) Pageable pageable) {
 		
 		pageable = this.traduzirPageable(pageable);
 
 		Page<Pedido> pedidoPage = pedidoService.listar(filter,pageable);
 		
-		List<PedidoCompactDto> pedidoDtoList = pedidoCompactDtoAssembler.toCollectionDto(pedidoPage.getContent());
 		
-		Page<PedidoCompactDto> pedidoCompactDtoPage = new PageImpl<>(pedidoDtoList,pageable,pedidoPage.getTotalElements());
+        //CollectionModel<PedidoCompactDto> pedidoDtoCollectionModel = pedidoCompactDtoAssembler
+        //        .toCollectionDto(pedidoPage.getContent());
+        
+        //List<PedidoCompactDto> pedidoDtoList = pedidoDtoCollectionModel.getContent().stream().collect(Collectors.toList());
+
+		//List<PedidoCompactDto> pedidoDtoList = pedidoCompactDtoAssembler.toCollectionDto(pedidoPage.getContent());
 		
+		//Page<PedidoCompactDto> pedidoCompactDtoPage = new PageImpl<>(pedidoDtoList,pageable,pedidoPage.getTotalElements());
 		
-		return pedidoCompactDtoPage;
+		PagedModel<PedidoCompactDto> pedidoCompactDtoPagedModel = pagedResourceAssembler.toModel(pedidoPage, pedidoCompactDtoAssembler);
+
+		return pedidoCompactDtoPagedModel;
  
 	}
 	
