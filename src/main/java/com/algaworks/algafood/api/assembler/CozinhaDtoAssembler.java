@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.controller.CidadeController;
 import com.algaworks.algafood.api.controller.CozinhaController;
 import com.algaworks.algafood.api.dto.CozinhaDto;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -31,6 +32,11 @@ public class CozinhaDtoAssembler extends EntitytDtoAssembler<CozinhaDto,Cozinha,
 						linkTo( CozinhaController.class).withRel(("cozinhas"))
 						);
 		//,linkTo(CozinhaController.class).withSelfRel() ;
+	}
+
+	@Override
+	public Link constructCollectionLinks() {
+ 		return linkTo(CozinhaController.class).withSelfRel();
 	}
 
 

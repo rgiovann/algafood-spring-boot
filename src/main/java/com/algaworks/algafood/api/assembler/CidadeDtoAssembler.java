@@ -27,7 +27,6 @@ public class CidadeDtoAssembler extends EntitytDtoAssembler<CidadeDto,Cidade,Cid
 
 	@Override
 	public List<Link> constructLinks(Cidade entityObject) {
-		// TODO Auto-generated method stub
 		return Arrays.asList(linkTo( methodOn(CidadeController.class).buscar(entityObject.getId()))
                 .withSelfRel(),
         linkTo( methodOn(CidadeController.class).listar())

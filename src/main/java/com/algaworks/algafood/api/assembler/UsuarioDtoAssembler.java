@@ -6,12 +6,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.controller.RestauranteUsuarioResponsavelController;
 import com.algaworks.algafood.api.controller.UsuarioController;
 import com.algaworks.algafood.api.controller.UsuarioGrupoController;
-
 import com.algaworks.algafood.api.dto.UsuarioDto;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.infraestructure.configuration.Mapper;
@@ -41,6 +42,19 @@ public class UsuarioDtoAssembler extends EntitytDtoAssembler<UsuarioDto, Usuario
 	               .withRel(("usuarios")),
 	      linkTo( methodOn(UsuarioGrupoController.class).listarPermissoes( entityObject.getId()))
                     .withRel("grupos-usuarios"));
+	}
+
+	@Override
+	public Link constructCollectionLinks() {
+ 		return linkTo(UsuarioController.class).withSelfRel();
+
+	}
+	
+	public CollectionModel<UsuarioDto> setRestaurantUserResponsibleLink (CollectionModel<UsuarioDto> collectionUsuarioDto,Long restauranteId){
+		collectionUsuarioDto.removeLinks();
+		collectionUsuarioDto.add(linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
+				.listar(restauranteId)).withSelfRel());
+		return null;
 	}
 	
 	}

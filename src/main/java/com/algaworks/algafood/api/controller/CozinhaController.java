@@ -67,20 +67,7 @@ public class CozinhaController implements CozinhaControllerOpenApi{
 		
 		PagedModel<CozinhaDto> cozinhasPagedMode = pagedResourceAssembler.toModel(cozinhaPage, cozinhaDtoAssembler);
 		
-//		CollectionModel<CozinhaDto> cozinhaDtoCollectionModel = cozinhaDtoAssembler.toCollectionDto(cozinhaPage.getContent());
-//		
-//	    List<CozinhaDto> cozinhaDtoList = cozinhaDtoCollectionModel.getContent().stream().collect(Collectors.toList());
-//		
-//		Page<CozinhaDto> cozinhaDtoPage = new PageImpl<CozinhaDto>(cozinhaDtoList,pageable,cozinhaPage.getTotalElements());
-//
-//		PagedModel<CozinhaDto> cozinhaPagedModel = PagedModel.of(cozinhaDtoPage.getContent(), 
-//                new PagedModel.PageMetadata(cozinhaDtoPage.getSize(),
-//                                            cozinhaDtoPage.getNumber(),
-//                                            cozinhaDtoPage.getTotalElements()));
 		return cozinhasPagedMode;
-		
-//		PagedModel<CozinhaDto> cozinhasPageModel = 
-//				pagedResourcesAssemblerCozinha.toModel(cozinhaPage,cozinhaDtoAssembler);
 
 	}
 	

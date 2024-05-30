@@ -34,6 +34,11 @@ public class EstadoDtoAssembler extends EntitytDtoAssembler<EstadoDto,Estado,Est
 );
 	}
 
+	@Override
+	public Link constructCollectionLinks() {
+ 		return linkTo(EstadoController.class).withSelfRel(); 
+	}
+
  
 
 }

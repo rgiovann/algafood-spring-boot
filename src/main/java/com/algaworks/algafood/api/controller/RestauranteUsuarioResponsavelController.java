@@ -41,10 +41,8 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 		
 		CollectionModel<UsuarioDto> collectionUsuarioDto = usuarioDtoAssembler.toCollectionModel(restaurante.getResponsaveis());
-		collectionUsuarioDto
-		.removeLinks()
-		.add(linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
-				.listar(restauranteId)).withSelfRel()); 
+		
+		usuarioDtoAssembler.setRestaurantUserResponsibleLink(collectionUsuarioDto, restauranteId);
 		
 		return collectionUsuarioDto;
 		
