@@ -35,29 +35,10 @@ public class EstadoDtoAssembler extends EntitytDtoAssembler<EstadoDto,Estado,Est
 	}
 
 	@Override
-	public Link constructCollectionLinks() {
+	public Link constructCollectionLink() {
  		return linkTo(EstadoController.class).withSelfRel(); 
 	}
 
  
 
 }
-
-/*
-@Component
-public class CidadeDtoAssembler extends EntitytDtoAssembler<CidadeDto,Cidade>{
-
-	public CidadeDtoAssembler(Mapper mapper,CidadeDto dtoObject) {
-		super(mapper,CidadeDto.class,
-				Arrays.asList(linkTo( methodOn(CidadeController.class).buscar(dtoObject.getId()))
-		                              .withSelfRel(),
-		        	          linkTo( methodOn(CidadeController.class).listar())
-			    		               .withRel(("cidades")),
-			    		      linkTo( methodOn(EstadoController.class).buscar(dtoObject.getEstado().getId()))
-			                              .withSelfRel()			    		               
-						),
-				linkTo(CidadeController.class).withSelfRel());
-	}
-
-}
-*/

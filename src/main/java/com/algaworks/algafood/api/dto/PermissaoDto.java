@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.dto;
 
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Relation(collectionRelation = "permissoes")
 public class PermissaoDto  extends RepresentationModel<PermissaoDto> {
 	
 	@ApiModelProperty(example = "1")

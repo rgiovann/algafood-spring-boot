@@ -1,5 +1,7 @@
 package com.algaworks.algafood.api.assembler;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 import java.util.List;
 
 import org.springframework.hateoas.Link;
@@ -22,6 +24,11 @@ public class PedidoCompactDtoAssembler extends EntitytDtoAssembler<PedidoCompact
 	public List<Link> constructLinks(Pedido entityObject) {
 		return null;
 	}
+
+	@Override
+	public Link constructCollectionLink() {
+ 		return linkTo(PedidoController.class).withSelfRel();
+ 	}
 
  
 

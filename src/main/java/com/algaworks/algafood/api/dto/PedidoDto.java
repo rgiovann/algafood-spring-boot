@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,6 +16,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Relation(collectionRelation = "pedidos")
 @ApiModel(value = "Pedido", description = "Representa um pedido do restaurante")
 
 public class PedidoDto extends RepresentationModel<PedidoDto>{

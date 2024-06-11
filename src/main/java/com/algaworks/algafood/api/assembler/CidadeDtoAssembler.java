@@ -39,7 +39,7 @@ public class CidadeDtoAssembler extends EntitytDtoAssembler<CidadeDto,Cidade,Cid
 	}
 
 	@Override
-	public  Link  constructCollectionLinks( ) {
+	public  Link  constructCollectionLink( ) {
  		return linkTo(CidadeController.class).withSelfRel();
 	}
 	

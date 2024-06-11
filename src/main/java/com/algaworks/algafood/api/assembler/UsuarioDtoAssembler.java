@@ -24,14 +24,6 @@ public class UsuarioDtoAssembler extends EntitytDtoAssembler<UsuarioDto, Usuario
 
 	public UsuarioDtoAssembler(Mapper mapper ) {
 		super(mapper,UsuarioController.class,UsuarioDto.class);
-//				Arrays.asList(linkTo( methodOn(UsuarioController.class).buscar(usuarioDto.getId()))
-//		                              .withSelfRel(),
-//		        	          linkTo( methodOn(UsuarioController.class).listar())
-//			    		               .withRel(("usuarios")),
-//			    		      linkTo( methodOn(UsuarioGrupoController.class).listarPermissoes( usuarioDto.getId()))
-//			                              .withRel("grupos-usuarios"));,
-
-      //				linkTo(CidadeController.class).withSelfRel());
 	}
 
 	@Override
@@ -40,12 +32,12 @@ public class UsuarioDtoAssembler extends EntitytDtoAssembler<UsuarioDto, Usuario
                 .withSelfRel(),
        linkTo( methodOn(UsuarioController.class).listar())
 	               .withRel(("usuarios")),
-	      linkTo( methodOn(UsuarioGrupoController.class).listarPermissoes( entityObject.getId()))
+	      linkTo( methodOn(UsuarioGrupoController.class).listarGrupos( entityObject.getId()))
                     .withRel("grupos-usuarios"));
 	}
 
 	@Override
-	public Link constructCollectionLinks() {
+	public Link constructCollectionLink() {
  		return linkTo(UsuarioController.class).withSelfRel();
 
 	}

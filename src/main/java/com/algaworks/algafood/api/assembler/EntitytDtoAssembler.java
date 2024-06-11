@@ -1,10 +1,7 @@
 package com.algaworks.algafood.api.assembler;
 
 import java.lang.reflect.ParameterizedType;
- 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
@@ -41,9 +38,12 @@ public abstract class EntitytDtoAssembler<M extends RepresentationModel<M>, D, C
 	public M toModel(D entityObject) {
 		M dtoObject =  this.mapper.map(entityObject, this.dtoRepresentationObject);
 		this.linkList = constructLinks(entityObject);
-		for (Link link : linkList) {
-			dtoObject.add(link); // add links to object
-			}   
+		if(!this.linkList.isEmpty()) 
+		{
+			for (Link link : linkList) {
+				dtoObject.add(link); // add links to object
+				}  
+		} 
 		return dtoObject;
 	}
 	
@@ -54,17 +54,17 @@ public abstract class EntitytDtoAssembler<M extends RepresentationModel<M>, D, C
 	
 	@Override // RepresentationModelAssembler method interface
  	public CollectionModel<M> toCollectionModel(Iterable<? extends D>  listOfEntityObjects) {
-		//List<M> listOfDtos = listOfEntityObjects.stream().map(this::toModel).collect(Collectors.toList());
-		//CollectionModel<M> collectionDto =  CollectionModel.of(listOfDtos);
-		//collectionDto.add( constructCollectionLinks());
-		return super.toCollectionModel(listOfEntityObjects).add(constructCollectionLinks());
+		
+		//System.out.println("Passei por aqui....");
+		//System.out.println(constructCollectionLink().toString());
+		return super.toCollectionModel(listOfEntityObjects).add(constructCollectionLink());
 		//return  collectionDto;
 	}
 	
 	
 	public abstract List<Link> constructLinks(D entityObject) ; 
 	
-	public abstract Link constructCollectionLinks() ; 
+	public abstract Link constructCollectionLink() ; 
 
 	
 }

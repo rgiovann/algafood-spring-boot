@@ -9,7 +9,6 @@ import java.util.List;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import com.algaworks.algafood.api.controller.CozinhaController;
 import com.algaworks.algafood.api.controller.RestauranteController;
 import com.algaworks.algafood.api.dto.RestauranteDto;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -29,9 +28,16 @@ public class RestauranteDtoAssembler extends EntitytDtoAssembler<RestauranteDto,
 	public List<Link> constructLinks(Restaurante entityObject) {
 		return  
 				Arrays.asList(
-						linkTo( methodOn(CozinhaController.class).buscar(entityObject.getId())).withSelfRel(),	
-						linkTo( CozinhaController.class).withRel(("restaurantes"))
+						linkTo( methodOn(RestauranteController.class).buscar(entityObject.getId())).withSelfRel(),	
+						linkTo( RestauranteController.class).withRel(("restaurantes"))
 						);
+	}
+
+
+	@Override
+	public Link constructCollectionLink() {
+ 		return linkTo(RestauranteController.class).withSelfRel();
+
 	}
 
 }

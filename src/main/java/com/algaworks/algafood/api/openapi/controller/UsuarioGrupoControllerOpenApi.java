@@ -18,7 +18,7 @@ public interface UsuarioGrupoControllerOpenApi {
     @ApiResponses({
         @ApiResponse(code = 404, message = "Usuário não encontrado", response = Problem.class)
     })
-    CollectionModel<GrupoDto> listarPermissoes(
+    CollectionModel<GrupoDto> listarGrupos(
             @ApiParam(value = "ID do usuário", example = "1", required = true)
             Long usuarioId);
 

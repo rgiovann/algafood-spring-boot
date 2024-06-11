@@ -9,7 +9,6 @@ import java.util.List;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import com.algaworks.algafood.api.controller.CozinhaController;
 import com.algaworks.algafood.api.controller.FormaPagamentoController;
 import com.algaworks.algafood.api.dto.FormaPagamentoDto;
 import com.algaworks.algafood.domain.model.FormaPagamento;
@@ -30,9 +29,16 @@ public class FormaPagamentoDtoAssembler extends EntitytDtoAssembler<FormaPagamen
 	public List<Link> constructLinks(FormaPagamento entityObject) {
 		// TODO Auto-generated method stub
 		return 				Arrays.asList(
-				linkTo( methodOn(CozinhaController.class).buscar(entityObject.getId())).withSelfRel(),	
-				linkTo( CozinhaController.class).withRel(("formas de pagamento"))
+				linkTo(FormaPagamentoController.class).withRel("formas de pagamento"),
+				linkTo( methodOn(FormaPagamentoController.class).buscar(entityObject.getId(),null)).withSelfRel()	
+				//linkTo(FormaPagamentoController.class).withRel(IanaLinkRelations.SELF.value())
 				);
+	}
+
+	@Override
+	public Link constructCollectionLink() {
+ 		return linkTo(FormaPagamentoController.class).withSelfRel();
+
 	}
 
  

@@ -10,9 +10,9 @@ import java.util.List;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
- import com.algaworks.algafood.api.controller.GrupoController;
- import com.algaworks.algafood.domain.model.Grupo;
- import com.algaworks.algafood.api.dto.GrupoDto; 
+import com.algaworks.algafood.api.controller.GrupoController;
+import com.algaworks.algafood.api.dto.GrupoDto;
+import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.infraestructure.configuration.Mapper;
 
  @Component
@@ -30,7 +30,12 @@ public class GrupoDtoAssembler extends EntitytDtoAssembler<GrupoDto, Grupo, Grup
         linkTo( methodOn(GrupoController.class).listar())
 	               .withRel(("grupos")) 	    		               
 	);
-	}	
+	}
+
+	@Override
+	public Link constructCollectionLink() {
+ 		return linkTo(GrupoController.class).withSelfRel();
+ 	}	
  }
  
  /*

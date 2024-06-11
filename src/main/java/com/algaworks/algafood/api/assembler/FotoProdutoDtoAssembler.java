@@ -26,6 +26,12 @@ public class FotoProdutoDtoAssembler extends EntitytDtoAssembler<FotoProdutoDto,
 		return null;
 	}
 
+	@Override
+	public Link constructCollectionLink() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 	 }

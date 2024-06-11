@@ -68,7 +68,10 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 			todosProdutos = produtoService.findAtivosByRestaurante(restaurante);
 
 		}
-		return produtoDtoAssembler.toCollectionModel(todosProdutos);		
+		
+		CollectionModel<ProdutoDto> collectionTodosProdutos = produtoDtoAssembler.toCollectionModel(todosProdutos);
+		
+		return collectionTodosProdutos;		
 	}
 	
 	@Override

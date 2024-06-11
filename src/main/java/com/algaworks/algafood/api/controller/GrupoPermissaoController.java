@@ -35,7 +35,8 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<PermissaoDto> listarPermissoes(@PathVariable Long grupoId){
 		Grupo grupo = cadastroGrupoService.buscarOuFalhar(grupoId);
-		return permissaoDtoAssembler.toCollectionModel(grupo.getPermissoes());
+		permissaoDtoAssembler.setGroupId(grupoId); // seta grupoId para construir os links
+  		return permissaoDtoAssembler.toCollectionModel(grupo.getPermissoes());
 		
 	}
 	
