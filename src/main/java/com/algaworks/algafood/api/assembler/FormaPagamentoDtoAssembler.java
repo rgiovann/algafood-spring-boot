@@ -1,14 +1,12 @@
 package com.algaworks.algafood.api.assembler;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.controller.FormaPagamentoController;
 import com.algaworks.algafood.api.dto.FormaPagamentoDto;
 import com.algaworks.algafood.domain.model.FormaPagamento;
@@ -21,23 +19,24 @@ public class FormaPagamentoDtoAssembler extends EntitytDtoAssembler<FormaPagamen
                                                                     FormaPagamento,
                                                                     FormaPagamentoController>{
 
-	public FormaPagamentoDtoAssembler(Mapper mapper) {
+    private AlgaLinks formaPagamentoLinks;
+
+	public FormaPagamentoDtoAssembler(Mapper mapper,AlgaLinks formaPagamentoLinks) {
 		super(mapper,FormaPagamentoController.class,FormaPagamentoDto.class );
+		this.formaPagamentoLinks = formaPagamentoLinks;
 	}
 
 	@Override
 	public List<Link> constructLinks(FormaPagamento entityObject) {
-		// TODO Auto-generated method stub
 		return 				Arrays.asList(
-				linkTo(FormaPagamentoController.class).withRel("formas de pagamento"),
-				linkTo( methodOn(FormaPagamentoController.class).buscar(entityObject.getId(),null)).withSelfRel()	
-				//linkTo(FormaPagamentoController.class).withRel(IanaLinkRelations.SELF.value())
-				);
+				this.formaPagamentoLinks.linkToFormaPagamento(entityObject.getId()),
+				this.formaPagamentoLinks.linkToFormaPagamento("formas de pagamento")
+ 				);
 	}
 
 	@Override
 	public Link constructCollectionLink() {
- 		return linkTo(FormaPagamentoController.class).withSelfRel();
+ 		return this.formaPagamentoLinks.linkToFormaPagamento();
 
 	}
 

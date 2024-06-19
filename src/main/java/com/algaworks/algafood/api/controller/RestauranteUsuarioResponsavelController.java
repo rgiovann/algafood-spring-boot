@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.assembler.UsuarioDtoAssembler;
 import com.algaworks.algafood.api.dto.UsuarioDto;
 import com.algaworks.algafood.api.openapi.controller.RestauranteUsuarioResponsavelControllerOpenApi;
@@ -23,13 +24,15 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
 
 	private final CadastroRestauranteService restauranteService;
   	private final UsuarioDtoAssembler usuarioDtoAssembler;
+  	private final AlgaLinks restauranteLinks;
 
 
 	public RestauranteUsuarioResponsavelController(CadastroRestauranteService restauranteService,
-			UsuarioDtoAssembler usuarioDtoAssembler) {
+			UsuarioDtoAssembler usuarioDtoAssembler,AlgaLinks restauranteLinks) {
 
 		this.restauranteService = restauranteService;
 		this.usuarioDtoAssembler = usuarioDtoAssembler;
+		this.restauranteLinks = restauranteLinks;
 	}
 
 	@Override
@@ -39,7 +42,7 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
 		
 		CollectionModel<UsuarioDto> collectionUsuarioDto = usuarioDtoAssembler.toCollectionModel(restaurante.getResponsaveis());
 		
-		usuarioDtoAssembler.setRestaurantUserResponsibleLink(collectionUsuarioDto, restauranteId);
+		restauranteLinks.setRestaurantUserResponsibleLink(collectionUsuarioDto, restauranteId);
 		
 		return collectionUsuarioDto;
 		

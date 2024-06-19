@@ -1,15 +1,12 @@
 package com.algaworks.algafood.api.assembler;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.controller.RestauranteProdutoController;
 import com.algaworks.algafood.api.dto.ProdutoDto;
 import com.algaworks.algafood.domain.model.Produto;
@@ -26,26 +23,26 @@ import lombok.Setter;
 public class ProdutoDtoAssembler extends EntitytDtoAssembler<ProdutoDto, Produto,RestauranteProdutoController>{
     
 	private Long restauranteId;
-	public ProdutoDtoAssembler(Mapper mapper) {
+	private AlgaLinks produtoLinks;
+	
+	public ProdutoDtoAssembler(Mapper mapper,AlgaLinks produtoLinks) {
 		super(mapper,RestauranteProdutoController.class,ProdutoDto.class);
+		this.produtoLinks = produtoLinks;
 	}
 
 
 	@Override
 	public List<Link> constructLinks(Produto entityObject) {
-		// TODO Auto-generated method stub
 		return  
-				Arrays.asList(
-						linkTo( methodOn(RestauranteProdutoController.class).buscarProduto(entityObject.getRestaurante().getId(),entityObject.getId())).withSelfRel() /*,	
-						linkTo( RestauranteProdutoController.class).withRel(("produtos"))*/
+				Arrays.asList(produtoLinks.linkToProduto(entityObject.getRestaurante().getId(), entityObject.getId()),
+						      produtoLinks.linkToProduto(entityObject.getRestaurante().getId())					 
 						);
 	}
 
 
 	@Override
 	public Link constructCollectionLink() {
- 		return linkTo(methodOn(RestauranteProdutoController.class)
-				.listarProdutos(restauranteId,false)).withSelfRel();
+ 		return produtoLinks.linkToProduto(this.restauranteId);
 
 	}
 }

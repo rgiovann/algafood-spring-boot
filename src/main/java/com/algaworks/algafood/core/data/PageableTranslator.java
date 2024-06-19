@@ -12,7 +12,8 @@ public class PageableTranslator {
 	public static Pageable translate(Pageable pageable, Map<String,String> fieldsMpapping) {
 		
 		var orders = pageable.getSort().stream()
-		// HTTP 500 - se não existir a propriedade, logo filtra.
+		// HTTP 500 - se a propriedade de ordenacao do request não existir a propriedade, logo filtra.
+	    // pois se não estiver no fieldsMapping, retorna null e Sort.Order() não aceita null;
 		.filter(order -> fieldsMpapping.containsKey(order.getProperty()))   
 		.map(order -> new Sort.Order(order.getDirection(),fieldsMpapping.get(order.getProperty())))
 		.collect( Collectors.toList());

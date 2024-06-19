@@ -5,7 +5,7 @@ spring:
     jackson:
         deserialization:
             fail-on-ignored-properties: true
-            fail-on-unknown-properties: true
+            fail-on-unknown-properties: true       
     jpa:
         properties:
             hibernate:
@@ -56,6 +56,11 @@ logging:
         org:
             springframework:
                 web: DEBUG
+        com:
+            fasterxml:
+                jackson:
+                databind: DEBUG
+          
 server:
     error:
         include-message: always

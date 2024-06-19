@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,6 +15,7 @@ import lombok.Setter;
 //@JsonFilter("pedidoFilter")
 @Getter
 @Setter
+@Relation(collectionRelation = "pedidos")
 @ApiModel(value = "Pedido", description = "Representa os dados de um pedido")
 public class PedidoCompactDto  extends RepresentationModel<PedidoCompactDto>{
 	

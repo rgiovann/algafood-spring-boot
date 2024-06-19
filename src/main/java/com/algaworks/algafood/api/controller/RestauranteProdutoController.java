@@ -59,6 +59,9 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 										   @RequestParam(required=false) boolean incluirInativos){
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 
+		// para construir o link do collection,preciso do Id
+		produtoDtoAssembler.setRestauranteId(restauranteId);
+		
 		List<Produto> todosProdutos = null;
 		if( incluirInativos)
 		{

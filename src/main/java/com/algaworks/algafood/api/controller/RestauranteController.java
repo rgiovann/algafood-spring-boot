@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
 import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
 import com.algaworks.algafood.api.dto.RestauranteDto;
-import com.algaworks.algafood.api.dto.view.RestauranteView;
 import com.algaworks.algafood.api.input.RestauranteInput;
 import com.algaworks.algafood.api.openapi.controller.RestauranteControllerOpenApi;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
@@ -31,7 +30,6 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
-import com.fasterxml.jackson.annotation.JsonView;
 
 // excluido para habilitar CORS globalmente no projeto
 //@CrossOrigin(origins="http://www.algafood.local:8000")
@@ -109,16 +107,25 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 
 		return restauranteDtoAssembler.toModel(restauranteService.restaurantesBuscarPrimeiro());
 	}
+	
+	
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	@JsonView(RestauranteView.Resumo.class)
+	// ISSUE: Support for HATEOAS-Links in Json-Views #387
+	//@JsonView(RestauranteView.Resumo.class)      
 	public CollectionModel<RestauranteDto> listar() {
 
-		return restauranteDtoAssembler.toCollectionModel(restauranteService.listar());
+		CollectionModel<RestauranteDto>  collectionRestaurante = restauranteDtoAssembler.toCollectionModel(restauranteService.listar());
+
+		return collectionRestaurante;
+		
 
 	}
+	
+	
 	@Override
-	@JsonView(RestauranteView.ApenasNome.class)
+	// ISSUE: Support for HATEOAS-Links in Json-Views #387
+	//@JsonView(RestauranteView.ApenasNome.class) 
 	@GetMapping(params = "projecao=apenas-nome")
 	public CollectionModel<RestauranteDto> listarApenasNomes() {
 		return listar();
@@ -148,7 +155,8 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 //	}
 	@Override
 	@GetMapping(value = "/{restauranteId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public RestauranteDto buscar(@PathVariable Long restauranteId) {
+
+		public RestauranteDto buscar(@PathVariable Long restauranteId) {
 
 		return restauranteDtoAssembler.toModel(restauranteService.buscarOuFalhar(restauranteId));
 
