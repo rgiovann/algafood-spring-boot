@@ -42,7 +42,7 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
 		
 		CollectionModel<UsuarioDto> collectionUsuarioDto = usuarioDtoAssembler.toCollectionModel(restaurante.getResponsaveis());
 		
-		restauranteLinks.setRestaurantUserResponsibleLink(collectionUsuarioDto, restauranteId);
+		restauranteLinks.setaRestauranteUsuarioResponsavelLink(collectionUsuarioDto, restauranteId);
 		
 		return collectionUsuarioDto;
 		

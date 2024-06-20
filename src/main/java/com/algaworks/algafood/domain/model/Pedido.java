@@ -120,6 +120,18 @@ public class Pedido extends AbstractAggregateRoot<Pedido>
  		
  		this.status = novoStatus;
  	}
+ 	
+ 	public boolean podeSerConfirmado() {
+ 		return getStatus().podeAlterarPara(StatusPedido.CONFIRMADO);
+ 	}
+ 	
+ 	public boolean podeSerEntregue() {
+ 		return getStatus().podeAlterarPara(StatusPedido.ENTREGUE);
+ 	}
+ 	
+ 	public boolean podeSerCancelado() {
+ 		return getStatus().podeAlterarPara(StatusPedido.CANCELADO);
+ 	}
 
  	// método callback do JPA
  	@PrePersist

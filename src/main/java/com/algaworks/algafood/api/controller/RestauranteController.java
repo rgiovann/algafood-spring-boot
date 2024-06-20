@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,8 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.assembler.RestauranteApenasNomeDtoAssembler;
+import com.algaworks.algafood.api.assembler.RestauranteBasicoDtoAssembler;
 import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
 import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
+import com.algaworks.algafood.api.dto.RestauranteApenasNomeDto;
+import com.algaworks.algafood.api.dto.RestauranteBasicoDto;
 import com.algaworks.algafood.api.dto.RestauranteDto;
 import com.algaworks.algafood.api.input.RestauranteInput;
 import com.algaworks.algafood.api.openapi.controller.RestauranteControllerOpenApi;
@@ -44,14 +49,20 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 	private final CadastroRestauranteService restauranteService;
 	private final RestauranteInputDisassembler restauranteInputDissasembler;
 	private final RestauranteDtoAssembler restauranteDtoAssembler;
+	private final RestauranteApenasNomeDtoAssembler restauranteApenasNomeDtoAssembler;
+	private final RestauranteBasicoDtoAssembler restauranteBasicoDtoAssembler;
 
 	public RestauranteController(CadastroRestauranteService restauranteService,
 			RestauranteInputDisassembler restauranteInputDissasembler,
-			RestauranteDtoAssembler restauranteDtoAssembler) {
+			RestauranteDtoAssembler restauranteDtoAssembler, 
+			RestauranteApenasNomeDtoAssembler restauranteApenasNomeDtoAssembler,
+			RestauranteBasicoDtoAssembler restauranteBasicoDtoAssembler) {
 
 		this.restauranteService = restauranteService;
 		this.restauranteInputDissasembler = restauranteInputDissasembler;
 		this.restauranteDtoAssembler = restauranteDtoAssembler;
+		this.restauranteApenasNomeDtoAssembler = restauranteApenasNomeDtoAssembler;
+		this.restauranteBasicoDtoAssembler = restauranteBasicoDtoAssembler;
 	}
 
 //	// TESTE
@@ -113,9 +124,9 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	// ISSUE: Support for HATEOAS-Links in Json-Views #387
 	//@JsonView(RestauranteView.Resumo.class)      
-	public CollectionModel<RestauranteDto> listar() {
+	public CollectionModel<RestauranteBasicoDto> listar() {
 
-		CollectionModel<RestauranteDto>  collectionRestaurante = restauranteDtoAssembler.toCollectionModel(restauranteService.listar());
+		CollectionModel<RestauranteBasicoDto>  collectionRestaurante = restauranteBasicoDtoAssembler.toCollectionModel(restauranteService.listar());
 
 		return collectionRestaurante;
 		
@@ -127,9 +138,11 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 	// ISSUE: Support for HATEOAS-Links in Json-Views #387
 	//@JsonView(RestauranteView.ApenasNome.class) 
 	@GetMapping(params = "projecao=apenas-nome")
-	public CollectionModel<RestauranteDto> listarApenasNomes() {
-		return listar();
-	}
+	public CollectionModel<RestauranteApenasNomeDto> listarApenasNomes() {
+		
+		CollectionModel<RestauranteApenasNomeDto>  collectionRestaurante = restauranteApenasNomeDtoAssembler.toCollectionModel(restauranteService.listar());
+
+		return collectionRestaurante;	}
 
 	// COMO REFERENCIA SERIALIZATION VIEW DINAMICO
 // 	@GetMapping
@@ -188,7 +201,7 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 			                        @RequestBody @Valid RestauranteInput restauranteInput) {
 
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
-
+		
 		restauranteInputDissasembler.copyToEntity(restauranteInput, restaurante);
 
 		try {
@@ -208,8 +221,9 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 	@Override
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void ativarRestaurante( @PathVariable Long restauranteId) {
+	public ResponseEntity<Void>  ativarRestaurante( @PathVariable Long restauranteId) {
 		restauranteService.ativar(restauranteId);
+		return ResponseEntity.noContent().build();
 	}
 
 	@Override
@@ -237,22 +251,28 @@ public class RestauranteController implements RestauranteControllerOpenApi{
 	@Override
 	@DeleteMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void inativarRestaurante( @PathVariable Long restauranteId) {
+	public ResponseEntity<Void> inativarRestaurante( @PathVariable Long restauranteId) {
 		restauranteService.inativar(restauranteId);
+		return ResponseEntity.noContent().build();
+		
 	}
 
 	@Override
 	@PutMapping("/{restauranteId}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void abrirRestauranrte( @PathVariable Long restauranteId) {
+	public ResponseEntity<Void> abrirRestaurante( @PathVariable Long restauranteId) {
 		restauranteService.abrir(restauranteId);
+		return ResponseEntity.noContent().build();
+		
 	}
 
 	@Override
 	@PutMapping("/{restauranteId}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void fecharRestaurante(  @PathVariable Long restauranteId) {
+	public ResponseEntity<Void> fecharRestaurante(  @PathVariable Long restauranteId) {
 		restauranteService.fechar(restauranteId);
+		return ResponseEntity.noContent().build();
+		
 	}
 
  

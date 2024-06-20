@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.assembler;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,9 +28,37 @@ public class RestauranteDtoAssembler extends EntitytDtoAssembler<RestauranteDto,
 
 	@Override
 	public List<Link> constructLinks(Restaurante entityObject) {
-		return  
-				Arrays.asList( restauranteLinks.linkToRestaurante(entityObject.getId()),
-						       restauranteLinks.linkToRestaurante("restaurantes"));
+		
+	    // Create a modifiable list
+	    List<Link> listaDeLinks = new ArrayList<>();
+		
+	    listaDeLinks.add(restauranteLinks.linkToRestaurante(entityObject.getId()));
+	    listaDeLinks.add(restauranteLinks.linkToRestaurante("restaurantes"));		 
+	    listaDeLinks.add(restauranteLinks.linkToRestaurante("restaurantes"));
+	    listaDeLinks.add(restauranteLinks.linkToCozinha(entityObject.getCozinha().getId()));
+	    listaDeLinks.add(restauranteLinks.linkToCozinha("cozinhas"));
+	    listaDeLinks.add(restauranteLinks.linkToCidade(entityObject.getEndereco().getCidade().getId()));
+	    listaDeLinks.add(restauranteLinks.linkToCidade("cidades"));
+	    listaDeLinks.add(restauranteLinks.linkToFormaPagamentoRestaurante(entityObject.getId()));
+	    listaDeLinks.add(restauranteLinks.linkToUsuarioResponsavel(entityObject.getId()));
+
+		if(entityObject.getAtivo()) {
+		    listaDeLinks.add(restauranteLinks.linkToInativarRestaurante(entityObject.getId(), "inativar"));
+		}
+		else
+		{
+		    listaDeLinks.add(restauranteLinks.linkToAtivarRestaurante(entityObject.getId(), "ativar"));
+		}
+		
+		if(entityObject.getAberto()) {
+		    listaDeLinks.add(restauranteLinks.linkToAbrirRestaurante(entityObject.getId(), "fechar"));
+		}
+		else
+		{
+		    listaDeLinks.add(restauranteLinks.linkToFecharRestaurante(entityObject.getId(), "abrir"));
+		}
+						 
+		return listaDeLinks;
 	}
 
 

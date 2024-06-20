@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Relation(collectionRelation = "restaurantes")
 
-public class RestauranteDto extends RepresentationModel<RestauranteDto> {
+public class RestauranteBasicoDto extends RepresentationModel<RestauranteBasicoDto> {
  
 	//@JsonView({RestauranteView.Resumo.class,RestauranteView.ApenasNome.class})
 	@ApiModelProperty(value="Id do restaurante",example="1")
@@ -29,8 +29,6 @@ public class RestauranteDto extends RepresentationModel<RestauranteDto> {
 	private BigDecimal taxaFrete;
 	//@JsonView(RestauranteView.Resumo.class)
 	private CozinhaDto cozinha;
-	private Boolean ativo;
-	private Boolean aberto;
-	private EnderecoDto endereco;
+ 
 	
 }

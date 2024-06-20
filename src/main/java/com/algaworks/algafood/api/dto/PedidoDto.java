@@ -39,7 +39,7 @@ public class PedidoDto extends RepresentationModel<PedidoDto>{
 	@ApiModelProperty(value="Data de criação do pedido",example="2022-12-01T18:09:02.70844Z")		
 	private OffsetDateTime dataCriacao;
 	
-	private RestauranteCompactDto restaurante;
+	private RestauranteApenasNomeDto restaurante;
 	
 	private UsuarioDto cliente; 
 	//private String nomeCliente; // modelmapper reconhece cliente.nome como nomeCliente

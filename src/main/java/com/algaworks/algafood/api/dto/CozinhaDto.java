@@ -19,11 +19,11 @@ import lombok.Setter;
 
 public class CozinhaDto extends RepresentationModel<CozinhaDto> {
 
-	@JsonView(RestauranteView.Resumo.class)
+	//@JsonView(RestauranteView.Resumo.class)
 	@ApiModelProperty(value="Id da cozinha",example="1")
 	private Long id;
 	
-	@JsonView(RestauranteView.Resumo.class)	
+	//@JsonView(RestauranteView.Resumo.class)	
 	@ApiModelProperty(value="Nome da cozinha",example="Brasileira")
 	private String nome;
 

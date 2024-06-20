@@ -40,9 +40,18 @@ public class PedidoDtoAssembler extends EntitytDtoAssembler<PedidoDto, Pedido, P
 		    listaDeLinks.add(this.pedidoLinks.linkToFormaPagamento(formaPagamentoId));
 		    listaDeLinks.add(this.pedidoLinks.linkToRestaurante(restauranteId));
 			listaDeLinks.add(this.pedidoLinks.linkToUsuario(usarioId));	
-			listaDeLinks.add(this.pedidoLinks.linkToConfirmacaoPedido(entityObject.getCodigo(), "confirmar"));
-			listaDeLinks.add(this.pedidoLinks.linkToCancelamentoPedido(entityObject.getCodigo(), "cancelar"));
-			listaDeLinks.add(this.pedidoLinks.linkToEntregaPedido(entityObject.getCodigo(), "entregar"));
+			
+			if(entityObject.podeSerConfirmado()) {
+				listaDeLinks.add(this.pedidoLinks.linkToConfirmacaoPedido(entityObject.getCodigo(), "confirmar"));
+			}
+			
+			if(entityObject.podeSerCancelado()) {
+				listaDeLinks.add(this.pedidoLinks.linkToCancelamentoPedido(entityObject.getCodigo(), "cancelar"));
+			}
+			
+			if(entityObject.podeSerEntregue()) {
+				listaDeLinks.add(this.pedidoLinks.linkToEntregaPedido(entityObject.getCodigo(), "entregar"));
+			}
 
 			List<ItemPedido> itens = entityObject.getItens();
 			for (ItemPedido itemPedido : itens) {
